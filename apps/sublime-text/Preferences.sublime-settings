@@ -1,13 +1,7 @@
 {
     "added_words": [
-        "Ashish",
         "https",
-        "poha",
         "www",
-        "ahrefs",
-    ],
-    "ignored_words": [
-        "G2",
     ],
     "ignored_packages": [
         "Vintage",

@@ -1,4 +1,6 @@
 """Public preference and refresh fixtures using disposable checkout/profile data."""
+import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -8,8 +10,12 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
+_spec = importlib.util.spec_from_file_location("public_hermes_settings", ROOT / "scripts/hermes-settings.py")
+helper = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(helper)
 
 
 class PublicPreferences(unittest.TestCase):
@@ -132,6 +138,115 @@ class PublicPreferences(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn('duplicate setting', result.stderr)
             self.assertEqual(path.read_bytes(), before)
+
+    def test_object_aliases_capture_check_and_restore_roundtrip(self):
+        aliases = {"simple": "test/model", "coding": {"model": "test/coder", "provider": "openrouter"},
+                   "inherited": {"model": "test/inherited"},
+                   "custom": {"model": "test/reasoner", "provider": "custom",
+                              "base_url": "https://example.com/v1%20beta", "key_env": "TEST_API_KEY"},
+                   "loopback": {"model": "test/loopback", "base_url": "https://[::1]:443/v1"}}
+        source = {"model": {"default": "test/default", "provider": "openrouter", "aliases": aliases}}
+        self.assertEqual(helper.project(source, skills_only=True), {})
+        for preserve in (False, True):
+            with self.subTest(preserve=preserve), tempfile.TemporaryDirectory() as directory:
+                live, snapshot = Path(directory) / "config.yaml", Path(directory) / "snapshot.json"
+                live.write_text(json.dumps(source), encoding="utf-8")
+                before = live.read_bytes(), live.stat().st_mtime_ns
+                args = [sys.executable, str(ROOT / "scripts/hermes-settings.py"), "capture",
+                        "--live", str(live), "--snapshot", str(snapshot)]
+                capture = subprocess.run(args, capture_output=True, text=True)
+                self.assertEqual(capture.returncode, 0, capture.stdout)
+                self.assertEqual(helper.read_config(snapshot), source)
+                self.assertEqual((live.read_bytes(), live.stat().st_mtime_ns), before)
+                first = snapshot.read_bytes(), snapshot.stat().st_mtime_ns
+                subprocess.run(args, check=True, capture_output=True)
+                self.assertEqual((snapshot.read_bytes(), snapshot.stat().st_mtime_ns), first)
+                for mode in ("audit", "check"):
+                    args[2] = mode
+                    subprocess.run(args, check=True, capture_output=True)
+                original = {"model": {"default": "local/model", "provider": "local", "api_key": "fixture-only"},
+                            "terminal": {"cwd": "local"}}
+                live.write_text(json.dumps(original), encoding="utf-8")
+                args[2] = "restore"
+                if preserve:
+                    args.append("--preserve-model-selection")
+                subprocess.run(args, check=True, capture_output=True)
+                restored = helper.read_config(live)
+                self.assertEqual(restored["model"]["aliases"], aliases)
+                self.assertEqual(restored["model"]["api_key"], "fixture-only")
+                self.assertEqual(restored["terminal"], original["terminal"])
+                self.assertEqual(restored["model"]["default"], "local/model" if preserve else "test/default")
+                self.assertEqual(restored["model"]["provider"], "local" if preserve else "openrouter")
+                first = live.read_bytes(), live.stat().st_mtime_ns
+                subprocess.run(args, check=True, capture_output=True)
+                self.assertEqual((live.read_bytes(), live.stat().st_mtime_ns), first)
+                args[2] = "check"
+                subprocess.run(args, check=True, capture_output=True)
+
+
+    def test_unsafe_object_aliases_fail_before_capture_or_restore_writes(self):
+        invalid = [{}, {"provider": "custom"}, {"model": None}, {"model": ["test/model"]},
+                   {"model": "test/model", "provider": 42},
+                   {"model": "test/model", "key_env": "${TEST_API_KEY}"},
+                   {"model": "test/model", "key_env": "sk-fixture-only"},
+                   {"model": "test/model", "api_key": "fixture-only"},
+                   {"model": "test/model", "default_headers": {"Authorization": "fixture-only"}},
+                   {"model": "test/model", "unknown": "fixture-only"},
+                   {"model": "sk-fixture-only"}, {"model": "/Users/fixture/private"},
+                   {"model": "C:/Users/fixture/private"},
+                   {"model": "test/model", "base_url": ["https://example.com"]},
+                   {"model": "test/model", "base_url": "https://user:fixture-only@example.com/v1"},
+                   {"model": "test/model", "base_url": "https://example.com/v1?key=fixture-only"},
+                   {"model": "test/model", "base_url": "https://example.com/v1#fixture-only"},
+                   {"model": "test/model", "base_url": "file:///fixture-only"},
+                   {"model": "test/model", "base_url": "https://[fixture-only]/v1"},
+                   {"model": "test/model", "base_url": "https://[::1]extra/v1"},
+                   {"model": "test/model", "base_url": "https://[::1]:bad/v1"},
+                   {"model": "test/model", "base_url": "https://[::1]:65536/v1"},
+                   {"model": "test/model", "base_url": "https://[::1]:４４３/v1"},
+                   {"model": "test/model", "base_url": "https://example.com:bad/v1"},
+                   {"model": "test/model", "base_url": "https://example.com:65536/v1"},
+                   {"model": "test/model", "base_url": "https://example.com:４４３/v1"}]
+        invalid.extend({"model": "test/model", "base_url": value} for value in ("https://example.com\n/v1", "https://example.com\t/v1",
+                   "https://example.com\\other/v1", "https://@example.com/v1",
+                   "https://example.com:443@/v1", "https://example%2ecom/v1",
+                   "https://example.com/%zz/v1", "https://example.com/%/v1",
+                   "https://example.com/v1?", "https://example.com/v1#"))
+        safe = {"model": {"default": "test/default", "aliases": {"simple": "test/model"}}}
+        for alias in invalid:
+            for mode in ("capture", "restore", "audit"):
+                with self.subTest(alias=alias, mode=mode), tempfile.TemporaryDirectory() as directory:
+                    live, snapshot = Path(directory) / "config.yaml", Path(directory) / "snapshot.json"
+                    unsafe = {"model": {"default": "test/default", "aliases": {"coding": alias}}}
+                    live.write_text(json.dumps(unsafe if mode == "capture" else safe), encoding="utf-8")
+                    snapshot.write_text(json.dumps(safe if mode == "capture" else unsafe), encoding="utf-8")
+                    before = live.read_bytes(), snapshot.read_bytes()
+                    args = ["hermes-settings", mode, "--live", str(live), "--snapshot", str(snapshot)]
+                    with patch.object(sys, "argv", args), patch("sys.stdout", new_callable=io.StringIO) as output:
+                        self.assertEqual(helper.main(), 1)
+                        self.assertNotIn("fixture-only", output.getvalue())
+                    self.assertEqual((live.read_bytes(), snapshot.read_bytes()), before)
+
+
+    def test_invalid_model_base_urls_fail_before_capture_or_restore_writes(self):
+        invalid = (42, False, "https://example.com\n/v1", "https://example.com\\other/v1", "https://@example.com/v1", "https://example%2ecom/v1", "https://[fixture-only]/v1", "https://[::1]extra/v1",
+                   "https://[::1]:bad/v1", "https://[::1]:65536/v1",
+                   "https://[::1]:４４３/v1", "https://example.com:bad/v1",
+                   "https://example.com:65536/v1", "https://example.com:４４３/v1")
+        safe = {"model": {"default": "test/default", "base_url": "https://[::1]:443/v1"}}
+        for base_url in invalid:
+            for mode in ("capture", "restore", "audit"):
+                with self.subTest(base_url=base_url, mode=mode), tempfile.TemporaryDirectory() as directory:
+                    live, snapshot = Path(directory) / "config.yaml", Path(directory) / "snapshot.json"
+                    unsafe = {"model": {"default": "test/default", "base_url": base_url}}
+                    live.write_text(json.dumps(unsafe if mode == "capture" else safe), encoding="utf-8")
+                    snapshot.write_text(json.dumps(safe if mode == "capture" else unsafe), encoding="utf-8")
+                    before = live.read_bytes(), snapshot.read_bytes()
+                    args = ["hermes-settings", mode, "--live", str(live), "--snapshot", str(snapshot)]
+                    with patch.object(sys, "argv", args), patch("sys.stdout", new_callable=io.StringIO):
+                        self.assertEqual(helper.main(), 1)
+                    self.assertEqual((live.read_bytes(), snapshot.read_bytes()), before)
+
 
     def test_hermes_reactions_roundtrip_preserves_unmanaged_settings(self):
         with tempfile.TemporaryDirectory() as directory:

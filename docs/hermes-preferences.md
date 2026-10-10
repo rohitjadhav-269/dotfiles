@@ -18,6 +18,42 @@ can be managed separately with `--skills-only`; restoration adds shared discover
 without removing existing profile-specific directories. This public checkout does
 not install a Hermes profile or apply a personal model policy.
 
+## Portable model aliases
+
+`model.aliases` accepts model identifier strings and objects with required `model`
+and optional `provider`, `base_url` and `key_env` strings. For example:
+
+```json
+{
+  "model": {
+    "default": "example/default",
+    "aliases": {
+      "quick": "example/fast",
+      "local": {
+        "model": "example/coder",
+        "provider": "custom",
+        "base_url": "http://localhost:8080/v1",
+        "key_env": "LOCAL_MODEL_API_KEY"
+      }
+    }
+  }
+}
+```
+
+`key_env` names an environment variable; its value stays outside the snapshot.
+Literal credential fields, unknown object fields, malformed identifiers and URLs
+with embedded user-info, query strings, fragments, invalid ports/hostnames,
+whitespace/control characters, backslashes or malformed percent escapes are rejected
+before capture or restore writes. String aliases remain supported; skills-only
+operations leave aliases unmanaged. Capture and full check preserve the alias map;
+restore replaces that managed map while retaining unrelated live settings.
+`--preserve-model-selection` retains the live default/provider/endpoint while
+restoring aliases. Review your own model names and endpoints before sharing any
+snapshot; accepting a portable value does not make personal routing public-safe.
+
+These are generic helper capabilities. Native Windows, live model execution and
+fresh-profile restoration require separate verification.
+
 ## Disable Desktop message reactions
 
 Set `display.message_reactions` to `false` in your own saved preferences. The helper

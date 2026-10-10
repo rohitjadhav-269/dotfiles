@@ -30,17 +30,34 @@ class PublicRulebookAudit(unittest.TestCase):
         text = index.read_text(encoding='utf-8')
         entry = '- [Core principles](./rules/00-core.md)'
         self.assertIn(entry, text)
-        index.write_text(text.replace(entry, entry + '\n' + entry, 1), encoding='utf-8', newline='\n')
+        index.write_bytes(text.replace(entry, entry + '\n' + entry, 1).encode('utf-8'))
         result = self.audit()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('duplicate top-level rule', result.stderr)
 
     def test_unlinked_nested_route_fails(self):
         route = self.root / 'agents/rules/routing/forgotten.md'
-        route.write_text('# Fixture\n', encoding='utf-8', newline='\n')
+        route.write_bytes(b'# Fixture\n')
         result = self.audit()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('unlinked reference', result.stderr)
+
+    def test_terminal_fixture_runs_before_audit_success(self):
+        fixture = self.root / 'scripts/test-agent-terminal-integration.sh'
+        fixture.write_bytes(b'#!/bin/bash\nprintf "terminal fixture completed\\n"\n')
+        result = self.audit()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn('terminal fixture completed', result.stdout)
+        self.assertLess(result.stdout.index('terminal fixture completed'),
+                        result.stdout.index('rulebook in sync'))
+
+    def test_terminal_fixture_failure_blocks_audit_success(self):
+        fixture = self.root / 'scripts/test-agent-terminal-integration.sh'
+        fixture.write_bytes(b'#!/bin/bash\necho "terminal fixture failed" >&2\nexit 27\n')
+        result = self.audit()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('terminal fixture failed', result.stderr)
+        self.assertNotIn('rulebook in sync', result.stdout)
 
 
 if __name__ == '__main__':

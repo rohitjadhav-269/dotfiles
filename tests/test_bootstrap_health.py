@@ -65,17 +65,62 @@ class PublicBootstrap(unittest.TestCase):
             shim = Path(directory) / 'bin'
             shim.mkdir()
             defaults = shim / 'defaults'
-            defaults.write_text('#!/bin/sh\nexit 1\n')
+            defaults.write_text('#!/bin/sh\nif [ "$1:$2" = "export:org.example.fixture" ]; then cp "$FIXTURE_EXPORT" "$3"; else exit 1; fi\n')
+            snapshot = root / 'apps/fixture/settings.plist'
+            snapshot.parent.mkdir()
+            snapshot.write_bytes(plistlib.dumps({'enabled': True, 'order': ['one', 'two'],
+                                                 'SULastCheckTime': 'old'}, fmt=plistlib.FMT_BINARY))
+            prior = snapshot.read_bytes()
+            captured = Path(directory) / 'capture.plist'
+            captured.write_bytes(plistlib.dumps({'order': ['one', 'two'], 'enabled': True,
+                                                 'SULastCheckTime': 'new'}, sort_keys=False))
+            with (root / 'apps.tsv').open('a') as manifest:
+                manifest.write('\norg.example.fixture\tFixture\tapps/fixture/settings.plist\n')
             defaults.chmod(0o755)
             (root / 'scripts/brewfile.sh').write_text('#!/bin/sh\ncp "$BREWFILE" "$2"\n')
             paths = [p for app in ('vscode','cursor','zed','sublime-text') for p in (root / 'apps' / app).rglob('*') if p.is_file()]
             paths.append(root / 'macos/dock-backup.plist')
             before = {p: p.read_bytes() for p in paths}
-            env = dict(os.environ, DOTFILES=str(root), HOME=str(home), PATH=str(shim) + os.pathsep + os.environ['PATH'])
+            env = dict(os.environ, DOTFILES=str(root), HOME=str(home), FIXTURE_EXPORT=str(captured), PATH=str(shim) + os.pathsep + os.environ['PATH'])
             subprocess.run(['bash', str(root / 'scripts/backup-apps.sh')], env=env, check=True, capture_output=True)
             self.assertFalse((root / 'apps/dato/dato.plist').exists())
             for p, data in before.items():
                 self.assertEqual(p.read_bytes(), data, str(p.relative_to(root)))
+            self.assertEqual(snapshot.read_bytes(), prior)
+            # Repeating the whole backup is stable; changing an ordered setting is not.
+            subprocess.run(['bash', str(root / 'scripts/backup-apps.sh')], env=env, check=True, capture_output=True)
+            self.assertEqual(snapshot.read_bytes(), prior)
+            captured.write_bytes(plistlib.dumps({'enabled': False, 'order': ['two', 'one']}))
+            subprocess.run(['bash', str(root / 'scripts/backup-apps.sh')], env=env, check=True, capture_output=True)
+            self.assertEqual(plistlib.loads(snapshot.read_bytes()), {'enabled': False, 'order': ['two', 'one']})
+            # Fail after apps is published and the old macos root is moved away.
+            # All managed roots must return to their previous bytes and paths.
+            def managed_snapshot():
+                files = [root / 'Brewfile']
+                for name in ('apps', 'macos', 'services'):
+                    files.extend(p for p in (root / name).rglob('*') if p.is_file())
+                return {str(p.relative_to(root)): (p.read_bytes(), p.stat().st_mode)
+                        for p in files}
+
+            retained = managed_snapshot()
+            captured.write_bytes(plistlib.dumps({'enabled': True, 'order': ['replacement']}))
+            failure = Path(directory) / 'move-failed'
+            move = shim / 'mv'
+            move.write_text('#!/bin/sh\n'
+                            'case "$2" in */.backup-rollback.*/macos)\n'
+                            '  /bin/mv "$@" || exit\n'
+                            '  : > "$FIXTURE_MOVE_FAILURE"\n'
+                            '  exit 73;;\nesac\nexec /bin/mv "$@"\n')
+            move.chmod(0o755)
+            result = subprocess.run(['bash', str(root / 'scripts/backup-apps.sh')],
+                                    env=dict(env, FIXTURE_MOVE_FAILURE=str(failure)),
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 73, result.stdout + result.stderr)
+            self.assertTrue(failure.exists(), 'The intended publication failure was not reached')
+            self.assertIn('restoring the previous repo snapshot', result.stdout)
+            self.assertEqual(managed_snapshot(), retained)
+            self.assertFalse(list(root.glob('.backup-stage.*')))
+            self.assertFalse(list(root.glob('.backup-rollback.*')))
 
     @unittest.skipUnless(sys.platform == 'darwin', 'Requires macOS plutil')
     def test_public_app_sanitization_and_audit(self):

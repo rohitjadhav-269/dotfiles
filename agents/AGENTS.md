@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Canonical agent configuration. This file is an index — edit rules in `./rules/` and they'll be composed at load time. Client projection ownership, bootstrap steps, and verification boundaries are documented in [`CLIENTS.md`](./CLIENTS.md); that document is not a rule inventory or loader input.
+Canonical agent configuration. Edit rules in `./rules/`; this index controls loading. [`CLIENTS.md`](./CLIENTS.md) documents client ownership and verification; it is not a rule inventory or loader input.
 
 ## First Steps
 
@@ -11,7 +11,7 @@ Canonical agent configuration. This file is an index — edit rules in `./rules/
 5. Re-evaluate task-conditional sections before later requests and action gates before later operations when scope changes.
 6. Loading is not applying: honor each loaded rule only according to the applicability declared in the rule file and the section headings below.
 7. Read `.agent-memory/index.yaml` to discover available project context. If `.agent-memory/` is absent, proceed without it — don't create it.
-8. Load relevant memory files based on the current task.
+8. For memory recall, capture, correction, maintenance or recovery of missing prior context, read [memory procedures](./rules/memory/lifecycle.md). Otherwise load relevant project memory.
 
 ---
 
@@ -65,7 +65,7 @@ Trigger signals: a package manifest (`package.json`, `pyproject.toml`, `Cargo.to
 
 - [Paseo orchestration](./rules/05-paseo-orchestration.md)
 
-## Activate when Hermes captures learning or performs skill maintenance
+## Activate for Hermes memory, learning or skill maintenance
 
 - [Hermes learning](./rules/06-hermes-learning.md)
 

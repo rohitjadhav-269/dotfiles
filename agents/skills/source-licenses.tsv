@@ -9,13 +9,14 @@
 # not silently become public-split-safe without review.
 ComposioHQ/awesome-claude-skills	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 DietrichGebert/ponytail	MIT	GitHub repo root LICENSE; fetched 2026-08-24
-Jakubantalik/transitions.dev	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 Leonxlnx/taste-skill	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
+NVIDIA/SkillSpector	Apache-2.0	https://github.com/NVIDIA/SkillSpector/blob/main/LICENSE; inspected 2026-10-01
 anthropics/knowledge-work-plugins	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 benjitaylor/agentation	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 cerico/macfair	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 coreyhaines31/marketingskills	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 dylantarre/animation-principles	MIT	GitHub repo root LICENSE; fetched 2026-07-03
+echris6/motion-video-kit	MIT	https://github.com/echris6/motion-video-kit/blob/main/LICENSE; inspected 2026-10-01
 emilkowalski/skills	MIT	GitHub repo root LICENSE; fetched 2026-07-03
 firebenders/sync-figma-token-skill	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 github/awesome-copilot	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
@@ -23,12 +24,14 @@ index-how/vocabulary	reviewed	pre-existing tracked source before 2026-07-03 audi
 jakubkrehel/skills	MIT	GitHub repo root LICENSE; fetched 2026-08-02
 josiahsiegel/claude-plugin-marketplace	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 julianoczkowski/designer-skills	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
+lucasmarkes/hairline	MIT	https://github.com/lucasmarkes/hairline/blob/20ebcd4/LICENSE; inspected 2026-10-03
 mattpocock/skills	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 mblode/agent-skills	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 mindmorass/reflex	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 nextlevelbuilder/ui-ux-pro-max-skill	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 nodnarbnitram/claude-code-extensions	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 notedit/happy-skills	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
+mickadesign/fluid-functionalism	MIT	GitHub repo root LICENSE; verified 2026-10-08 via repos/mickadesign/fluid-functionalism/license
 nutlope/hallmark	MIT	GitHub repo root LICENSE; fetched 2026-07-19
 obra/superpowers	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 owl-listener/designer-skills	reviewed	pre-existing tracked source before 2026-07-03 audit hardening

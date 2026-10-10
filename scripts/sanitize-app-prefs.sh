@@ -115,6 +115,13 @@ if [[ -f "$APPS/zed/settings.json" ]]; then
   ' "$APPS/zed/settings.json"
 fi
 
+# Public policy applies even to compact JSONC without personal home paths.
+for editor in zed vscode cursor; do
+  f="$APPS/$editor/settings.json"
+  [[ -f "$f" ]] || continue
+  python3 "$SCRIPT_DIR/public-editor-policy.py" sanitize --editor "$editor" "$f"
+done
+
 for f in \
   "$APPS/sublime-text/GutterColor.sublime-settings" \
   "$APPS/sublime-text/SublimeLinter.sublime-settings" \
@@ -442,32 +449,10 @@ plist_delete "$APPS/pearcleaner/pearcleaner.plist" "settings.lipo.excludedApps"
 # scanners. Keep app tile URLs and bundle identifiers, but drop bookmark blobs
 # and right-side folder tiles from the committed backup.
 if [[ -f "$DOTFILES/macos/dock-backup.plist" ]]; then
-  # Preserve the declared locked-Dock policy even if macOS rewrites these flags
-  # before a backup: fixed size/position/items and auto-hide permanently off.
-  plist_set_bool "$DOTFILES/macos/dock-backup.plist" "size-immutable" true
-  plist_set_bool "$DOTFILES/macos/dock-backup.plist" "position-immutable" true
-  plist_set_bool "$DOTFILES/macos/dock-backup.plist" "contents-immutable" true
-  plist_set_bool "$DOTFILES/macos/dock-backup.plist" "autohide" false
-  plist_set_bool "$DOTFILES/macos/dock-backup.plist" "autohide-immutable" true
-  for key in \
-    mod-count \
-    last-analytics-stamp \
-    trash-full \
-    lastShowIndicatorTime; do
-    plist_delete "$DOTFILES/macos/dock-backup.plist" "$key"
-  done
-
-  idx=0
-  while "$PLISTBUDDY" -c "Print :persistent-apps:$idx" "$DOTFILES/macos/dock-backup.plist" \
-    >/dev/null 2>&1; do
-    plist_delete "$DOTFILES/macos/dock-backup.plist" "persistent-apps:$idx:tile-data:book"
-    plist_delete "$DOTFILES/macos/dock-backup.plist" "persistent-apps:$idx:tile-data:file-mod-date"
-    plist_delete "$DOTFILES/macos/dock-backup.plist" "persistent-apps:$idx:tile-data:parent-mod-date"
-    idx=$((idx + 1))
-  done
-  # Some apps (Hermes Desktop) are installed beneath the operator's home.
-  # Store a portable marker; dock.sh expands it only at restore time.
-  python3 - "$DOTFILES/macos/dock-backup.plist" <<'PY'
+  # Apply the public Dock policy in memory. A no-op must retain the original
+  # encoding and bytes, including the curated template used by backup.
+  python3 - "$DOTFILES/macos/dock-backup.plist" <<'PY_DOCK'
+from copy import deepcopy
 from pathlib import Path
 import plistlib
 import sys
@@ -475,16 +460,26 @@ from urllib.parse import unquote
 p = Path(sys.argv[1])
 raw = p.read_bytes()
 data = plistlib.loads(raw)
+original = deepcopy(data)
+data.update({"size-immutable": True, "position-immutable": True,
+             "contents-immutable": True, "autohide": False,
+             "autohide-immutable": True})
+for key in ("mod-count", "last-analytics-stamp", "trash-full",
+            "lastShowIndicatorTime", "persistent-others"):
+    data.pop(key, None)
 home = str(Path.home())
 for tile in data.get("persistent-apps", []):
-    file_data = tile.get("tile-data", {}).get("file-data", {})
+    tile_data = tile.get("tile-data", {})
+    for key in ("book", "file-mod-date", "parent-mod-date"):
+        tile_data.pop(key, None)
+    file_data = tile_data.get("file-data", {})
     url = file_data.get("_CFURLString", "")
     if unquote(url).startswith("file://" + home + "/"):
         file_data["_CFURLString"] = "file://__HOME__" + unquote(url)[len("file://" + home):]
-p.write_bytes(plistlib.dumps(data, fmt=plistlib.FMT_BINARY if raw.startswith(b"bplist") else plistlib.FMT_XML))
-PY
+if data != original:
+    p.write_bytes(plistlib.dumps(data, fmt=plistlib.FMT_BINARY if raw.startswith(b"bplist") else plistlib.FMT_XML))
+PY_DOCK
 fi
-plist_delete "$DOTFILES/macos/dock-backup.plist" "persistent-others"
 
 # Public snapshots exclude app identity and device/application inventories.
 DOTFILES="$DOTFILES" python3 - <<'PUBLIC_PREFS'

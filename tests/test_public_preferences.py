@@ -41,6 +41,98 @@ class PublicPreferences(unittest.TestCase):
             subprocess.run(['bash', str(ROOT / 'scripts/audit-app-prefs.sh')],
                            env=env, check=True, capture_output=True)
 
+    @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
+    def test_stabilization_cannot_restore_removed_registration(self):
+        with tempfile.TemporaryDirectory() as directory:
+            roots = [Path(directory) / name for name in ('stage', 'previous')]
+            for root in roots:
+                (root / 'apps/betterzip').mkdir(parents=True)
+                (root / '.node-version').write_text((ROOT / '.node-version').read_text())
+                path = root / 'apps/betterzip/betterzip.plist'
+                path.write_bytes(plistlib.dumps({'MIBRegCode': 'fixture-registration',
+                                                 'MIBShowAdditionalFinderActions': True}))
+                subprocess.run(['bash', str(ROOT / 'scripts/sanitize-app-prefs.sh')],
+                               env=dict(os.environ, DOTFILES=str(root)), check=True, capture_output=True)
+            subprocess.run([sys.executable, str(ROOT / 'scripts/stabilize-plist-backups.py'),
+                            *map(str, roots)], check=True, capture_output=True)
+            self.assertEqual(plistlib.loads((roots[0] / 'apps/betterzip/betterzip.plist').read_bytes()),
+                             {'MIBShowAdditionalFinderActions': True})
+
+    def test_public_editor_defaults_preserve_trust_and_confirmations(self):
+        for editor in ('zed', 'vscode', 'cursor'):
+            result = subprocess.run([sys.executable, str(ROOT / 'scripts/public-editor-policy.py'),
+                                     'check', '--editor', editor,
+                                     str(ROOT / 'apps' / editor / 'settings.json')],
+                                    capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stderr)
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
+    def test_editor_bypasses_are_rejected_and_sanitized_without_home_paths(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / '.node-version').write_text((ROOT / '.node-version').read_text())
+            values = {
+                'zed': {'session': {'trust_all_worktrees': True}},
+                'vscode': {'security.workspace.trust.enabled': False,
+                           'security.workspace.trust.untrustedFiles': 'open',
+                           'git.allowNoVerifyCommit': True,
+                           'security.promptForLocalFileProtocolHandling': False},
+                'cursor': {},  # Default-disabled trust requires an explicit override.
+            }
+            for editor, settings in values.items():
+                settings['editor.fontSize'] = 17
+                path = root / 'apps' / editor / 'settings.json'
+                path.parent.mkdir(parents=True)
+                path.write_text('// keep this comment harmless: "trust_all_worktrees": true\n' +
+                                json.dumps(settings, indent=2).replace('\n}', ',\n}') + '\n')
+            audit = ['bash', str(ROOT / 'scripts/audit-app-prefs.sh')]
+            sanitize = ['bash', str(ROOT / 'scripts/sanitize-app-prefs.sh')]
+            env = dict(os.environ, DOTFILES=str(root))
+            before = subprocess.run(audit, env=env, capture_output=True, text=True)
+            self.assertNotEqual(before.returncode, 0)
+            self.assertIn('unsafe public editor trust or confirmation policy', before.stdout)
+            subprocess.run(sanitize, env=env, check=True, capture_output=True)
+            subprocess.run(audit, env=env, check=True, capture_output=True)
+            saved = {}
+            for editor in values:
+                path = root / 'apps' / editor / 'settings.json'
+                saved[editor] = path.read_bytes()
+                data = json.loads(path.read_text())
+                self.assertEqual(data['editor.fontSize'], 17)
+                if editor == 'zed':
+                    self.assertIs(data['session']['trust_all_worktrees'], False)
+                else:
+                    self.assertIs(data['security.workspace.trust.enabled'], True)
+                if editor == 'vscode':
+                    self.assertIs(data['git.allowNoVerifyCommit'], False)
+                    self.assertIs(data['security.promptForLocalFileProtocolHandling'], True)
+                    self.assertEqual(data['security.workspace.trust.untrustedFiles'], 'prompt')
+            subprocess.run(sanitize, env=env, check=True, capture_output=True)
+            for editor in values:
+                self.assertEqual((root / 'apps' / editor / 'settings.json').read_bytes(), saved[editor])
+
+    def test_editor_policy_preserves_safe_jsonc_and_rejects_duplicate_settings(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'settings.json'
+            safe = ('// "security.workspace.trust.enabled": false is only a comment\n'
+                    '{"security.workspace.trust.enabled": true, '
+                    '"security.workspace.trust.untrustedFiles": "newWindow", '
+                    '"label": "https://example.invalid/a//b",}\n')
+            path.write_text(safe)
+            command = [sys.executable, str(ROOT / 'scripts/public-editor-policy.py'),
+                       '--editor', 'cursor', str(path)]
+            subprocess.run(command[:2] + ['sanitize'] + command[2:], check=True, capture_output=True)
+            self.assertEqual(path.read_text(), safe)
+            subprocess.run(command[:2] + ['check'] + command[2:], check=True, capture_output=True)
+            path.write_text('{"security.workspace.trust.enabled": false, '
+                            '"security.workspace.trust.enabled": true}')
+            before = path.read_bytes()
+            result = subprocess.run(command[:2] + ['sanitize'] + command[2:],
+                                    capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('duplicate setting', result.stderr)
+            self.assertEqual(path.read_bytes(), before)
+
     def test_hermes_reactions_roundtrip_preserves_unmanaged_settings(self):
         with tempfile.TemporaryDirectory() as directory:
             live, saved = [Path(directory) / name for name in ('live.json', 'saved.json')]

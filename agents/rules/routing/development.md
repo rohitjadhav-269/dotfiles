@@ -47,6 +47,19 @@ Boundaries:
 
 `07-worktree-lifecycle.md` is the sole authority for finishing development work, integration, pull requests, and branch/worktree cleanup. `03-worktree-hygiene.md` remains the always-on checkout-safety kernel. Do not invoke retired completion workflows.
 
+## Phase procedures and continuity
+
+Use these procedures inside the selected owner; they add no skills, mandatory phases, or approval gates. Skip phases the request does not need.
+
+| Phase | Procedure | Completion evidence |
+| --- | --- | --- |
+| Discovery | Ask for concrete examples; distinguish the observed problem from the proposed solution; challenge load-bearing assumptions. | Settled problem, constraints, assumptions, and cheapest useful validation |
+| Planning | Compare materially different approaches when useful; recommend holding, reducing, or expanding scope explicitly. Trace contracts, failure paths, recovery, and verification. | Accepted scope and acceptance criteria; expansion remains a proposal until authorized |
+| Inspection | Compare intent with the actual diff; report missing requirements and unrelated changes separately from defects. Reproduce or trace each finding before reporting it. | Findings with evidence, impact, and unresolved limitations; no product edits without authorization |
+| Verification | Consume the accepted criteria and prior findings; reproduce, then repair only when authorized, and rerun the original probe plus adjacent behavior. | Passed, failed, and unrun checks tied to the tested content |
+
+Carry phase results forward through the [verification and continuity contract](../23-verification.md); ordinary implementation uses that contract without loading this specialist reference.
+
 ## Skill authoring
 
 Use `skill-architect` for creating, editing, auditing, comparing, or evaluating agent skills. Treat `skill-creator` and standalone Skill Development material as supporting upstream references only.
@@ -73,7 +86,6 @@ Use `system-design` when the requested interface is a module or API boundary. Wh
 | Request | Primary owner |
 | --- | --- |
 | Current Vercel Web Interface Guidelines compliance | `web-design-guidelines` |
-| Measured screenshot redlines, overlays, layout rails, or visual QA artifacts | Core visual QA workflow |
 | Whole-codebase bugs, security, performance, tests, architecture, roadmap, or executor-ready plans | `improve` |
 
-Use `web-design-guidelines` only for an explicit current external-standards pass. Use Core visual QA workflow only when measured visual artifacts are requested. `improve` is a read-only advisor and plan author, not an interface implementer.
+Use `web-design-guidelines` only for an explicit current external-standards pass. `improve` is a read-only advisor and plan author, not an interface implementer.

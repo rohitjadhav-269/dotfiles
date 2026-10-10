@@ -31,6 +31,14 @@ fi
 echo "Auditing app/macOS preference snapshots …"
 
 APPS="$DOTFILES/apps"
+# Parse editor JSONC so whitespace, comments and escaped keys cannot hide bypasses.
+for editor in zed vscode cursor; do
+  f="$APPS/$editor/settings.json"
+  [[ -f "$f" ]] || continue
+  python3 "$SCRIPT_DIR/public-editor-policy.py" check --editor "$editor" "$f" ||
+    report "unsafe public editor trust or confirmation policy: apps/$editor/settings.json"
+done
+
 if [[ -f "$APPS/cursor/cli-config.json" ]]; then
   python3 "$SCRIPT_DIR/cursor-cli-settings.py" audit --snapshot "$APPS/cursor/cli-config.json" || report "invalid Cursor CLI attribution snapshot"
 fi

@@ -51,6 +51,7 @@ add_small_spacer
 # Browsers
 add_app "/Applications/Microsoft Edge.app"
 add_app "/Applications/Comet.app"
+add_app "/Applications/Aside.app"
 add_app "/Applications/DuckDuckGo.app"
 add_app "/Applications/Safari.app"
 

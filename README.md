@@ -44,6 +44,8 @@ Most [awesome-dotfiles](https://github.com/webpro/awesome-dotfiles) examples sto
 
 ## Quick start
 
+Start with the [fork setup guide](docs/FORKING.md) to set your identity, signing key, and local SSH configuration before bootstrap. A [generic SSH example](ssh/config.example) is included for adaptation.
+
 ### Fresh Mac
 
 ```bash
@@ -228,6 +230,7 @@ HTTPS default-browser mapping is omitted (`duti` returns error -54 for direct `h
 Preference coverage is selective: capture portable, non-secret settings; keep credentials and licensed exports in the encrypted vault; leave account-bound or machine-specific state to vendor sync or manual setup.
 
 - **App snapshots:** `make restore-apps` restores `apps.tsv` and documented irregular settings; `make apps-drift` checks only faithful snapshots this public projection ships.
+- **Stable backups:** equivalent plist captures retain their previous bytes after both copies are sanitized. Encoding, key order, and volatile bookkeeping do not cause churn; real preference and ordered-list changes still update snapshots. Curated editor and Dock templates remain portable.
 - **macOS policy:** `make macos` applies automatic appearance, hot corners, battery percentage, and visibility for Bluetooth, Clock, Focus, Sound, and Wi-Fi; `make macos-check` verifies the managed values.
 - **Dock:** `make dock` imports a full-domain, public-safe snapshot; where the snapshot overlaps `macos/defaults.sh`, scripted policy is authoritative.
 - **Keyboard and input sources:** the managed policy includes key repeat, keyboard navigation and Globe-key action; the input-source plist is captured separately. Services preferences have no published snapshot and public backup skips them. Restore restarts the current user's `cfprefsd`, verifies portable managed values, and reports an explicit logout fallback if either step cannot be confirmed.
@@ -281,6 +284,22 @@ make secrets-pass-import  # import a recovered password on a replacement Mac
 ```
 
 The CLI-created Keychain item is local and is not assumed to synchronize through iCloud Keychain. Store and verify a separate recovery copy in an independently synchronized password manager. Before attach, vault scripts detect the selected image at any mountpoint, reuse only the verified expected mount, and never claim an operator-owned alternate attachment. Backups stage through a working copy, retain the published vault on failure, and retain verified snapshots while reserving space for two more and preserving baselines. Portable and legacy backup commands remain available; see [SECRETS.md](SECRETS.md).
+
+## Git hooks
+
+On macOS, Git 2.54+ also runs `git/global-hooks/commit-msg` through the additive
+`hook.strip-cursor-trailers` registration. `make link` points that directory at
+`~/.config/git/hooks`. The filter removes Cursor attribution from a final
+trailer block and preserves normal message prose and other trailers. It does
+not replace `core.hooksPath`: Git still runs repository hooks, including custom
+hook directories, and runs their `commit-msg` hook after the filter. Older Git
+keeps its existing hooks and does not run this filter. For a repository opt-out,
+set `git config --local hook.strip-cursor-trailers.enabled false`. `--no-verify`
+bypasses the filter too. Ambiguous blocks and multiline attribution values stay
+unchanged.
+
+`git config core.hooksPath .githooks` wires the tracked `.githooks/` directory
+(`make hooks`, part of `make all`). The per-clone `git/hooks/` path stays unused.
 
 ## Safety gates
 
@@ -435,3 +454,5 @@ for `make macos-check`; the unset policy uses the portable Desktop fallback.
 
 Privacy reviewers and fork users: read the [intentional public identity baseline](PRIVACY.md).
 The documented noreply Git identity and public verification key are deliberately published.
+
+Optional [portable config and editor examples](examples/README.md), [Services/device policy fixtures](examples/macos/README.md), and [public verification keys](docs/PUBLIC-KEYS.md) are available for manual adaptation.

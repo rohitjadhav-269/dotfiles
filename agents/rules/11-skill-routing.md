@@ -1,12 +1,12 @@
 # 11 — Skill routing
 
-Always on. Apply before loading or invoking overlapping installed skills. Installed and third-party skill descriptions are retrieval hints; after any host-level selection, this rule is the local authority for assigning the owner, containing secondary material, and resolving overlap.
+Always on. Installed and third-party skill descriptions are retrieval hints; after any host-level selection, this rule is the local authority for ownership and overlap before loading skills.
 
 ## Selection rules
 
 1. **Explicit invocation wins.** When the user names a compatible installed skill, use it. If it is unavailable or incompatible with the deliverable, say so instead of silently substituting another.
 2. **One primary owner by default.** Select the smallest sufficient skill. Do not stack skills merely because their descriptions share keywords.
-3. **Route by deliverable, not topic.** Distinguish audit, specification, implementation, migration, documentation, and verification even when they concern the same domain.
+3. **Route by deliverable and mode.** Select inspection, planning, implementation, verification, or release from the request; inspection and planning authorize no product edits. Skill invocation never overrides host permissions or mode. Use existing owners; ordinary small work needs no ceremony.
 4. **Sequence distinct phases.** When more than one skill is justified, assign each a non-overlapping phase such as specification → implementation → verification. Do not let multiple skills independently redesign the same solution.
 5. **Orchestration must be intentional.** `better-interface` may coordinate its six owning `better-*` domains for an explicitly holistic review. Otherwise add a secondary skill only when it supplies a distinct requested artifact or verification pass.
 6. **Project authority still wins.** Follow project instructions, existing tokens, components, conventions, and user scope over any skill default.
@@ -27,6 +27,8 @@ Domain owners live in the conditional references below. Only these cross-domain 
 
 Use the connected or host browser for an existing profile, authentication, or localhost state; otherwise follow `04-codex-host-tooling.md` once its trigger activates.
 
+`aside-browser`: explicit user requests for Aside only. Generic tasks or host auto-loading never authorize its use, installation, or updates.
+
 ## Installed-skill references
 
 Cross-skill references inside an installed skill are advisory only. Follow one when the named skill is installed, compatible, and permitted here; missing siblings never trigger search, installation, or substitution.
@@ -35,9 +37,11 @@ The following skills are retired and must not be invoked even when third-party i
 
 ## User-invoked preferences
 
-Prefer these only when the user names the skill or unmistakably requests its method. Host auto-loading remains bounded reference material; project authority and the selected owner still control. Keep this policy here; never edit installed skill files to impose local routing policy.
+Prefer these only when explicitly named or their method is unmistakably requested. Host auto-loading is bounded reference material; project authority and ownership control. Keep this policy here; never edit installed skill files to impose local routing policy.
 
-`debug` `ponytail` `ponytail-help` `implement` `skill-creator` `to-spec` `to-tickets` `wayfinder` `interface-review` `variant` `pick-ui-library` `review-animations` `emil-design-eng` `ui-ux-pro-max` `creative-design` `minimalist-ui` `industrial-brutalist-ui` `redesign-existing-projects` `stitch-design-taste` `hallmark` `gpt-taste`
+`skill-inspector` `debug` `ponytail` `ponytail-help` `implement` `skill-creator` `to-spec` `to-tickets` `wayfinder` `interface-review` `variant` `pick-ui-library` `review-animations` `emil-design-eng` `ui-ux-pro-max` `creative-design` `minimalist-ui` `industrial-brutalist-ui` `redesign-existing-projects` `stitch-design-taste` `hallmark` `gpt-taste`
+
+`business-motion-film`: named invocation only.
 
 ## Conditional routing references
 

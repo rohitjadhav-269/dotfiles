@@ -43,13 +43,11 @@ When running inside Nimbalyst, apply the same false-negative posture, but respec
 
 For local UI verification, visual inspection, and localhost preview checks:
 
-- Prefer the already-configured real browser path first when a real render is needed.
-- In Nimbalyst, for local web targets such as `localhost`, `127.0.0.1`, `::1`, and `file://`, prefer the Nimbalyst Browser plugin / in-app browser.
-- In Nimbalyst, use Chrome or Chrome Canary only when the task depends on the user's existing Chrome state: logged-in sessions, cookies, extensions, or explicit Chrome plugin use.
-- Outside Nimbalyst, use Google Chrome Canary when launching a real browser is appropriate.
-- Do not try Playwright, MCP browser tools, dependency installs, or ad hoc browser scripts before using the real browser unless the task specifically requires headless automation or a repo already provides that exact script.
+- Prefer Google Chrome through its connected browser integration, then Google Chrome directly, then Chrome Canary. The in-app browser may also be used without asking. Ask before using any other browser, even if the tool has already selected it.
+- When opening that Google Chrome path, use a secondary screen if one is available and keep the window there for the rest of the task.
+- Use the real browser before headless automation, dependency installs, or ad hoc browser scripts, unless the task specifically requires headless automation or the repo provides the applicable verification script.
 - If browser tooling needs writable state or host access, request the narrow escalation instead of declaring the browser unavailable.
-- For known localhost targets, start with the host/browser path. Use a sandboxed probe only when the target's locality was genuinely unknown.
+- For known localhost targets, start with the host/browser path. Use a sandboxed probe only when the target's locality is genuinely unknown.
 
 ## Browser session lifecycle
 
@@ -77,5 +75,5 @@ Use trigger/behavior/fallback thinking for repeat failures:
 - Fallback: only report auth unavailable after native `gh` fails too.
 
 - Trigger: verification targets `localhost`, `127.0.0.1`, `::1`, or another host-local preview.
-- Behavior: in Nimbalyst, start with the Nimbalyst Browser plugin / in-app browser; outside Nimbalyst, start with the configured real browser path, preferably Chrome Canary.
+- Behavior: start with Google Chrome through its connected browser integration, then Google Chrome directly, then Chrome Canary. The in-app browser may also be used.
 - Fallback: ask the user to restore the expected preview only after the host/browser path also fails.

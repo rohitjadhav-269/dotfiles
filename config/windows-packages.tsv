@@ -67,6 +67,7 @@ brew:zsh-syntax-highlighting	macos-only			Apple/Homebrew-specific app or shell i
 cask:adobe-creative-cloud	native	winget	Adobe.CreativeCloud	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:affinity	native	winget	Canva.Affinity	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:arc	native	winget	TheBrowserCompany.Arc	Native Windows counterpart; identity verified against installed WinGet inventory.
+cask:aside	manual			Official Windows installer: https://aside.com/download; download and install manually.
 cask:asset-catalog-tinkerer	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.
 cask:betterdisplay	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.
 cask:betterzip	native	winget	7zip.7zip	Native Windows counterpart; identity verified against installed WinGet inventory.
@@ -111,6 +112,7 @@ cask:linear	native	winget	LinearOrbit.Linear	Native Windows counterpart; identit
 cask:lobehub	native	winget	LobeHub.LobeHub	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:lunacy	native	winget	Icons8.Lunacy	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:maccy	native	winget	Microsoft.PowerToys	Native Windows counterpart; identity verified against installed WinGet inventory.
+cask:macpacker	macos-only			MacPacker archive manager for macOS; not applied on Windows.
 cask:mate-translate	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.
 cask:microsoft-auto-update	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.
 cask:microsoft-edge	native	winget	Microsoft.Edge	Native Windows counterpart; identity verified against installed WinGet inventory.
@@ -134,6 +136,7 @@ cask:raindropio	native	winget	RustemMussabekov.Raindrop	Native Windows counterpa
 cask:raycast	native	msstore	9PFXXSHC64H3	Store identity verified by installed inventory.
 cask:rectangle	native	winget	Microsoft.PowerToys	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:shottr	manual			ShareX; retain existing installation and configure capture shortcuts manually.
+cask:slack	native	winget	SlackTechnologies.Slack	Native Windows counterpart; package ID verified in the official WinGet manifest.
 cask:stability-matrix	manual			https://github.com/LykosAI/StabilityMatrix/releases
 cask:sublime-text	native	winget	SublimeHQ.SublimeText.4	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:suspicious-package	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.

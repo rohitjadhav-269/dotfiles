@@ -52,6 +52,12 @@ for target in "${TARGETS[@]}"; do
   cp -R "$DOTFILES/$target" "$STAGE/$target"
 done
 cp "$DOTFILES/.node-version" "$STAGE/.node-version"
+# Retain equivalent bytes only from a copy sanitized under the current policy.
+PREVIOUS="$STAGE/.previous"
+mkdir -p "$PREVIOUS"
+for target in apps macos services .node-version; do
+  cp -R "$STAGE/$target" "$PREVIOUS/$target"
+done
 
 info "capturing app preferences into a staged snapshot"
 captured=0
@@ -108,6 +114,8 @@ for workflow in "$DOTFILES"/services/*.workflow; do
 done
 
 DOTFILES="$STAGE" bash "$SOURCE_DOTFILES/scripts/sanitize-app-prefs.sh"
+DOTFILES="$PREVIOUS" bash "$SOURCE_DOTFILES/scripts/sanitize-app-prefs.sh"
+python3 "$SOURCE_DOTFILES/scripts/stabilize-plist-backups.py" "$STAGE" "$PREVIOUS"
 ok "sanitized portable app prefs"
 DOTFILES="$SOURCE_DOTFILES" BREWFILE="$SOURCE_DOTFILES/Brewfile" \
   DOTFILES_BREWFILE_PRESERVE_EMPTY_KINDS=1 \
@@ -118,6 +126,7 @@ OVERRIDE="${OVERRIDE:-0}" python3 "$SOURCE_DOTFILES/scripts/brewfile-review.py" 
 ok "Brewfile"
 DOTFILES="$STAGE" bash "$SOURCE_DOTFILES/scripts/audit-app-prefs.sh"
 
+rm -rf -- "$PREVIOUS"
 info "publishing complete validated snapshot"
 PUBLISHING=1
 for target in "${TARGETS[@]}"; do

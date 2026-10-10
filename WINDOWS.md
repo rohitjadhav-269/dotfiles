@@ -146,6 +146,7 @@ isolated dummy preference roots and verifies that public templates remain intact
 pwsh -NoProfile -File tests/test_public_windows.ps1
 pwsh -NoProfile -File tests/test_public_windows_editors.ps1
 pwsh -NoProfile -File tests/test_public_windows_maintenance.ps1
+pwsh -NoProfile -File tests/test_public_windows_projection.ps1
 pwsh -NoProfile -File tests/test_windows_skills_prompt.ps1
 pwsh -NoProfile -File tests/test_windows_python_discovery.ps1
 pwsh -NoProfile -File tests/test_windows_update_reporting.ps1

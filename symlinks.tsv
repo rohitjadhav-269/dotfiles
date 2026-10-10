@@ -20,6 +20,7 @@ $DOTFILES/Brewfile	$HOME/.Brewfile
 $DOTFILES/git/gitconfig	$HOME/.gitconfig
 $DOTFILES/git/gitignore-global	$HOME/.config/git/ignore
 $DOTFILES/git/gitconfig-macos	$HOME/.gitconfig-platform
+$DOTFILES/git/global-hooks	$HOME/.config/git/hooks
 
 # SSH — config + keys live under ~/.secrets/ssh/ (vault-backed, never in repo);
 # config exposes prod infra so it stays out of git. Only allowed_signers

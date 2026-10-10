@@ -30,6 +30,8 @@ ENVIRONMENT_RULE="$RULES_DIR/22-environment.md"
 ENVIRONMENT_DIR="$RULES_DIR/environment"
 ATTRIBUTION_RULE="$RULES_DIR/02-attribution.md"
 ATTRIBUTION_DIR="$RULES_DIR/attribution"
+MEMORY_RULE="$RULES_DIR/06-hermes-learning.md"
+MEMORY_DIR="$RULES_DIR/memory"
 ATTRIBUTION_STAGING_RULE="$ATTRIBUTION_DIR/staging.md"
 ATTRIBUTION_MESSAGE_RULE="$ATTRIBUTION_DIR/message.md"
 ATTRIBUTION_IDENTITY_RULE="$ATTRIBUTION_DIR/identity.md"
@@ -124,24 +126,29 @@ grep -Fq 'Re-evaluate task-conditional sections before later requests and action
 
 # Backticks are literal Markdown syntax.
 # shellcheck disable=SC2016
-grep -Fq 'enumerate every top-level `*.md` file' "$INIT_SKILL" \
+grep -Fq 'If the index says to enumerate a directory or compare discovered files with its links, do that inventory.' "$INIT_SKILL" \
     || fail_contract "init-rulebook must discover every top-level rule from disk"
-grep -Fq 'compare the discovered inventory with the indexed inventory' "$INIT_SKILL" \
+grep -Fq 'Report missing, orphaned, duplicated, or unreadable files; do not silently omit them.' "$INIT_SKILL" \
     || fail_contract "init-rulebook must compare discovered and indexed inventories"
-grep -Fq 'selected count equals the successfully read count' "$INIT_SKILL" \
-    || fail_contract "init-rulebook must compare selected and successfully read counts"
-grep -Fq 'read every selected rule in one pass' "$INIT_SKILL" \
-    || fail_contract "init-rulebook must read every selected rule completely"
-grep -Fq 'loading a rule is distinct from applying it' "$INIT_SKILL" \
+grep -Fq 'Confirm that every selected file was read completely.' "$INIT_SKILL" \
+    || fail_contract "init-rulebook must verify complete reads for every selected file"
+grep -Fq 'Load every rule in its always-on group' "$INIT_SKILL" \
+    || fail_contract "init-rulebook must eagerly load every always-on rule"
+grep -Fq 'Loading a rule is separate from applying it' "$INIT_SKILL" \
     || fail_contract "init-rulebook must defer applicability to the rulebook"
-grep -Fq 'before acting on each later user request' "$INIT_SKILL" \
+grep -Fq 'Re-evaluate conditional headings when the user' "$INIT_SKILL" \
     || fail_contract "init-rulebook must re-evaluate conditions for later requests"
 # Backticks are literal Markdown syntax.
 # shellcheck disable=SC2016
-grep -Fq 'Exclude every `Action-gated` rule from task-start selection' "$INIT_SKILL" \
+grep -Fq 'A future operation mentioned in a broader request does not open its gate.' "$INIT_SKILL" \
     || fail_contract "init-rulebook must not preload action-gated rules"
-grep -Fq 'immediately before each operation' "$INIT_SKILL" \
+grep -Fq 'read each one only immediately before the matching operation.' "$INIT_SKILL" \
     || fail_contract "init-rulebook must open action gates immediately before matching operations"
+
+grep -Fq 'Require affirmative evidence for each conditional trigger' "$INIT_SKILL" \
+    || fail_contract "init-rulebook must require evidence for conditional triggers"
+grep -Fq 'Treat remembered file contents from before compaction as stale.' "$INIT_SKILL" \
+    || fail_contract "init-rulebook must rehydrate stale context after compaction"
 
 if grep -Eq '[0-9]{2}-[A-Za-z0-9._-]+\.md' "$INIT_SKILL"; then
     fail_contract "init-rulebook must not contain a static top-level rule inventory"
@@ -248,6 +255,9 @@ fi
 check_nested_inventory "$DESIGN_INTERFACE_ROUTING_RULE" "$INTERFACE_ROUTING_DIR" "interface" "interface routing"
 check_nested_inventory "$ENVIRONMENT_RULE" "$ENVIRONMENT_DIR" "environment" "environment routing"
 check_nested_inventory "$ATTRIBUTION_RULE" "$ATTRIBUTION_DIR" "attribution" "attribution routing"
+check_nested_inventory "$MEMORY_RULE" "$MEMORY_DIR" "memory" "memory procedures"
+grep -Fq '(./rules/memory/lifecycle.md)' "$AGENTS_MD" \
+    || fail_contract "rulebook index must route memory operations to the shared procedure"
 
 [ -f "$DESIGN_POSTURE_RULE" ] || fail_contract "missing always-on design posture: $DESIGN_POSTURE_RULE"
 [ -f "$DESIGN_UX_ROUTING_RULE" ] || fail_contract "missing UX design routing contract: $DESIGN_UX_ROUTING_RULE"
@@ -453,6 +463,10 @@ check_path_budget() {
 
 ALWAYS_ON_WORD_MAX=3429
 ROUTER_WORD_MAX=650
+DEVELOPMENT_WORD_MAX=1100
+VERIFICATION_WORD_MAX=550
+HERMES_LEARNING_WORD_MAX=800
+MEMORY_PROCEDURES_WORD_MAX=600
 ENVIRONMENT_MONOLITH_WORDS=382
 ATTRIBUTION_MONOLITH_WORDS=1752
 INTERFACE_IMPLEMENTATION_PREVIOUS=1202
@@ -473,7 +487,7 @@ ENVIRONMENT_MONOREPO_WORD_MAX=150
 ATTRIBUTION_DISPATCHER_WORD_MAX=160
 ATTRIBUTION_STAGING_WORD_MAX=150
 ATTRIBUTION_MESSAGE_WORD_MAX=700
-ATTRIBUTION_IDENTITY_WORD_MAX=650
+ATTRIBUTION_IDENTITY_WORD_MAX=720
 
 always_words="$(word_count "$AGENTS_MD")"
 while IFS= read -r rule; do
@@ -492,6 +506,10 @@ if [ -f "$ROUTING_RULE" ]; then
 fi
 
 for route_budget in \
+    "$DEVELOPMENT_ROUTING_RULE:$DEVELOPMENT_WORD_MAX" \
+    "$RULES_DIR/23-verification.md:$VERIFICATION_WORD_MAX" \
+    "$MEMORY_RULE:$HERMES_LEARNING_WORD_MAX" \
+    "$MEMORY_DIR/lifecycle.md:$MEMORY_PROCEDURES_WORD_MAX" \
     "$DESIGN_UX_ROUTING_RULE:$DESIGN_UX_WORD_MAX" \
     "$DESIGN_INTERFACE_ROUTING_RULE:$DESIGN_INTERFACE_WORD_MAX" \
     "$INTERFACE_IMPLEMENTATION_RULE:$INTERFACE_IMPLEMENTATION_WORD_MAX" \

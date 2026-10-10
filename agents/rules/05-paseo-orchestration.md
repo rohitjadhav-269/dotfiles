@@ -17,9 +17,9 @@ Generic host-tooling rules still apply to sandbox false-negatives, browser acces
 
 ## Worktrees and branches
 
-- The canonical placement rule in `03-worktree-hygiene.md` applies to user-requested Paseo worktrees too: `<repo-root>/.worktrees/<full-branch-name>`. Use Paseo `create_worktree` or `create_agent.workspace.source.kind = "worktree"` only when it can honor that exact parent; otherwise report the limitation instead of creating an externally placed worktree or silently working in place.
+- Apply `07-worktree-lifecycle.md` to resolve and validate the placement and branch name for every Paseo-created or selected worktree, and `03-worktree-hygiene.md` for checkout safety. Use Paseo `create_worktree` or `create_agent.workspace.source.kind = "worktree"` only when it can honor both, and validate the returned `worktreePath` before use; otherwise report the limitation instead of creating an externally placed worktree or silently working in place.
 - Branch names passed to Paseo must follow the repo's branch policy. Prefer workflow namespaces such as `feature/<slug>`, `bugfix/<slug>`, `hotfix/<slug>`, or `release/<version>` when the repo expects git-flow naming.
-- Do not use agent/operator namespaces such as `codex/*`, `claude/*`, `cursor/*`, `gemini/*`, `ash/*`, or `tash/*`.
+- Treat agent/operator namespaces such as `codex/*`, `claude/*`, `cursor/*`, `gemini/*`, `ash/*`, or `tash/*` as forbidden fallbacks; use a contributor namespace only when repository policy explicitly requires it.
 - Avoid generic `fix/<slug>` unless the repo explicitly uses that namespace.
 - Treat the returned Paseo `branchName`, `worktreePath`, and `workspaceId` as authoritative. Do not assume they match the requested slug.
 - Do not place an agent in a worktree by using `workspace: { kind: "current", cwd: "<worktreePath>" }`; use a Paseo-created or existing workspace instead.

@@ -18,7 +18,9 @@ Always on. These apply in every mode, every project, every tool.
 
 8. **Never auto-commit or auto-push.** Only `git commit` when the user explicitly says "commit"; only `git push` when the user says "push." "Sync to memory" means write files to `.agent-memory/`, not git commit. Exception: "commit push and deploy" is blanket authorization — do all three without extra confirmation.
 
-9. **A clean result is a result — earned after the work, never instead of it.** When the work genuinely checks out, say so plainly and stop. Never invent, inflate, or keep a weak finding to make a review, audit, or report look thorough. A clean verdict is a conclusion, never a starting position: it is reached only after exhausting the probes the task calls for — every check run, every surface inspected, every stated requirement traced to where it is satisfied or shown missing. A clean verdict must name what was checked; a check that could not run is reported as unrun, never counted as clean. Never soften, drop, or withhold a real finding to keep a report short, and never stop probing early because nothing has surfaced yet.
+9. **Earn a clean verdict.** Complete every required probe, inspect each required surface, and trace every requirement to evidence or a gap. Name what was checked; unavailable checks remain unrun. Never invent, inflate, retain weak findings, hide real findings for brevity, or stop probing because nothing has surfaced. When the work checks out, say so plainly and stop.
+
+10. **Preserve decisions and scope.** Complete the authorized task, including relevant edge cases and error paths; adjacent improvements remain proposals. Recover durable decisions from the project's existing context after session changes. Reconsider them only with new evidence or user direction; model agreement is neither proof nor authorization.
 
 ## Executing written plans
 

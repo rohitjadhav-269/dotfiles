@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Capture/check/merge explicitly managed Hermes preferences, never auth stores."""
 import argparse
+import ipaddress
 import json
 import os
 from pathlib import Path
@@ -102,6 +103,66 @@ def external_dirs(value):
     return value
 
 
+def validate_base_url(value, label):
+    # urlsplit silently strips tabs/newlines and leading controls; reject the
+    # original input before parsing so snapshot URLs have one interpretation.
+    if not isinstance(value, str) or any(char.isspace() or ord(char) < 32 or ord(char) == 127 for char in value) or "\\" in value:
+        raise ValueError(f"Invalid {label} base_url; config retained")
+    if re.search(r"%(?![0-9A-Fa-f]{2})", value):
+        raise ValueError(f"{label} base_url has an invalid percent escape; config retained")
+    try:
+        url = urlsplit(value)
+    except ValueError:
+        raise ValueError(f"Invalid {label} base_url; config retained") from None
+    if url.scheme not in ("http", "https") or not url.hostname or "@" in url.netloc or "?" in value or "#" in value:
+        raise ValueError(f"{label} base_url must have no embedded credentials, query or fragment")
+    if url.netloc.startswith("["):
+        if not re.fullmatch(r"\[[^\]]+\](?::[0-9]+)?", url.netloc):
+            raise ValueError(f"{label} base_url has an invalid IPv6 authority; config retained")
+        try:
+            ipaddress.IPv6Address(url.hostname)
+        except ValueError:
+            raise ValueError(f"{label} base_url has an invalid IPv6 host; config retained") from None
+    elif not re.fullmatch(r"[\w.-]+", url.hostname):
+        raise ValueError(f"{label} base_url has an invalid host; config retained")
+    if not url.netloc.startswith("[") and ":" in url.netloc:
+        _, _, raw_port = url.netloc.rpartition(":")
+        if not re.fullmatch(r"[0-9]+", raw_port):
+            raise ValueError(f"{label} base_url has an invalid port; config retained")
+    try:
+        url.port
+    except ValueError:
+        raise ValueError(f"{label} base_url has an invalid port; config retained") from None
+
+
+def validate_model_aliases(aliases):
+    if not isinstance(aliases, dict):
+        raise ValueError("Model aliases must map names to model identifiers or alias objects")
+    for name, alias in aliases.items():
+        if not isinstance(name, str) or not re.fullmatch(r"[\w./:@+-]+", name):
+            raise ValueError("Invalid model alias name")
+        if isinstance(alias, str):
+            fields = {"model": alias}
+        elif isinstance(alias, dict):
+            # Reject unowned fields rather than silently dropping per-alias auth or routing.
+            if "model" not in alias or set(alias) - {"model", "provider", "base_url", "key_env"}:
+                raise ValueError("Model alias objects require model and allow only provider, base_url, key_env; credentials stay live")
+            fields = alias
+        else:
+            raise ValueError("Model aliases must map names to model identifiers or alias objects")
+        for key, value in fields.items():
+            if not isinstance(value, str) or (key == "model" and not value):
+                raise ValueError("Invalid model alias field type or missing model")
+            if re.search(r"(?:^sk-|^ghp_|^glpat-|/Users/|Bearer |\$\{)", value):
+                raise ValueError("Nonportable or credential-like model alias field")
+            if key in ("model", "provider") and value and not re.fullmatch(r"[\w./:@+-]+", value):
+                raise ValueError("Invalid model alias identifier")
+            if key == "key_env" and value and not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", value):
+                raise ValueError("Model alias key_env must be an environment variable name")
+            if key == "base_url" and value:
+                validate_base_url(value, "Model alias")
+
+
 def project(data, skills_only=False, preserve_model_selection=False):
     result = {}
     fields = {"skills": "create_dir"} if skills_only else FIELDS
@@ -119,10 +180,8 @@ def project(data, skills_only=False, preserve_model_selection=False):
                 raise ValueError("Invalid preference type: " + path + "." + key)
             if isinstance(value, str) and re.search(r"(?:sk-|ghp_|glpat-|/Users/|Bearer |\$\{)", value):
                 raise ValueError("Nonportable or credential-like preference: " + path + "." + key)
-            if key == "base_url" and value:
-                url = urlsplit(value)
-                if url.scheme not in ("http", "https") or not url.hostname or url.username or url.password or url.query or url.fragment:
-                    raise ValueError("Model base_url must have no embedded credentials, query or fragment")
+            if key == "base_url" and value not in (None, ""):
+                validate_base_url(value, "Model")
             put(result, path, key, value)
     if "external_dirs" in section(data, "skills"):
         # Snapshot owns only this required entry, never the user's other paths.
@@ -135,12 +194,7 @@ def project(data, skills_only=False, preserve_model_selection=False):
         put(result, "skills", "external_dirs", ["~/.agents/skills"] if discovered else [])
     aliases = None if skills_only else section(data, "model").get("aliases")
     if aliases is not None:
-        if not isinstance(aliases, dict) or any(
-            not isinstance(k, str) or not isinstance(v, str) or
-            not re.fullmatch(r"[\w./:@+-]+", k) or not re.fullmatch(r"[\w./:@+-]+", v)
-            for k, v in aliases.items()
-        ):
-            raise ValueError("Model aliases must map names to model identifiers")
+        validate_model_aliases(aliases)
         put(result, "model", "aliases", aliases)
     if not skills_only and not preserve_model_selection and not result.get("model", {}).get("default"):
         raise ValueError("Hermes model.default is missing; prior snapshot retained")

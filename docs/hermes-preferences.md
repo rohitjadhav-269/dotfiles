@@ -4,8 +4,18 @@ Personal Hermes settings and model choices are not shipped in this public checko
 `apps/hermes/` is ignored. Keep backups outside Git; the generic helper accepts
 explicit `--live` and `--snapshot` paths for capture, check and restore. Stop Hermes
 sessions before restoring. Use an initialized Hermes Python environment when the
-live file is YAML. Capture requires an existing `model.default` and excludes auth
-fields; review the result before sharing it.
+live file is YAML. Full capture requires `model.default` in the live config or
+saved snapshot and excludes auth
+fields; review the result before sharing it. When capturing over an existing
+snapshot, omitted managed fields retain the saved policy; explicit live values,
+including nulls and empty alias maps, replace it. Saved fallback values undergo
+the same portability and credential validation as live values.
+
+For a drift comparison, copy your saved snapshot to a temporary file outside Git,
+capture into that seeded copy with explicit `--live` and `--snapshot` paths, and
+compare the resulting JSON with the saved policy. Omitted live fields remain
+clean; explicit changes still differ. The public app drift auditor does not
+capture or compare personal Hermes snapshots.
 
 ```sh
 python3 scripts/hermes-settings.py capture --live "$HOME/.hermes/config.yaml" --snapshot "$HOME/.dotfiles-local/hermes-preferences.json"

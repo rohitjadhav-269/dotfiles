@@ -163,13 +163,14 @@ def validate_model_aliases(aliases):
                 validate_base_url(value, "Model alias")
 
 
-def project(data, skills_only=False, preserve_model_selection=False):
+def project(data, skills_only=False, preserve_model_selection=False, *, fallback=None):
     result = {}
     fields = {"skills": "create_dir"} if skills_only else FIELDS
     for path, keys in fields.items():
         if preserve_model_selection and path == "model":
             continue
-        src = section(data, path)
+        # Capture keeps saved policy when live omits a key; explicit values win.
+        src = {**section(fallback or {}, path), **section(data, path)}
         for key in keys.split():
             if key not in src:
                 continue
@@ -183,16 +184,18 @@ def project(data, skills_only=False, preserve_model_selection=False):
             if key == "base_url" and value not in (None, ""):
                 validate_base_url(value, "Model")
             put(result, path, key, value)
-    if "external_dirs" in section(data, "skills"):
+    skills = {**section(fallback or {}, "skills"), **section(data, "skills")}
+    if "external_dirs" in skills:
         # Snapshot owns only this required entry, never the user's other paths.
-        entries = external_dirs(section(data, "skills")["external_dirs"])
+        entries = external_dirs(skills["external_dirs"])
         shared = (Path.home() / ".agents/skills").resolve()
         # Relative paths belong to the active Hermes home, not this process's cwd.
         # Only normalize unambiguous absolute paths; restore adds the canonical entry.
         expanded = (Path(os.path.expandvars(entry)).expanduser() for entry in entries if entry)
         discovered = any(path.is_absolute() and path.resolve() == shared for path in expanded)
         put(result, "skills", "external_dirs", ["~/.agents/skills"] if discovered else [])
-    aliases = None if skills_only else section(data, "model").get("aliases")
+    aliases = None if skills_only else {**section(fallback or {}, "model"),
+                                        **section(data, "model")}.get("aliases")
     if aliases is not None:
         validate_model_aliases(aliases)
         put(result, "model", "aliases", aliases)
@@ -321,7 +324,8 @@ def main():
             print("Hermes skill boundary: check passed")
             return 0
         if args.mode == "capture":
-            write_atomic(args.snapshot, project(read_config(args.live), args.skills_only))
+            saved = read_config(args.snapshot) if args.snapshot.exists() else None
+            write_atomic(args.snapshot, project(read_config(args.live), args.skills_only, fallback=saved))
         else:
             saved = read_config(args.snapshot)
             if project(saved, args.skills_only) != saved:

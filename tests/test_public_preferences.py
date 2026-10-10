@@ -248,6 +248,41 @@ class PublicPreferences(unittest.TestCase):
                     self.assertEqual((live.read_bytes(), snapshot.read_bytes()), before)
 
 
+    def test_hermes_seeded_capture_retains_omitted_policy_and_detects_explicit_drift(self):
+        with tempfile.TemporaryDirectory() as directory:
+            live, saved = [Path(directory) / name for name in ('live.json', 'saved.json')]
+            policy = {'model': {'default': 'fixture/model', 'base_url': 'https://example.com/v1',
+                                'aliases': {'quick': 'fixture/fast'}},
+                      'display': {'message_reactions': False}}
+            saved.write_text(json.dumps(policy, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+            live.write_text(json.dumps({'model': {'default': 'fixture/model'},
+                                        'auth': {'fixture': 'local-only'}}), encoding='utf-8')
+            command = [sys.executable, str(ROOT / 'scripts/hermes-settings.py'), 'capture',
+                       '--live', str(live), '--snapshot', str(saved)]
+            before = saved.read_bytes(), live.read_bytes()
+            result = subprocess.run(command, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(saved.read_bytes(), before[0])
+            self.assertEqual(live.read_bytes(), before[1])
+            for field, value in (('default', 'fixture/changed'), ('base_url', None), ('aliases', {})):
+                with self.subTest(field=field):
+                    saved.write_bytes(before[0])
+                    live.write_text(json.dumps({'model': {'default': 'fixture/model', field: value},
+                                                'display': {'message_reactions': True}}), encoding='utf-8')
+                    result = subprocess.run(command, capture_output=True, text=True)
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                    captured = json.loads(saved.read_text(encoding='utf-8'))
+                    self.assertEqual(captured['model'][field], value)
+                    self.assertTrue(captured['display']['message_reactions'])
+                    self.assertNotEqual(saved.read_bytes(), before[0])
+            saved.write_text(json.dumps({'model': {'default': 'fixture/model',
+                                                 'base_url': 'https://user:password@example.com'}}), encoding='utf-8')
+            live.write_text(json.dumps({'model': {'default': 'fixture/model'}}), encoding='utf-8')
+            unsafe_before = saved.read_bytes(), live.read_bytes()
+            result = subprocess.run(command, capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual((saved.read_bytes(), live.read_bytes()), unsafe_before)
+
     def test_hermes_reactions_roundtrip_preserves_unmanaged_settings(self):
         with tempfile.TemporaryDirectory() as directory:
             live, saved = [Path(directory) / name for name in ('live.json', 'saved.json')]

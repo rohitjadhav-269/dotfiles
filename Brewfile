@@ -83,7 +83,7 @@ brew "nvm"
 brew "pi-coding-agent"
 # PDF rendering library (based on the xpdf-3.0 code base)
 brew "poppler"
-# Stable named HTTPS URLs for local development servers
+# Replace port numbers with stable, named local URLs for humans and agents
 brew "portless"
 # Convert bitmaps to vector graphics
 brew "potrace"
@@ -133,6 +133,8 @@ cask "adobe-creative-cloud"
 cask "affinity"
 # Chromium based browser
 cask "arc"
+# Web browser with built-in AI assistant
+cask "aside"
 # Browse/extract images from .car files
 cask "asset-catalog-tinkerer"
 # Display management tool
@@ -261,6 +263,8 @@ cask "lobehub"
 cask "lunacy"
 # Clipboard manager
 cask "maccy"
+# Archive manager
+cask "macpacker"
 # Select text in any app and translate it
 cask "mate-translate"
 # Provides updates to various Microsoft products
@@ -307,6 +311,8 @@ cask "raycast"
 cask "rectangle"
 # Screenshot measurement and annotation tool
 cask "shottr"
+# Team communication and collaboration software
+cask "slack"
 # Package manager and inference UI for Stable Diffusion
 cask "stability-matrix"
 # Text editor for code, markup and prose
@@ -355,8 +361,8 @@ mas "Kindle", id: 302584613
 mas "Lungo", id: 1263070803
 mas "Numbers", id: 409203825
 mas "Numbers", id: 361304891
-mas "Pages", id: 361309726
 mas "Pages", id: 409201541
+mas "Pages", id: 361309726
 mas "Prime Video", id: 545519333
 mas "QuickLookPro", id: 6812534537
 mas "Save to Raindrop.io", id: 1549370672

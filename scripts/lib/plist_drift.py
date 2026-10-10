@@ -97,7 +97,17 @@ def strip_volatile(value):
 
 def load(path: str):
     with open(path, "rb") as handle:
-        return strip_volatile(plistlib.load(handle))
+        value = strip_volatile(plistlib.load(handle))
+    # macOS 27 rewrites this disabled shortcut's type without changing its
+    # behavior. Keep enabled state, bindings and unknown type values meaningful.
+    if isinstance(value, dict):
+        hotkeys = value.get("AppleSymbolicHotKeys", {})
+        entry = hotkeys.get("176") if isinstance(hotkeys, dict) else None
+        if isinstance(entry, dict) and entry.get("enabled") is False:
+            binding = entry.get("value")
+            if isinstance(binding, dict) and binding.get("type") == "SAE1.0":
+                binding["type"] = "standard"
+    return value
 
 
 def describe(value) -> str:

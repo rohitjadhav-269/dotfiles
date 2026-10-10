@@ -2,6 +2,7 @@
 """Content receipts and completion sidecars for the persistent Mac vault."""
 
 import argparse
+from datetime import datetime
 import hashlib
 import json
 from pathlib import Path
@@ -92,15 +93,40 @@ def sidecars(image, snapshot_names, baseline_names=None):
         partial.replace(target)
 
 
-def check_image(image):
+def check_image(image, *, allow_portable=False):
     metadata = json.loads(image.with_suffix(".json").read_text())
+    if not isinstance(metadata, dict):
+        raise ValueError("invalid vault metadata")
     checksum = image.with_suffix(".sha256").read_text().strip()
     sha = digest(image)
-    if (metadata.get("schema") != 2 or metadata.get("filename") != image.name
+    schemas = (1, 2) if allow_portable else (2,)
+    if (metadata.get("schema") not in schemas or metadata.get("filename") != image.name
             or metadata.get("sha256") != sha
             or metadata.get("sizeBytes") != image.stat().st_size
             or checksum != f"{sha}  {image.name}"):
         raise ValueError("vault sidecars do not match the image; preserve it for recovery")
+    return metadata
+
+
+def image_health(image, max_age_days):
+    """Verify a closed image without decrypting or treating cloud cache as remote proof."""
+    if max_age_days < 1:
+        raise ValueError("maximum snapshot age must be positive")
+    metadata = check_image(image, allow_portable=True)
+    names = metadata.get("snapshots") if metadata["schema"] == 2 else [metadata.get("snapshot")]
+    if (not isinstance(names, list) or not names
+            or any(not isinstance(name, str) or not STAMP.fullmatch(name) for name in names)):
+        raise ValueError("vault metadata has no valid snapshot inventory")
+    dates = [datetime.strptime(name, "%Y%m%d-%H%M%S") for name in names]
+    age = (datetime.now() - max(dates)).total_seconds() / 86400
+    # Snapshot names use local time. UTC+14 to UTC-12 can shift it by 26 hours.
+    if age < -(26 / 24):
+        raise ValueError("vault snapshot timestamp is in the future")
+    if age >= max_age_days + 1:
+        raise ValueError(f"vault snapshot is {int(age)} days old (limit: {max_age_days})")
+    print(f"published vault image checksum verified; newest snapshot {max(names)} "
+          f"is {max(0, int(age))} day(s) old (limit: {max_age_days})")
+    print("This verifies the selected files only; off-device replication and decryption are not established.")
 
 
 def prune_space(root, reserve_bytes, min_keep=2, keep=None):
@@ -124,13 +150,14 @@ def prune_space(root, reserve_bytes, min_keep=2, keep=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["record", "check", "check-all", "prune", "sidecars", "check-image", "prune-space"])
+    parser.add_argument("command", choices=["record", "check", "check-all", "prune", "sidecars", "check-image", "image-health", "prune-space"])
     parser.add_argument("path", type=Path)
     parser.add_argument("--keep", type=int)
     parser.add_argument("--reserve-bytes", type=int)
     parser.add_argument("--min-keep", type=int, default=2)
     parser.add_argument("--snapshots", nargs="*", default=[])
     parser.add_argument("--baselines", nargs="*", default=[])
+    parser.add_argument("--max-age-days", type=int, default=30)
     args = parser.parse_args()
     if args.command == "record":
         receipt = args.path / RECEIPT
@@ -153,6 +180,8 @@ def main():
             shutil.rmtree(path)
     elif args.command == "sidecars":
         sidecars(args.path, args.snapshots, args.baselines)
+    elif args.command == "image-health":
+        image_health(args.path, args.max_age_days)
     else:
         check_image(args.path)
 

@@ -196,14 +196,10 @@ fi
 
 check_command duti "duti"
 if have duti && [ -f "$DOTFILES/config/duti" ]; then
-  expected_duti_digest="$(shasum -a 256 "$DOTFILES/config/duti" | awk '{print $1}')"
-  expected_duti_receipt="v2:$expected_duti_digest"
-  duti_receipt="$HOME/.dotfiles-local/default-apps.sha256"
-  if [ -f "$duti_receipt" ] && [ "$(tr -d '[:space:]' < "$duti_receipt")" = "$expected_duti_receipt" ]; then
-    ok "complete default-app policy applied (receipt matches config/duti)"
-    note "live handler drift check: make default-apps-check"
+  if run_with_timeout "$CHECK_TIMEOUT" bash "$DOTFILES/scripts/check-duti.sh" >/dev/null 2>&1; then
+    ok "live default-app handlers match config/duti"
   else
-    warn "complete default-app policy not applied for this config; run: make default-apps"
+    warn "default-app handlers differ or could not be checked; run: make default-apps-check"
   fi
 fi
 check_command gitleaks "gitleaks"
@@ -342,7 +338,13 @@ if [ -d "${DOTFILES_RESTORE_SOURCE:-/Volumes/DotfilesSecrets}" ]; then
     warn "mounted vault snapshot is invalid or stale; run: make secrets-health"
   fi
 else
-  note "vault unmounted (normal after restore); mount it for day-2 freshness check: make secrets-health"
+  note "vault unmounted (normal after restore); checking the closed published image"
+  if run_with_timeout "$AUDIT_TIMEOUT" bash "$DOTFILES/scripts/secrets-health.sh" --published >/dev/null 2>&1; then
+    ok "published vault checksum verified; recorded snapshot is fresh"
+    note "off-device replication and decryption are separate checks; see README recovery verification"
+  else
+    warn "published vault image unavailable, stale, or invalid; run: make secrets-health"
+  fi
 fi
 
 if bash "$DOTFILES/scripts/link.sh" --check >/dev/null 2>&1; then
@@ -358,7 +360,7 @@ elif [ ! -f "$DOTFILES/scripts/lib/plist_drift.py" ]; then
 elif [ ! -f "$DOTFILES/apps.tsv" ]; then
   warn "app preference snapshot audit unavailable (apps.tsv missing)"
 elif run_with_timeout "$AUDIT_TIMEOUT" bash "$DOTFILES/scripts/audit-apps-drift.sh" --check --strict >/dev/null 2>&1; then
-  ok "app preference snapshots match system state"
+  ok "managed app preferences match policy (allowed live model selection retained)"
 else
   status=$?
   if (( status == 124 )); then

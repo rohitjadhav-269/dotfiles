@@ -16,13 +16,20 @@ if ($Only) {
 }
 if ($AllInstalled -and (-not $Upgrade -or $Only)) { throw '-AllInstalled requires -Upgrade and cannot be combined with -Only.' }
 if (-not $Apply) {
-    if ($AllInstalled) { Write-Output 'Preview: WinGet upgrade ALL installed packages (not just the manifest).' }
+    if ($AllInstalled) { Write-Host 'Preview: WinGet upgrade ALL installed packages (not just the manifest).' -ForegroundColor Blue }
     else { $packages | Select-Object Source,Id,Mode }
     return
 }
 [IO.Directory]::CreateDirectory($LogDirectory) | Out-Null
 $failures = @()
 $results = @()
+function Get-DotfilesPackageFeedbackColor {
+    param([Parameter(Mandatory)][string]$Status, [switch]$Failed)
+    if ($Failed) { return [ConsoleColor]::Red }
+    if ($Status -eq 'Reboot required') { return [ConsoleColor]::Yellow }
+    if ($Status -in @('Already installed','Runtime update delegated to Topgrade','No applicable upgrade')) { return [ConsoleColor]::Blue }
+    return [ConsoleColor]::Green
+}
 if ($AllInstalled) {
     Invoke-DotfilesNative winget.exe @('upgrade','--all','--accept-source-agreements','--accept-package-agreements','--disable-interactivity') @(0,-1978335189)
     return
@@ -32,6 +39,7 @@ foreach ($package in $packages) {
     $key=$package.Source+':'+$package.Id
     $log=Join-Path $LogDirectory (($key -replace '[^a-zA-Z0-9._-]','_')+'.log')
     $status='Installed'
+    $packageFailed=$false
     try {
         if ($package.Mode -eq 'runtime') {
             # Runtime upgrades are owned by Topgrade. Bootstrap installs exact manifest names.
@@ -40,7 +48,7 @@ foreach ($package in $packages) {
             elseif ($package.Source -eq 'uv') { Invoke-DotfilesNative uv.exe @('tool','install',$package.Id) }
             else { Invoke-DotfilesNative volta.exe @('install',$package.Id) }
         } elseif ($inventory.ContainsKey($key) -and -not $Upgrade) { $status='Already installed' }
-        elseif (-not $inventory.ContainsKey($key) -and $Upgrade) { $status='Missing; run dot packages to install'; $failures += $key }
+        elseif (-not $inventory.ContainsKey($key) -and $Upgrade) { $status='Missing; run dot packages to install'; $failures += $key; $packageFailed=$true }
         else {
             $arguments = @($(if ($Upgrade) {'upgrade'} else {'install'}),'--id',$package.Id,'--exact','--source',$package.Source,'--accept-source-agreements','--accept-package-agreements','--disable-interactivity')
             if (-not $Upgrade) { $arguments += '--no-upgrade' }
@@ -55,9 +63,10 @@ foreach ($package in $packages) {
                 if (-not $verified.ContainsKey($key)) { throw "Installer returned success but package identity not found: $key" }
             }
         }
-    } catch { $status=$_.Exception.Message; $failures += $key }
+    } catch { $status=$_.Exception.Message; $failures += $key; $packageFailed=$true }
     $results += [pscustomobject]@{Package=$key;Status=$status;Log=$log}
-    Write-Host "$key : $status"
+    $statusColor = Get-DotfilesPackageFeedbackColor -Status $status -Failed:$packageFailed
+    Write-Host "$key : $status" -ForegroundColor $statusColor
 }
 $results | Export-Csv -LiteralPath (Join-Path $LogDirectory 'results.csv') -NoTypeInformation -Encoding utf8
 if ($failures.Count) { throw "Package stage incomplete: $($failures -join ', '). Review results.csv." }

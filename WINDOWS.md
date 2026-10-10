@@ -5,6 +5,9 @@ Use `update-all -SkipSkills` for apps only, or `update-all -SkipApps` for skills
 Each stage reports elapsed seconds. Topgrade output is retained in
 `%TEMP%/dotfiles-topgrade-*.log`; failures point to that run's log. Retry only the
 named failing step instead of repeating all maintenance.
+Feedback uses blue for progress, green for success, yellow for warnings or reboot
+requests, and red for failures. Topgrade logs retain UTF-8 text without ANSI colors;
+the caller's encoding and color environment are restored after the stage.
 Codex's desktop-bundled CLI is maintained with the desktop app; Topgrade's
 standalone Codex updater is disabled.
 

@@ -58,7 +58,7 @@ namespace Dotfiles {
         $length = [Dotfiles.FilePath]::GetFinalPathNameByHandle($file.SafeFileHandle,$buffer,$buffer.Capacity,0)
         if (-not $length -or $length -ge $buffer.Capacity) { throw 'Cannot verify preference file location; file preserved.' }
         if ($buffer.ToString() -match '[\\/]Packages[\\/][^\\/]+[\\/]LocalCache[\\/]' -and $Path -notmatch '[\\/]Packages[\\/][^\\/]+[\\/]LocalCache[\\/]') {
-            throw 'Preference file is redirected into an MSIX LocalCache. Open standard PowerShell directly from Windows Run or Explorer and retry; no preference files published by this stage.'
+            throw "Preference file is redirected into an MSIX LocalCache: $Path -> $($buffer.ToString()). Open standard PowerShell directly from Windows Run or Explorer and retry; no preference files published by this stage."
         }
     } finally { $file.Dispose() }
 }

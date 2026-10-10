@@ -61,9 +61,17 @@ function Invoke-DotfilesTldrProcess {
     } finally { $process.Dispose() }
 }
 
+function Get-DotfilesTldrFeedbackColor {
+    param([Parameter(Mandatory)][string]$Text)
+    if ($Text -match '(?i)\b(?:error|failed|failure|exception)\b') { return [ConsoleColor]::Red }
+    if ($Text -match '(?i)\b(?:warning|warn|deprecationwarning)\b') { return [ConsoleColor]::Yellow }
+    if ($Text -match '^Updated cache for language .+: [1-9][0-9]* entries$') { return [ConsoleColor]::Green }
+    return [ConsoleColor]::Blue
+}
+
 function Update-DotfilesTldr {
     param([switch]$DryRun)
-    if ($DryRun) { Write-Output 'Preview: Python TLDR cache update (tldr --update)'; return }
+    if ($DryRun) { Write-Host 'Preview: Python TLDR cache update (tldr --update)' -ForegroundColor Blue; return }
     $version = Invoke-DotfilesTldrProcess --version
     if ($LASTEXITCODE -ne 0 -or "$version" -notmatch 'Client Specification') {
         throw 'Expected uv-managed Python TLDR. Repair it with dot packages -Apply -Only tldr.'
@@ -72,7 +80,10 @@ function Update-DotfilesTldr {
     # reported error, including partial multilingual updates, or absent success.
     $output = @(Invoke-DotfilesTldrProcess --update)
     $code = $LASTEXITCODE
-    $output | Write-Output
+    foreach ($line in $output) {
+        $color = Get-DotfilesTldrFeedbackColor -Text ([string]$line)
+        Write-Host $line -ForegroundColor $color
+    }
     if ($code -ne 0 -or @($output | Where-Object { "$_" -match '^Error:' }).Count -gt 0 -or
         @($output | Where-Object { "$_" -match '^Updated cache for language .+: [1-9][0-9]* entries$' }).Count -eq 0) {
         throw "TLDR cache update failed or returned no populated cache (exit $code)."

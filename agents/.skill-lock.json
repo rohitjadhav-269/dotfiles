@@ -172,9 +172,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/taste-skill/SKILL.md",
-      "skillFolderHash": "a6d128e53b4ec0238baee751dde33bf707adb5ec",
+      "skillFolderHash": "d11cb9568d2f27401ce1f48217721e69ee32637f",
       "installedAt": "2026-04-13T02:36:16.105Z",
-      "updatedAt": "2026-09-11T12:14:24.700Z"
+      "updatedAt": "2026-10-14T03:06:46.658Z"
     },
     "full-output-enforcement": {
       "source": "Leonxlnx/taste-skill",
@@ -840,9 +840,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/coreyhaines31/marketingskills.git",
       "skillPath": "skills/seo-audit/SKILL.md",
-      "skillFolderHash": "7aa1a3602b909a511c92516da3d7d4d2b9c89159",
+      "skillFolderHash": "882cc96732fa55143b6edc4751aff297f976c145",
       "installedAt": "2026-07-16T19:18:05.226Z",
-      "updatedAt": "2026-10-09T03:07:55.701Z"
+      "updatedAt": "2026-10-14T03:07:11.485Z"
     },
     "marketing-psychology": {
       "source": "coreyhaines31/marketingskills",

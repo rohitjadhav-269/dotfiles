@@ -1,4 +1,7 @@
+# ─── Taps ──────────────────────────────────────────────────────────────
 tap "deskflow/tap"
+
+# ─── brew-core: bootstrap formulae & uv tools ─────────────────────────
 # Static analysis and lint tool, for (ba)sh scripts
 brew "shellcheck"
 # Static checker for GitHub Actions workflow files
@@ -79,6 +82,8 @@ brew "mole"
 brew "moreutils"
 # Manage multiple Node.js versions
 brew "nvm"
+# CLI provider used by Paseo; desktop app is declared separately below
+brew "opencode"
 # AI agent toolkit
 brew "pi-coding-agent"
 # PDF rendering library (based on the xpdf-3.0 code base)
@@ -127,6 +132,12 @@ brew "zsh-autocomplete"
 brew "zsh-autosuggestions"
 # Fish shell like syntax highlighting for zsh
 brew "zsh-syntax-highlighting"
+
+# ─── uv tools (brew-core phase) ────────────────────────────────────────
+uv "browser-use"
+uv "nginx-language-server"
+
+# ─── brew-apps: casks ──────────────────────────────────────────────────
 # Collection of apps and services for photography, design, video, web, and UX
 cask "adobe-creative-cloud"
 # Image editing and design software
@@ -187,46 +198,6 @@ cask "duckduckgo"
 cask "figma"
 # Web browser
 cask "firefox"
-cask "font-anton"
-cask "font-architects-daughter"
-cask "font-bangers"
-cask "font-benne"
-cask "font-bree-serif"
-cask "font-caveat"
-cask "font-caveat-brush"
-cask "font-computer-modern"
-cask "font-cooper-hewitt"
-cask "font-darker-grotesque"
-cask "font-domine"
-cask "font-fira-code-nerd-font"
-cask "font-fira-mono-nerd-font"
-cask "font-geist"
-cask "font-geist-mono"
-cask "font-gochi-hand"
-cask "font-goudy-bookletter-1911"
-cask "font-hind"
-cask "font-hubot-sans"
-cask "font-ibm-plex-mono"
-cask "font-ibm-plex-sans-devanagari"
-cask "font-inter"
-cask "font-junction"
-cask "font-just-another-hand"
-cask "font-kalam"
-cask "font-league-gothic"
-cask "font-league-mono"
-cask "font-league-script"
-cask "font-league-spartan"
-cask "font-liberation"
-cask "font-mona-sans"
-cask "font-museo"
-cask "font-new-computer-modern"
-cask "font-orbitron"
-cask "font-ostrich-sans"
-cask "font-oswald"
-cask "font-overused-grotesk"
-cask "font-prociono"
-cask "font-roboto-flex"
-cask "font-satoshi"
 # Tool that helps teams design every part of the product experience
 cask "framer"
 # Set of tools to manage resources and applications hosted on Google Cloud
@@ -343,34 +314,50 @@ cask "zed"
 cask "zen"
 # Video communication and virtual meeting platform
 cask "zoom"
-mas "Arattai", id: 1522469944
-mas "Battery Indicator", id: 1206020918
-mas "Canary Mail", id: 1236045954
-mas "CDRViewer", id: 600067300
-mas "Color Picker", id: 1545870783
-mas "Dato", id: 1470584107
-mas "Gapplin", id: 768053424
-mas "Ghostery AdBlocker for Privacy", id: 6504861501
-mas "Gifski", id: 1351639930
-mas "Hidden Bar", id: 1452453066
-mas "HP", id: 1474276998
-mas "HP Easy Scan", id: 967004861
-mas "Keynote", id: 409183694
-mas "Keynote", id: 361285480
-mas "Kindle", id: 302584613
-mas "Lungo", id: 1263070803
-mas "Numbers", id: 409203825
-mas "Numbers", id: 361304891
-mas "Pages", id: 409201541
-mas "Pages", id: 361309726
-mas "Prime Video", id: 545519333
-mas "QuickLookPro", id: 6812534537
-mas "Save to Raindrop.io", id: 1549370672
-mas "uBlock Origin Lite", id: 6745342698
-mas "Urban VPN Desktop", id: 1517772049
-mas "Velja", id: 1607635845
-mas "Wappalyzer - Technology profiler", id: 1520333300
-mas "WireGuard", id: 1451685025
+
+# ─── brew-apps: fonts ──────────────────────────────────────────────────
+cask "font-anton"
+cask "font-architects-daughter"
+cask "font-bangers"
+cask "font-benne"
+cask "font-bree-serif"
+cask "font-caveat"
+cask "font-caveat-brush"
+cask "font-computer-modern"
+cask "font-cooper-hewitt"
+cask "font-darker-grotesque"
+cask "font-domine"
+cask "font-fira-code-nerd-font"
+cask "font-fira-mono-nerd-font"
+cask "font-geist"
+cask "font-geist-mono"
+cask "font-gochi-hand"
+cask "font-goudy-bookletter-1911"
+cask "font-hind"
+cask "font-hubot-sans"
+cask "font-ibm-plex-mono"
+cask "font-ibm-plex-sans-devanagari"
+cask "font-inter"
+cask "font-junction"
+cask "font-just-another-hand"
+cask "font-kalam"
+cask "font-league-gothic"
+cask "font-league-mono"
+cask "font-league-script"
+cask "font-league-spartan"
+cask "font-liberation"
+cask "font-mona-sans"
+cask "font-museo"
+cask "font-new-computer-modern"
+cask "font-orbitron"
+cask "font-ostrich-sans"
+cask "font-oswald"
+cask "font-overused-grotesk"
+cask "font-prociono"
+cask "font-roboto-flex"
+cask "font-satoshi"
+
+# ─── brew-apps: vscode extensions ──────────────────────────────────────
 vscode "1000ch.svgo"
 vscode "aaaaronzhou.nginx-config-formatter-vscode-extension"
 vscode "aaron-bond.better-comments"
@@ -480,6 +467,35 @@ vscode "yatki.vscode-surround"
 vscode "yoavbls.pretty-ts-errors"
 vscode "yzhang.markdown-all-in-one"
 vscode "zignd.html-css-class-completion"
-uv "browser-use"
-uv "nginx-language-server"
+
+# ─── brew-mas: App Store apps ──────────────────────────────────────────
+mas "Arattai", id: 1522469944
+mas "Battery Indicator", id: 1206020918
+mas "Canary Mail", id: 1236045954
+mas "CDRViewer", id: 600067300
+mas "Color Picker", id: 1545870783
+mas "Dato", id: 1470584107
+mas "Gapplin", id: 768053424
+mas "Gifski", id: 1351639930
+mas "Hidden Bar", id: 1452453066
+mas "HP", id: 1474276998
+mas "HP Easy Scan", id: 967004861
+mas "Keynote", id: 409183694
+mas "Keynote", id: 361285480
+mas "Kindle", id: 302584613
+mas "Lungo", id: 1263070803
+mas "Numbers", id: 409203825
+mas "Numbers", id: 361304891
+mas "Pages", id: 409201541
+mas "Pages", id: 361309726
+mas "Prime Video", id: 545519333
+mas "QuickLookPro", id: 6812534537
+mas "Save to Raindrop.io", id: 1549370672
+mas "uBlock Origin Lite", id: 6745342698
+mas "Urban VPN Desktop", id: 1517772049
+mas "Velja", id: 1607635845
+mas "Wappalyzer - Technology profiler", id: 1520333300
+mas "WireGuard", id: 1451685025
+
+# ─── brew-npm: npm globals ─────────────────────────────────────────────
 npm "corepack"

@@ -4,6 +4,27 @@ param([switch]$Check, [switch]$OpenSettings,
     [string]$Manifest=(Join-Path (Split-Path $PSScriptRoot) 'config/windows-vlc-associations.tsv'))
 $ErrorActionPreference='Stop'
 . (Join-Path $PSScriptRoot 'lib/windows-common.ps1')
+
+function Resolve-DotfilesVlcProgId {
+    param([string]$LatestProgId,[string]$LegacyProgId,[string]$RegisteredProgId,[int]$HashVersion)
+    # Windows 11 HashVersion 1 resolves UserChoiceLatest and keeps the previous UserChoice for rollback.
+    if ($HashVersion -ge 1 -and $LatestProgId) { return $LatestProgId }
+    if ($LegacyProgId) { return $LegacyProgId }
+    if ($LatestProgId) { return $LatestProgId }
+    return $RegisteredProgId
+}
+function Get-DotfilesAppDefaultHashVersion {
+    $sid=[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+    $key=[Microsoft.Win32.Registry]::LocalMachine.OpenSubKey("SOFTWARE\Microsoft\Windows\CurrentVersion\SystemProtectedUserData\$sid\AnyoneRead\AppDefaults")
+    if (-not $key) { return 0 }
+    try {
+        $version=$key.GetValue('HashVersion')
+        if ($null -eq $version) { return 0 }
+        return [int]$version
+    } finally { $key.Close() }
+}
+
+if ($MyInvocation.InvocationName -ne '.') {
 Assert-DotfilesWindows
 
 if (-not (Test-Path -LiteralPath $Manifest -PathType Leaf)) { throw "VLC association manifest missing: $Manifest" }
@@ -22,14 +43,20 @@ if (-not $capabilities) { $capabilities=[Microsoft.Win32.Registry]::CurrentUser.
 $missing=[Collections.Generic.List[string]]::new()
 $unsupported=[Collections.Generic.List[string]]::new()
 $matched=0
+$hashVersion=Get-DotfilesAppDefaultHashVersion
 foreach($ext in $extensions) {
     $expected=if($capabilities){[string]$capabilities.GetValue($ext)}else{''}
-    $choice=[Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\$ext\UserChoice")
-    $actual=if($choice){[string]$choice.GetValue('ProgId')}else{''}
-    if (-not $actual) {
-        $fallback=[Microsoft.Win32.Registry]::ClassesRoot.OpenSubKey($ext)
-        if ($fallback) { $actual=[string]$fallback.GetValue('') }
-    }
+    $base="Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\$ext"
+    $latestKey=[Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("$base\UserChoiceLatest\ProgId")
+    $legacyKey=[Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("$base\UserChoice")
+    $latest=if($latestKey){[string]$latestKey.GetValue('ProgId')}else{''}
+    $legacy=if($legacyKey){[string]$legacyKey.GetValue('ProgId')}else{''}
+    if ($latestKey) { $latestKey.Close() }
+    if ($legacyKey) { $legacyKey.Close() }
+    $registered=''
+    $fallback=[Microsoft.Win32.Registry]::ClassesRoot.OpenSubKey($ext)
+    if ($fallback) { $registered=[string]$fallback.GetValue(''); $fallback.Close() }
+    $actual=Resolve-DotfilesVlcProgId -LatestProgId $latest -LegacyProgId $legacy -RegisteredProgId $registered -HashVersion $hashVersion
     if (($expected -and $actual -ieq $expected) -or $actual -ieq 'Applications\vlc.exe') { $matched++ }
     elseif (-not $expected) { $unsupported.Add("$ext (current: $(if($actual){$actual}else{'unset'}))") }
     else { $missing.Add("$ext (current: $(if($actual){$actual}else{'unset'}))") }
@@ -47,3 +74,4 @@ if ($OpenSettings) {
     Write-Output 'Choose VLC for the listed extensions in Windows Settings, then run: dot default-apps -Check'
 }
 if ($Check -and ($missing.Count -or $unsupported.Count)) { throw 'VLC file associations have not converged.' }
+}

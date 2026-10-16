@@ -62,11 +62,13 @@ else:
             env.pop('DOTFILES_CAPTURE_DIR', None)
 
             def restore(overrides=None):
-                return subprocess.run(['bash', str(scripts / 'restore-apps.sh')],
+                # Exercise the built-in Bash 3.2 used on a fresh Mac too.
+                return subprocess.run(['/bin/bash', str(scripts / 'restore-apps.sh')],
                                       env=dict(env, **(overrides or {})), text=True, capture_output=True)
 
             result = restore()
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertTrue(state.exists(), result.stdout + result.stderr)
             self.assertEqual(json.loads(state.read_text()),
                              {'volume': 42, 'screenShotFolder': str(home / 'Desktop/Screengrabs')})
             self.assertFalse(snapshot.exists(), 'Restore must not create a personal snapshot')
@@ -98,6 +100,14 @@ else:
             result = restore({'FIXTURE_BAD_READBACK': '1'})
             self.assertNotEqual(result.returncode, 0)
             self.assertIn('did not read back', result.stderr)
+
+            # A checkout with no available snapshots still completes cleanly.
+            (root / 'apps.tsv').write_text('')
+            before = state.read_bytes()
+            result = restore()
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn('Done. Terminal.app is handled separately:', result.stdout)
+            self.assertEqual(state.read_bytes(), before)
 
 
 if __name__ == '__main__':

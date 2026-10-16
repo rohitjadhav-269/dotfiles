@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+"""Load one named settings/Keychain profile for a child command; never log values."""
+import os
+from pathlib import Path
+import pwd
+import re
+import shlex
+import subprocess
+import sys
+
+
+def main():
+    args = sys.argv[1:]
+    if len(args) < 2 or not re.fullmatch(r'[A-Za-z0-9_.-]+', args[0]):
+        print('Usage: tool-env PROFILE --check | tool-env PROFILE -- COMMAND [ARG...]', file=sys.stderr)
+        return 2
+    profile, mode, *command = args
+    if (mode == '--check' and command) or (mode == '--' and not command) or mode not in ('--check', '--'):
+        return 2
+    root = Path(os.environ.get('DOTFILES_SECRETS_DIR', str(Path.home() / '.secrets')))
+    path = root / 'config/env' / (profile + '.env')
+    values = {}
+    try:
+        for line in path.read_text().splitlines():
+            line = line.lstrip('\ufeff').strip()
+            if not line or line.startswith(('#', '-')):
+                continue
+            match = re.fullmatch(r'(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)', line)
+            if not match or match[1] in values:
+                raise ValueError()
+            parts = shlex.split(match[2], comments=True)
+            if len(parts) != 1:
+                raise ValueError()
+            value = parts[0]
+            if value.startswith('keychain://'):
+                result = subprocess.run(['/usr/bin/security', 'find-generic-password',
+                                         '-s', value[len('keychain://'):], '-a', pwd.getpwuid(os.getuid()).pw_name,
+                                         '-w'], capture_output=True, text=True)
+                if result.returncode:
+                    raise ValueError()
+                value = result.stdout.removesuffix('\n')
+            if not value:
+                raise ValueError()
+            values[match[1]] = value
+        if not values:
+            raise ValueError()
+    except (OSError, ValueError):
+        print('tool-env: profile invalid, credential missing, or Keychain access denied (details hidden)', file=sys.stderr)
+        return 1
+    if mode == '--check':
+        print('tool-env: profile ready (values hidden)')
+        return 0
+    try:
+        os.execvpe(command[0], command, {**os.environ, **values})
+    except OSError:
+        print('tool-env: could not launch command (details hidden)', file=sys.stderr)
+        return 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())

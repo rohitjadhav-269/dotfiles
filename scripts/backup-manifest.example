@@ -17,11 +17,11 @@
 # ~/.secrets/ layout (all vault-backed, never in git):
 #
 #   ~/.secrets/
-#   ├── env.sh                          # sourced only by interactive zsh
+#   ├── env.sh                          # compatibility link → config/env/shell.env
 #   ├── ssh/                            # → ~/.ssh/* via symlinks.tsv
 #   ├── config/
 #   │   ├── gh/hosts.yml                # → ~/.config/gh/hosts.yml
-#   │   └── env/                        # → ~/.config/env/ (per-tool env files)
+#   │   └── env/                        # → ~/.config/env/ (settings and on-demand references)
 #   └── apps/
 #       ├── canary-mail/                # realms + plist — make backup-canary / restore-canary
 #       ├── shottr/                     # cc.ffitch.shottr.plist — make backup-shottr / restore-shottr
@@ -38,3 +38,7 @@
 #
 # Migrating from an old manifest that listed ~/.config/* or ~/.ssh/* paths?
 # Move files into the ~/.secrets/ tree above, then `make link`.
+
+# config/env/shell.env contains only non-secret interactive shell settings.
+# recovery/ contains private retired files and displaced credential consumers.
+# Keychain items need separate recovery; this vault saves references, not passwords.

@@ -163,8 +163,10 @@ echo "     → make secrets-restore       # read-only validation"
 echo "     → make secrets-restore-apply # explicit transactional ~/.secrets restore"
 echo "     → make secrets-pass-import"
 echo "     → echo \"<destination>\" > ~/.dotfiles-local/backup.destination   # optional"
-echo "  3. make post-vault          # link, ssh-setup, Shottr/Canary if present, restore-apps"
-echo "  4. Finish the short GUI list printed by make post-vault"
+echo "  3. make keychain-list → recover tool items separately → make keychain-check"
+echo "     gh auth login -h github.com  # required before SSH registration"
+echo "  4. make post-vault          # recover links/apps; unresolved auth stays pending"
+echo "  5. Finish the short GUI list printed by make post-vault"
 echo ""
 
 # Terminal.app profile import quits Terminal.app, so keep it after all bootstrap

@@ -67,7 +67,7 @@ $HOME/.agents/skills	$HOME/.cursor/skills
 $HOME/.agents/skills	$HOME/.claude/skills
 
 # Claude Code / Craft Agent — wire ~/.claude/ into the agents tree
-$HOME/.agents/AGENTS.md	$HOME/.claude/CLAUDE.md
+$DOTFILES/agents/AGENTS.md	$HOME/.claude/CLAUDE.md
 $HOME/.agents/agents	$HOME/.claude/agents
 $HOME/.agents/commands	$HOME/.claude/commands
 $HOME/.secrets/ssh/config	$HOME/.ssh/config
@@ -78,3 +78,7 @@ $HOME/.secrets/ssh/known_hosts	$HOME/.ssh/known_hosts
 
 # Hermes agent config — identity (SOUL.md), aliases, skills, scripts
 # Source of truth for rules stays at .dotfiles/agents/; Hermes config is mirrored here.
+$HOME/.secrets/config/env/shell.env	$HOME/.secrets/env.sh
+$DOTFILES/config/cursor/rulebook.mdc	$HOME/.cursor/rules/rulebook.mdc
+$DOTFILES/config/copilot/copilot-instructions.md	$HOME/.copilot/copilot-instructions.md
+$DOTFILES/config/antigravity/GEMINI.md	$HOME/.gemini/GEMINI.md

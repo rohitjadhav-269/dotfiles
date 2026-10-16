@@ -325,6 +325,13 @@ else
   warn "$HOME/.secrets missing; restore vault before secret-backed symlinks work"
 fi
 
+if have python3 && python3 "$DOTFILES/scripts/check-keychain-profiles.py" >/dev/null 2>&1; then
+  ok "configured Keychain references present (metadata only; access/API validity not tested)"
+else
+  warn "Keychain reference inventory incomplete; run: make keychain-list && make keychain-check"
+fi
+note "Agent instructions: run make agent-clients-check for bridge placement; see agents/CLIENTS.md for live runtime evidence and limits"
+
 post_vault_pending="$HOME/.dotfiles-local/post-vault.pending"
 if [ -s "$post_vault_pending" ]; then
   pending_labels="$(awk 'BEGIN { sep = "" } { printf "%s%s", sep, $0; sep = ", " } END { print "" }' "$post_vault_pending" 2>/dev/null || true)"

@@ -20,6 +20,43 @@ _spec.loader.exec_module(helper)
 
 class PublicPreferences(unittest.TestCase):
     @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
+    def test_terminal_velja_bookmarks_fail_audit_and_are_sanitized(self):
+        for fmt in (plistlib.FMT_BINARY, plistlib.FMT_XML):
+            with self.subTest(format=fmt), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / '.node-version').write_text((ROOT / '.node-version').read_text())
+                terminal = root / 'apps/terminal/terminal.plist'
+                velja = root / 'apps/velja/velja.plist'
+                terminal.parent.mkdir(parents=True)
+                velja.parent.mkdir(parents=True)
+                terminal.write_bytes(plistlib.dumps({'Window Settings': {
+                    'One': {'FontSize': 14, 'BackgroundImageBookmark': b'book-fixture-private'},
+                    'Two': {'FontSize': 16, 'BackgroundImageBookmark': b'book-fixture-private'},
+                }}, fmt=fmt))
+                velja.write_bytes(plistlib.dumps({'defaultBrowser': 'com.apple.Safari',
+                    'userApplicationsDirectoryBookmark': b'book-fixture-private',
+                    'browserProfileDirectorySandboxURLBookmark': b'book-fixture-private'}, fmt=fmt))
+                extra = root / 'apps/fixture/fixture.plist'
+                extra.parent.mkdir(parents=True)
+                extra.write_bytes(plistlib.dumps({'NSOSPLastRootDirectory': b'book-fixture-private', 'keep': True}, fmt=fmt))
+                env = dict(os.environ, DOTFILES=str(root))
+                audit = ['bash', str(ROOT / 'scripts/audit-app-prefs.sh')]
+                result = subprocess.run(audit, env=env, capture_output=True, text=True)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('filesystem bookmark', result.stdout + result.stderr)
+                self.assertNotIn('fixture-private', result.stdout + result.stderr)
+                sanitize = ['bash', str(ROOT / 'scripts/sanitize-app-prefs.sh')]
+                subprocess.run(sanitize, env=env, check=True, capture_output=True)
+                self.assertEqual(plistlib.loads(extra.read_bytes()), {'keep': True})
+                self.assertEqual(plistlib.loads(terminal.read_bytes()), {'Window Settings': {
+                    'One': {'FontSize': 14}, 'Two': {'FontSize': 16}}})
+                self.assertEqual(plistlib.loads(velja.read_bytes()), {'defaultBrowser': 'com.apple.Safari'})
+                before = [terminal.read_bytes(), velja.read_bytes()]
+                subprocess.run(sanitize, env=env, check=True, capture_output=True)
+                self.assertEqual(before, [terminal.read_bytes(), velja.read_bytes()])
+                subprocess.run(audit, env=env, check=True, capture_output=True)
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
     def test_betterzip_snapshot_omits_registration_and_archive_password(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

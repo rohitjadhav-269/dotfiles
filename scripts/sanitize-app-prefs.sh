@@ -18,6 +18,13 @@ PLISTBUDDY=/usr/libexec/PlistBuddy
 NODE_STABLE="$HOME/.local/bin/node-stable"
 HOMEBREW_TOKEN="__HOMEBREW_PREFIX__"
 
+# Public snapshots must not carry opaque account/disk bookmark payloads.
+if [[ -d "$APPS" ]]; then
+  while IFS= read -r -d '' bookmark_snapshot; do
+    python3 "$SCRIPT_DIR/public-plist-bookmarks.py" sanitize "$bookmark_snapshot"
+  done < <(find "$APPS" -type f -name '*.plist' -print0)
+fi
+
 plist_delete() {
   local plist="$1" key="$2"
   [[ -f "$plist" ]] || return 0

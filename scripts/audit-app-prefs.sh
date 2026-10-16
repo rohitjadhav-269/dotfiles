@@ -79,6 +79,14 @@ scan_file() {
       ;;
   esac
 
+  case "$rel" in
+    apps/*.plist)
+      if ! python3 "$SCRIPT_DIR/public-plist-bookmarks.py" check "$f"; then
+        report "non-portable filesystem bookmark or invalid snapshot: $rel"
+      fi
+      ;;
+  esac
+
   if [[ "$rel" == "apps/betterzip/betterzip.plist" ]] &&
     ! python3 - "$f" <<'PY'
 import plistlib

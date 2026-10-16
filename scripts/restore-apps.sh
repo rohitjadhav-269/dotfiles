@@ -153,7 +153,23 @@ while IFS=$'\t' read -r domain label plist app_name; do
         continue
     fi
     if [ -f "$DOTFILES/$plist" ]; then
+        if [[ "$domain" == com.colliderli.iina ]]; then
+            iina_capture_dir="$(python3 "$SCRIPT_DIR/macos-preferences.py" capture-dir)"
+            iina_capture_dir="${DOTFILES_CAPTURE_DIR:-$iina_capture_dir}"
+            [[ -n "$iina_capture_dir" ]] || iina_capture_dir="$(python3 "$SCRIPT_DIR/macos-preferences.py" fallback-dir)"
+            [[ "$iina_capture_dir" == /* && -n "${iina_capture_dir//\//}" ]] || {
+                echo 'IINA Screengrabs restore needs an absolute non-root screenshot location' >&2
+                exit 1
+            }
+        fi
         defaults import "$domain" "$DOTFILES/$plist"
+        if [[ "$domain" == com.colliderli.iina ]]; then
+            defaults write "$domain" screenShotFolder -string "$iina_capture_dir"
+            [[ "$(defaults read "$domain" screenShotFolder)" == "$iina_capture_dir" ]] || {
+                echo 'IINA Screengrabs location did not read back after restore' >&2
+                exit 1
+            }
+        fi
         echo "  ✓ $label"
         # Keep in sync with the two macos/ rows in apps.tsv (no owning app; cfprefsd caches them).
         case "$domain" in

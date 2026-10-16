@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Skillsfile — declarative global skill manifest (Brewfile pattern).
 #
-# GENERATED 2026-10-10T14:21:50+05:30 from agents/.skill-lock.json by
+# GENERATED 2026-10-16T11:13:26+05:30 from agents/.skill-lock.json by
 # scripts/gen-skillsfile.py — DO NOT EDIT BY HAND. To change skills:
 #   ~/.local/bin/npx-stable skills add ... --agent codex   then   make skills-manifest
 #   (regenerates Skillsfile + agents/skills/README.md)
 #
 # Explicit upstream refresh: make skills-update   (or: bash Skillsfile)
-# 118 skills — 35 refreshable github sources + 1 local + 0 held.
+# 120 skills — 36 refreshable github sources + 1 local + 0 held.
 # Exceptional refresh holds, if any, live in config/skills-refresh-holds.json.
 #
 # Prereqs (fresh Mac): node + git + GitHub auth (SSH/gh) must be set
@@ -72,6 +72,9 @@ update_skill_source "$NPX" skills add anthropics/knowledge-work-plugins --skill 
 echo "Checking skills from source: anthropics/skills"
 update_skill_source "$NPX" skills add anthropics/skills --skill canvas-design frontend-design theme-factory -g -y --agent codex
 
+echo "Checking skills from source: arvindrk/extract-design-system"
+update_skill_source "$NPX" skills add arvindrk/extract-design-system --skill extract-design-system -g -y --agent codex
+
 echo "Checking skills from source: benjitaylor/agentation"
 update_skill_source "$NPX" skills add benjitaylor/agentation --skill agentation agentation-self-driving -g -y --agent codex
 
@@ -103,7 +106,7 @@ echo "Checking skills from source: julianoczkowski/designer-skills"
 update_skill_source "$NPX" skills add julianoczkowski/designer-skills --skill design-tokens -g -y --agent codex
 
 echo "Checking skills from source: lucasmarkes/hairline"
-update_skill_source "$NPX" skills add lucasmarkes/hairline --skill hairline-create -g -y --agent codex
+update_skill_source "$NPX" skills add lucasmarkes/hairline --skill hairline-adopt hairline-create -g -y --agent codex
 
 echo "Checking skills from source: mattpocock/skills"
 update_skill_source "$NPX" skills add mattpocock/skills --skill ask-matt claude-handoff code-review codebase-design diagnosing-bugs domain-modeling git-guardrails-claude-code grill-me grill-with-docs grilling handoff implement improve-codebase-architecture loop-me migrate-to-shoehorn prototype research scaffold-exercises setup-matt-pocock-skills setup-pre-commit setup-ts-deep-modules tdd teach to-questionnaire to-spec to-tickets triage wait-what wayfinder wizard writing-beats writing-for-agents writing-fragments writing-shape -g -y --agent codex

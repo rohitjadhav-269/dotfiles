@@ -153,6 +153,7 @@ cask:whatsapp	manual			Microsoft Store; retain existing Store installation.
 cask:zed	native	winget	ZedIndustries.Zed	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:zen	native	winget	Zen-Team.Zen-Browser	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:zoom	native	winget	Zoom.Zoom	Native Windows counterpart; identity verified against installed WinGet inventory.
+mas:6499265972	macos-only			Ahrefs SEO Toolbar: Safari extension; not installed on Windows.
 mas:1522469944	manual			Arattai: browser extension, Store or vendor/account setup; review the official Windows route.
 mas:1206020918	macos-only			Battery Indicator: Apple platform application or system preference.
 mas:1236045954	native	msstore	9MT5MZ5H9WL6	Windows counterpart for Canary Mail

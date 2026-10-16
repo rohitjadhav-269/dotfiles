@@ -59,13 +59,29 @@ needs it.
 | [Surfaces](https://www.fluidfunctionalism.com/docs/surfaces) | `elevated` | 8 elevation levels so popovers, dropdowns, and dialogs stay visible at any depth, in light and dark | [Surfaces](craft.md#surfaces) |
 | [Typography](https://www.fluidfunctionalism.com/docs/typography) | `typography` (brings `size-context`) | 6 type roles, each a size and a line height at both sizes, plus `.typeset`, a prose sheet for rendered markdown | [Typography](craft.md#typography) |
 
+## Setup
+
+Wiring for a whole app rather than one component. A new app can start from
+the starter, which installs every component and wires all of this:
+`npx shadcn@latest create -n my-app -t next https://www.fluidfunctionalism.com/r/starter/<settings>.json`,
+where `<settings>` names what differs from the defaults (`radix`, `pill`,
+`compact`, `lucide`/`tabler`/`phosphor`/`hugeicons`, `light`/`dark`), joined
+by dashes, or is `default`. An existing app takes the same components and a
+`components/fluid-root.tsx` wrapper from `/r/setup/<settings>.json`.
+
+| Piece | Registry name | What it does |
+|---|---|---|
+| Fluid Provider | `fluid-provider` | One wrapper for the system: reduced motion that follows the OS, the radius (rounded or pill), the size step, and the icon set. Render it from a `"use client"` file near the root, since an icon map can't cross from a server layout |
+| Icon sets | `icons-tabler` · `icons-phosphor` · `icons-hugeicons` · `icons-untitledui` | Every icon slot filled from one library. Pass the map to `FluidProvider`'s `icons` prop (or `IconProvider`) |
+
 Other installable libs and hooks (usually arrive as dependencies):
 `font-weight` (variable weight tokens for the ghost-span pattern),
 `icon-context` (named icon slots, Lucide defaults, `IconProvider` override),
 `shape-context` (pill or rounded), `surface-context` / `surface-classes` /
 `tokens` (elevation plumbing and `bg-hover`/`bg-active` state tokens),
-`popup` (shared popup chrome), `use-touch-primary`, `use-keyboard-nav-gate`,
-`use-merge-split` (the merged selected-background animation).
+`popup` (shared popup chrome), `omit` (drops props before a spread),
+`use-touch-primary`, `use-keyboard-nav-gate`, `use-merge-split` (the merged
+selected-background animation).
 
 ## Blocks
 

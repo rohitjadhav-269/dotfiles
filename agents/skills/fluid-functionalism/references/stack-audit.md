@@ -49,7 +49,7 @@ that is how flavor mixing happens.
 |---|---|---|
 | React 19 | `package.json` | Registry components target React 19; React 18 will fail on `use client` + new ref semantics in places. Flag before installing anything |
 | Tailwind CSS v4 | `package.json`, entry CSS uses `@import "tailwindcss"` | Classes in the components assume v4 (`size-*`, CSS-first config). On v3, installs land but render broken — installs are off the table until a migration (see "When installs are blocked" below) |
-| `framer-motion` v12 | `package.json` (arrives automatically with any component install) | If the project pins an old major, expect type errors on `Transition`; advise upgrading rather than patching components. If the project uses the **`motion`** package instead (the same library's newer name), an install would add `framer-motion` beside it — two copies of the animation lib. Record it as a migration caveat; don't install until the project picks one |
+| `motion` v12+ | `package.json` (arrives automatically with any component install; components import `motion/react`) | If the project pins an old major, expect type errors on `Transition`; advise upgrading rather than patching components. If the project also lists **`framer-motion`** directly (the same library's older name), check that both resolve to one copy: `motion` pins an exact `framer-motion` inside, and a second copy splits React context, so a `MotionConfig` imported from one never reaches components animated by the other. Advise moving the app's imports to `motion/react` and dropping the direct `framer-motion` dependency |
 | shadcn wired | `components.json` exists; `@/` path aliases resolve (`tsconfig.json` paths) | Without it the CLI can't install. Run `npx shadcn@latest init` first |
 | Theme tokens | Entry CSS has shadcn CSS variables (`--background`, `--primary`, …) | Components render unstyled. Usually fixed by `shadcn init` or copying a theme |
 
@@ -126,7 +126,7 @@ download, a local Chrome, or `CHROME_PATH`). What it reports, per viewport:
   change on the page is silently inert.
 - **OVERFLOW** — horizontal overflow and the element causing it.
 
-What it cannot see, so do not read silence as a pass: framer-motion springs
+What it cannot see, so do not read silence as a pass: Motion springs
 (they run in JS, not CSS transitions), popups and menus closed at load, states
 behind auth, reduced-motion behavior, and taste. Screenshots at the same
 widths still carry the judgment call; the numbers carry the claims.

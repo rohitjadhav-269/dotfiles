@@ -80,6 +80,8 @@ Run from the checkout, or use `dot` after setup adds its directory to PATH:
 | `bin\dot.cmd packages -Apply` | Install declared package counterparts |
 | `bin\dot.cmd restore-apps` | Preview template restoration |
 | `bin\dot.cmd restore-apps -Apply` | Merge shipped template settings; close affected apps first |
+| `bin\dot.cmd default-apps -OpenSettings` | Open Settings to choose VLC for supported media types |
+| `bin\dot.cmd default-apps -Check` | Verify the declared VLC file associations |
 | `bin\dot.cmd backup -Apply` | Retain curated public app templates |
 | `bin\dot.cmd upgrade` | Update apps, runtimes and skills |
 | `bin\dot.cmd hermes -Apply` | Apply shared-skill paths and source launcher; close Hermes first |
@@ -132,6 +134,20 @@ to managed files wait until it is closed. A failed or deferred Sublime stage
 does not prevent the other restore stages from being attempted; the command
 reports the combined failures at the end. Personal keybindings, snippets, tasks,
 profiles and extension state are not part of the curated public templates.
+
+### VLC file associations
+
+`config/windows-vlc-associations.tsv` lists 37 media extensions supported by
+VLC's Windows registration. `.ts` remains with Cursor; `.ogm` and `.ogv` remain
+with Edge. IINA plugin packages and formats not advertised by VLC are excluded.
+
+After installing VLC, run `dot default-apps -OpenSettings` or
+`make default-apps`, then choose VLC for the listed extensions in Windows
+Settings. Restore does not write protected `UserChoice` registry keys.
+Run `dot default-apps -Check` or `make default-apps-check` to verify the result.
+The checker reports differing choices and formats not advertised by the current
+VLC installation. Full `dot restore-apps -Check` and strict doctor include this
+check; the Settings selection remains a manual setup step.
 
 ## Candidate validation
 

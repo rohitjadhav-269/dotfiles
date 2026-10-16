@@ -116,6 +116,18 @@ while IFS=$'\t' read -r domain label plist _rest || [[ -n "${domain:-}" ]]; do
   staged_rows+=("$domain"$'\t'"$label"$'\t'"$plist")
 done < "$MANIFEST"
 
+# Check the account path before the public sanitizer removes it.
+if [[ -f "$stage/apps/iina/iina.plist" ]]; then
+  iina_capture_dir="$(plutil -extract screenShotFolder raw -o - "$stage/apps/iina/iina.plist" 2>/dev/null || true)"
+  saved_capture_dir="$(python3 "$DOTFILES/scripts/macos-preferences.py" capture-dir)"
+  saved_capture_dir="${DOTFILES_CAPTURE_DIR:-$saved_capture_dir}"
+  [[ -n "$saved_capture_dir" ]] || saved_capture_dir="$(python3 "$DOTFILES/scripts/macos-preferences.py" fallback-dir)"
+  if [[ "$saved_capture_dir" != /* || -z "${saved_capture_dir//\//}" || "$iina_capture_dir" != "$saved_capture_dir" ]]; then
+    printf '  ✗ IINA Screengrabs folder differs from the macOS screenshot policy\n' >> "$report"
+    drifted=$((drifted + 1))
+  fi
+fi
+
 # Irregular repo-captured surfaces that do not fit apps.tsv.
 stage_defaults() {
   local domain="$1" label="$2" plist="$3" live

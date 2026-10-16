@@ -435,7 +435,8 @@ for key in \
   plist_delete "$APPS/gifski/gifski.plist" "$key"
 done
 
-# IINA stores screenshot and last-played paths.
+# IINA's Screengrabs folder is restored from the macOS screenshot policy;
+# the portable plist keeps neither that account path nor last-played media paths.
 for key in \
   screenShotFolder NSOSPLastRootDirectory iinaLastPlayedFilePath; do
   plist_delete "$APPS/iina/iina.plist" "$key"

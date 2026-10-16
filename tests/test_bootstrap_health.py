@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 import shutil
 import plistlib
+import re
 import subprocess
 import sys
 import tempfile
@@ -11,6 +12,23 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 
 class PublicBootstrap(unittest.TestCase):
+    @unittest.skipUnless(shutil.which('make'), 'Requires Make for command previews')
+    def test_windows_media_targets_dispatch_without_mac_rejection(self):
+        for target, flag in (('default-apps', '-OpenSettings'), ('default-apps-check', '-Check')):
+            result = subprocess.run(['make', '-n', '-f', 'windows.mk', target], cwd=ROOT,
+                                    text=True, capture_output=True)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn('default-apps ' + flag, result.stdout)
+
+    def test_windows_media_manifest_keeps_supported_extensions_and_source_files(self):
+        entries = [line for line in (ROOT / 'config/windows-vlc-associations.tsv').read_text().splitlines()
+                   if line and not line.startswith('#') and line != 'extension']
+        self.assertEqual(len(entries), 37)
+        self.assertEqual(len(set(entries)), len(entries))
+        self.assertTrue(all(re.fullmatch(r'\.[a-z0-9]+', entry) for entry in entries))
+        self.assertFalse({'.ts', '.ogm', '.ogv', '.iinaplg', '.opus'}.intersection(entries))
+        self.assertTrue({'.mp4', '.mkv', '.mp3', '.webm'}.issubset(entries))
+
     def test_skill_manifest_selectors_and_inventory_are_current(self):
         for script in ('scripts/gen-skillsfile.py', 'agents/compareskills.py'):
             result = subprocess.run([sys.executable, str(ROOT / script), '--check'],

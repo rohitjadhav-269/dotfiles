@@ -223,6 +223,13 @@ Hammerspoon is the primary window manager. [Rectangle](https://rectangleapp.com/
 1. Fresh Mac: `make brew` → `make default-apps`
 2. Changed preferences on your reference Mac: `make capture-default-apps` → review diff → commit
 
+The media policy includes explicit IINA handlers. IINA's Screengrabs folder
+follows the macOS screenshot policy during restore, backup, and drift checks;
+a fresh checkout uses `~/Desktop/Screengrabs`. See the
+[IINA backup guide](apps/iina/README.md) for path overrides and plugin coverage.
+On Windows, use `dot default-apps -OpenSettings` and `dot default-apps -Check`
+for the supported VLC media types; see [Windows file associations](WINDOWS.md#vlc-file-associations).
+
 HTTPS default-browser mapping is omitted (`duti` returns error -54 for direct `https` binding on tested macOS versions).
 
 ## Preference coverage

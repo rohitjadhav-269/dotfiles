@@ -1,4 +1,4 @@
-.PHONY: help all link packages packages-check brew-check fonts restore-apps backup doctor verify-bootstrap hooks hooks-check upgrade shims skills skills-audit skills-manifest skills-update rules-audit brewfile-audit ssh-setup test-public-windows-projection
+.PHONY: help all link packages packages-check brew-check fonts restore-apps backup doctor verify-bootstrap hooks hooks-check upgrade shims skills skills-audit skills-manifest skills-update rules-audit brewfile-audit ssh-setup test-public-windows-projection test-remediations
 DOT := "$(CURDIR)/bin/dot.cmd"
 help:
 	@$(DOT) help
@@ -45,6 +45,8 @@ ssh-setup:
 	@$(DOT) ssh-setup
 test-public-windows-projection: ## Run public projection fixtures on native Windows
 	@pwsh -NoProfile -File tests/test_public_windows_projection.ps1
+test-remediations: ## Alias for public-owned Windows remediation fixtures
+	@$(MAKE) --no-print-directory test-public-windows-projection
 .PHONY: secrets-backup
 secrets-backup:
 	@$(DOT) secrets-backup -Apply

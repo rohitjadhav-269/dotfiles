@@ -146,8 +146,25 @@ After installing VLC, run `dot default-apps -OpenSettings` or
 Settings. Restore does not write protected `UserChoice` registry keys.
 Run `dot default-apps -Check` or `make default-apps-check` to verify the result.
 The checker reports differing choices and formats not advertised by the current
-VLC installation. Full `dot restore-apps -Check` and strict doctor include this
-check; the Settings selection remains a manual setup step.
+VLC installation. On Windows 11, when `AppDefaults` `HashVersion` is 1, the
+active choice is `UserChoiceLatest\ProgId`; the older `UserChoice` remains as a
+rollback value. The checker prefers that latest choice for hash version 1, uses
+the legacy choice for older hash versions, then falls back to the latest or
+registered association when no user choice exists. It reads associations only.
+Full `dot restore-apps -Check` and strict doctor include this check; the Settings
+selection remains a manual setup step.
+
+### Deskflow
+
+Install Deskflow with `dot packages -Apply -Only Deskflow.Deskflow`. Package
+installation and upgrades select and pin the newest permitted three-part stable
+WinGet release. Four-part continuous builds are excluded; unsigned stable
+`1.27.0` is blocked by Smart App Control, so the selected release is currently
+`1.26.0`. If an installed stable or continuous version is blocked, the package
+workflow replaces it with the permitted release. Keep Windows security enabled.
+Client identity, server address and other machine-specific Deskflow settings are
+not part of the public templates.
+
 
 ## Candidate validation
 

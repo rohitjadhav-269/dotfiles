@@ -30,8 +30,48 @@ function Get-DotfilesPackageFeedbackColor {
     if ($Status -in @('Already installed','Runtime update delegated to Topgrade','No applicable upgrade')) { return [ConsoleColor]::Blue }
     return [ConsoleColor]::Green
 }
+function Get-DotfilesDeskflowStableVersion {
+    $listed=& winget.exe show --id Deskflow.Deskflow --exact --versions --source winget --accept-source-agreements --disable-interactivity
+    if ($LASTEXITCODE -ne 0) { throw "WinGet could not list Deskflow versions (exit $LASTEXITCODE)" }
+    $stable=Get-DotfilesInstallableDeskflowVersion (Get-DotfilesListedWinGetVersions $listed)
+    if (-not $stable) { throw 'WinGet published no installable stable Deskflow version.' }
+    return $stable
+}
+function Sync-DotfilesBlockedDeskflow {
+    param([Parameter(Mandatory)][string]$Version, [string]$Installed, [string]$Log)
+    if (-not (Test-DotfilesDeskflowRequiresReplacement $Installed $Version)) { return }
+    $service=Get-Service -Name Deskflow -ErrorAction SilentlyContinue
+    if ($service -and $service.Status -ne 'Stopped') { Stop-Service -Name Deskflow -Force }
+    Get-Process -Name deskflow,deskflow-core,deskflow-daemon -ErrorAction SilentlyContinue | Stop-Process -Force
+    $common=@('--id','Deskflow.Deskflow','--exact','--source','winget','--accept-source-agreements','--disable-interactivity')
+    $uninstall=@('uninstall')+$common
+    $install=@('install')+$common+@('--version',$Version,'--accept-package-agreements')
+    if ($Log) {
+        & winget.exe @uninstall *> $Log
+        if ($LASTEXITCODE -ne 0) { throw "WinGet could not remove blocked Deskflow $Installed (exit $LASTEXITCODE); log: $Log" }
+        & winget.exe @install *> $Log
+        if ($LASTEXITCODE -ne 0) { throw "WinGet could not install Deskflow $Version (exit $LASTEXITCODE); log: $Log" }
+    } else {
+        Invoke-DotfilesNative winget.exe $uninstall
+        Invoke-DotfilesNative winget.exe $install
+    }
+    $verified=Convert-DotfilesInstalledWinGetVersion ([string](Get-DotfilesWindowsInventory)['winget:Deskflow.Deskflow'])
+    if ($verified -cne $Version) { throw "Deskflow install landed on '$verified', expected $Version" }
+    $service=Get-Service -Name Deskflow -ErrorAction SilentlyContinue
+    if ($service -and $service.Status -ne 'Running') { Start-Service -Name Deskflow }
+    return "Replaced Smart App Control blocked Deskflow $Installed with $Version"
+}
 if ($AllInstalled) {
+    $deskflowStable=Get-DotfilesDeskflowStableVersion
+    Set-DotfilesDeskflowStablePin $deskflowStable
     Invoke-DotfilesNative winget.exe @('upgrade','--all','--accept-source-agreements','--accept-package-agreements','--disable-interactivity') @(0,-1978335189)
+    $inventory=Get-DotfilesWindowsInventory
+    $installed=Convert-DotfilesInstalledWinGetVersion ([string]$inventory['winget:Deskflow.Deskflow'])
+    $replaced=Sync-DotfilesBlockedDeskflow -Version $deskflowStable -Installed $installed
+    if ($replaced) { Write-Host "winget:Deskflow.Deskflow : $replaced" -ForegroundColor Green }
+    elseif ($installed -and $installed -cne $deskflowStable -and (Test-DotfilesStableWinGetVersion $installed)) {
+        Invoke-DotfilesNative winget.exe @('upgrade','--id','Deskflow.Deskflow','--exact','--source','winget','--version',$deskflowStable,'--accept-source-agreements','--accept-package-agreements','--disable-interactivity') @(0,-1978335189)
+    }
     return
 }
 $inventory = Get-DotfilesWindowsInventory
@@ -40,8 +80,18 @@ foreach ($package in $packages) {
     $log=Join-Path $LogDirectory (($key -replace '[^a-zA-Z0-9._-]','_')+'.log')
     $status='Installed'
     $packageFailed=$false
+    $replaced=$null
     try {
-        if ($package.Mode -eq 'runtime') {
+        if ($package.Id -eq 'Deskflow.Deskflow') {
+            $stable=Get-DotfilesDeskflowStableVersion
+            Set-DotfilesDeskflowStablePin $stable
+            $installed=Convert-DotfilesInstalledWinGetVersion ([string]$inventory[$key])
+            $replaced=Sync-DotfilesBlockedDeskflow -Version $stable -Installed $installed -Log $log
+            if ($replaced) { $status=$replaced }
+        }
+        if ($replaced) {
+            # Sync-DotfilesBlockedDeskflow verified the replacement.
+        } elseif ($package.Mode -eq 'runtime') {
             # Runtime upgrades are owned by Topgrade. Bootstrap installs exact manifest names.
             if ($Upgrade) { $status='Runtime update delegated to Topgrade' }
             elseif ($package.Source -eq 'uv' -and $package.Id -eq 'tldr') { Install-DotfilesTldr }
@@ -51,8 +101,13 @@ foreach ($package in $packages) {
         elseif (-not $inventory.ContainsKey($key) -and $Upgrade) { $status='Missing; run dot packages to install'; $failures += $key; $packageFailed=$true }
         else {
             $arguments = @($(if ($Upgrade) {'upgrade'} else {'install'}),'--id',$package.Id,'--exact','--source',$package.Source,'--accept-source-agreements','--accept-package-agreements','--disable-interactivity')
+            if ($package.Id -eq 'Deskflow.Deskflow') {
+                if ($Upgrade -and $installed -ceq $stable) { $status='No applicable upgrade' }
+                else { $arguments += @('--version',$stable) }
+            }
             if (-not $Upgrade) { $arguments += '--no-upgrade' }
             if ($package.Id -eq 'Microsoft.PowerShell') { $arguments += @('--scope','machine','--installer-type','wix') }
+            if (-not $replaced -and $status -ne 'No applicable upgrade') {
             & winget.exe @arguments *> $log
             $code = $LASTEXITCODE
             if ($Upgrade -and $code -eq -1978335189) { $status='No applicable upgrade' }
@@ -61,6 +116,7 @@ foreach ($package in $packages) {
             else {
                 $verified = Get-DotfilesWindowsInventory
                 if (-not $verified.ContainsKey($key)) { throw "Installer returned success but package identity not found: $key" }
+            }
             }
         }
     } catch { $status=$_.Exception.Message; $failures += $key; $packageFailed=$true }

@@ -1,3 +1,48 @@
+function Set-DotfilesDeskflowStablePin([string]$Version) {
+    # WinGet compares the pin itself; its display table also includes the installed version.
+    & winget.exe pin add --id Deskflow.Deskflow --exact --source winget --version $Version --force --accept-source-agreements --disable-interactivity
+    if ($LASTEXITCODE -ne 0) { throw "WinGet could not pin Deskflow to stable $Version (exit $LASTEXITCODE)" }
+}
+function Get-DotfilesListedWinGetVersions([string[]]$Lines) {
+    $found=[Collections.Generic.List[string]]::new()
+    foreach($line in $Lines){
+        $entry=$line.Trim()
+        if($entry -cmatch '^\d+\.\d+\.\d+(?:\.\d+)?$'){ $found.Add($entry) }
+    }
+    return $found
+}
+function Test-DotfilesStableWinGetVersion([string]$Version) {
+    # Continuous Deskflow builds add a fourth component, such as 1.27.0.10.
+    return $Version -cmatch '^\d+\.\d+\.\d+$'
+}
+function Get-DotfilesLatestStableWinGetVersion([string[]]$Versions) {
+    $stable=@($Versions | Where-Object { Test-DotfilesStableWinGetVersion $_ })
+    if(-not $stable.Count){ return '' }
+    return [string]@($stable | Sort-Object @{Expression={[version]$_}} -Descending)[0]
+}
+function Get-DotfilesDeskflowBlockedVersions {
+    # Smart App Control blocks unsigned Deskflow 1.27.0: the binaries have no
+    # reputation, and Code Integrity events 3033/3077 deny deskflow.exe.
+    # 1.26.0 is the newest stable build that launches with protection left on.
+    return @('1.27.0')
+}
+function Get-DotfilesInstallableDeskflowVersion([string[]]$Versions) {
+    $blocked=@(Get-DotfilesDeskflowBlockedVersions)
+    $allowed=@($Versions | Where-Object { $_ -notin $blocked })
+    return Get-DotfilesLatestStableWinGetVersion $allowed
+}
+function Test-DotfilesDeskflowRequiresReplacement([string]$Installed,[string]$Target) {
+    if(-not $Installed -or $Installed -ceq $Target){ return $false }
+    if(Test-DotfilesStableWinGetVersion $Installed){
+        return [version]$Installed -gt [version]$Target
+    }
+    return $true
+}
+function Convert-DotfilesInstalledWinGetVersion([string]$Version) {
+    # The stable MSI reports 1.27.0 as 1.27.0.0. A non-zero fourth component stays continuous.
+    if($Version -cmatch '^(\d+\.\d+\.\d+)\.0$'){ return $Matches[1] }
+    return $Version
+}
 function Get-DotfilesWindowsPackages {
     param([string]$Root = (Split-Path (Split-Path $PSScriptRoot)))
     $rows = @(Import-Csv -LiteralPath (Join-Path $Root 'config\windows-packages.tsv') -Delimiter "`t")

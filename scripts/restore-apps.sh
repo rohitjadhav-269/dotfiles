@@ -107,7 +107,7 @@ echo "Restoring app preferences..."
 RESTORE_GATE_ENTRIES=()
 append_restore_gate_entry() {
     local label="$1" app_name="$2" existing
-    for existing in "${RESTORE_GATE_ENTRIES[@]}"; do
+    for existing in ${RESTORE_GATE_ENTRIES[@]+"${RESTORE_GATE_ENTRIES[@]}"}; do
         [[ "${existing#*:}" == "$app_name" ]] && return 0
     done
     RESTORE_GATE_ENTRIES+=("$label:$app_name")
@@ -132,7 +132,7 @@ if [[ -f "$DOTFILES/apps/zed/settings.json" || -f "$DOTFILES/apps/zed/keymap.jso
     append_restore_gate_entry "Zed" "Zed"
 fi
 
-restore_running_app_gate "${RESTORE_GATE_ENTRIES[@]}"
+restore_running_app_gate ${RESTORE_GATE_ENTRIES[@]+"${RESTORE_GATE_ENTRIES[@]}"}
 
 # Whole-domain macOS system snapshots (Keyboard Shortcuts and Input Sources)
 # are imported via `defaults import`, but cfprefsd caches these domains. Track

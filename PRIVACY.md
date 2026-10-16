@@ -7,6 +7,7 @@ review; its presence alone is not a leak, finding, warning, or new caveat.
 | Location | Accepted public information | Purpose |
 | --- | --- | --- |
 | `git/gitconfig` | `tAsh <t4sh@users.noreply.github.com>` | Public Git author identity using a GitHub noreply address |
+| Filesystem paths in configuration, documentation, and history | `t4sh`, `tAsh`, `tash`, and `ash` as username or home-directory components | Owner-approved public name variants; their presence alone is not a privacy finding |
 | `ssh/allowed_signers` | ED25519 public key with fingerprint `SHA256:DCzUNDehOjGDv4IoBA7/9Bw/Cx8jlFItzWWE5XtO6sQ`, principal `t4sh@users.noreply.github.com` | Verify the owner's SSH-signed Git commits |
 | `ssh/github-host-keys.pub` | GitHub ED25519, ECDSA and RSA host keys; fingerprints in [PUBLIC-KEYS.md](docs/PUBLIC-KEYS.md) | Authenticate the public GitHub SSH service |
 | `git/keys/github-web-flow.asc` | GitHub public GPG key `968479A1AFF927E37D1A566BB5690EEEBB952194`, UID `GitHub <noreply@github.com>` | Verify GitHub web commits |
@@ -16,6 +17,13 @@ A public verification key cannot be used to create signatures without its privat
 key. This baseline permits only the public identity and verification material above; it does
 not permit private keys, account credentials, other addresses, or arbitrary
 personal information.
+
+Generic home paths such as `~/Projects`, `~/.agents`, and `$HOME/.config` are
+acceptable, as are explicit paths such as `/Users/ash/Projects` using the approved
+name variants above. Do not scrub these names or flag a path solely because it
+contains one of them. This acceptance does not extend to private organization,
+client, or project names elsewhere in the path, credentials, or encoded filesystem
+bookmarks containing disk identifiers or other machine-specific metadata.
 
 ## How reviewers should report
 

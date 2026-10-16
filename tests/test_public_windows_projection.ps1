@@ -43,6 +43,36 @@ try {
     catch { $unmappedRejected = $_.Exception.Message -like '*Unmapped Brewfile entry: brew:fixture-unmapped*' }
     Assert $unmappedRejected 'An unmapped Brewfile entry was accepted.'
 
+    # Exercise real dispatch with a process spy; never launch Settings or touch
+    # the host's file associations from a fixture.
+    $mediaScripts = Join-Path $fixture 'media/scripts'
+    New-Item -ItemType Directory -Path (Join-Path $mediaScripts 'lib') -Force | Out-Null
+    foreach ($name in @('dot-windows.ps1', 'check-windows-vlc-associations.ps1')) {
+        Copy-Item (Join-Path $root "scripts/$name") (Join-Path $mediaScripts $name)
+    }
+    [IO.File]::WriteAllText((Join-Path $mediaScripts 'lib/windows-common.ps1'), @'
+function Assert-DotfilesWindows {}
+function Resolve-DotfilesPwsh { 'fixture-pwsh' }
+function Invoke-DotfilesNative($Executable, $Arguments) { $global:PublicMediaArguments = $Arguments }
+'@, $encoding)
+    & (Join-Path $mediaScripts 'dot-windows.ps1') -Command default-apps -Arguments @('-Check')
+    Assert ($global:PublicMediaArguments[-1] -eq '-Check') 'The media command lost its Check switch.'
+    Assert ($global:PublicMediaArguments[-2] -eq (Join-Path (Split-Path $mediaScripts) 'scripts/check-windows-vlc-associations.ps1')) 'The media command selected the wrong helper.'
+    Remove-Variable PublicMediaArguments -Scope Global
+
+    $mediaManifest = Join-Path $fixture 'media.tsv'
+    foreach ($case in @(
+        @{Text="extension`n.mp4`n.mp4`n"; Error='Invalid or duplicate VLC extension:*'},
+        @{Text="extension`n../mp4`n"; Error='Invalid or duplicate VLC extension:*'},
+        @{Text="extension`n"; Error='VLC association manifest is empty.'}
+    )) {
+        [IO.File]::WriteAllText($mediaManifest, $case.Text, $encoding)
+        $rejected = $false
+        try { & (Join-Path $mediaScripts 'check-windows-vlc-associations.ps1') -Manifest $mediaManifest -Check | Out-Null }
+        catch { $rejected = $_.Exception.Message -like $case.Error }
+        Assert $rejected 'An invalid media manifest reached association inspection.'
+    }
+
     # Extract the actual doctor check, stub its two read-only Git results, and
     # hide the launcher from command discovery.
     $tokens = $null
@@ -103,7 +133,7 @@ try {
     Assert ($tldrMessage -like 'TLDR launch failed:*') 'A missing TLDR executable did not report TLDR launch failed.'
     Assert ($tldrMessage.Contains($missingExecutable)) 'TLDR did not fail on the intended absent executable.'
 
-    Write-Output 'PASS: rsync manual mapping, unmapped package rejection, doctor PATH guidance, and TLDR launch failure.'
+    Write-Output 'PASS: package coverage, media dispatch and input rejection, doctor PATH guidance, and TLDR launch failure.'
 } finally {
     $resolvedFixture = [IO.Path]::GetFullPath($fixture)
     $tempRoot = [IO.Path]::GetFullPath([IO.Path]::GetTempPath()).TrimEnd('\')

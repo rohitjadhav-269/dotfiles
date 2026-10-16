@@ -39,6 +39,34 @@ com.sublimetext.4 net.daringfireball.markdown all
 # .env: use macOS's resolved UTI; duti's extension setter constructs a different UTI and fails with -50.
 com.sublimetext.4 dyn.ah62d4rv4ge80n5x0 all
 
+# IINA media handlers captured from this Mac's explicit Launch Services choices.
+# PostScript and AAC are not in the current explicit IINA set.
+com.colliderli.iina com.apple.m4a-audio all
+com.colliderli.iina com.apple.m4v-video all
+com.colliderli.iina com.apple.music.mp2 all
+com.colliderli.iina com.apple.quicktime-movie all
+com.colliderli.iina com.microsoft.waveform-audio all
+com.colliderli.iina io.iina.dff all
+com.colliderli.iina io.iina.dsf all
+com.colliderli.iina io.iina.mpeg-audio all
+com.colliderli.iina io.iina.ogg-audio all
+com.colliderli.iina io.iina.webm all
+com.colliderli.iina io.iina.wtv all
+com.colliderli.iina io.iina.xm all
+com.colliderli.iina org.webmproject.webm all
+com.colliderli.iina org.xiph.ogg-audio all
+com.colliderli.iina public.3gpp all
+com.colliderli.iina public.3gpp2 all
+com.colliderli.iina public.aiff-audio all
+com.colliderli.iina public.avi all
+com.colliderli.iina public.dv-movie all
+com.colliderli.iina public.mp2 all
+com.colliderli.iina public.mp3 all
+com.colliderli.iina public.mpeg all
+com.colliderli.iina public.mpeg-2-video all
+com.colliderli.iina public.mpeg-4 all
+com.colliderli.iina public.mpeg-4-audio all
+
 # URL schemes
 com.sindresorhus.Velja http
 io.canarymail.mac mailto

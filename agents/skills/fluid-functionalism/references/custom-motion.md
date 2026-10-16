@@ -65,7 +65,7 @@ Animate `transform` (`x`, `y`, `scale`) and `opacity` — never `top` / `left` /
 GPU's fast path, and `MotionConfig reducedMotion="user"` only neutralises
 transform/layout animations, so a component moving via `top` ignores the OS
 reduced-motion setting. A plain **CSS transition** on a positional property
-(`transition-[left,bottom]`) is doubly exempt — it's not framer-motion at
+(`transition-[left,bottom]`) is doubly exempt — it's not Motion at
 all, so `MotionConfig` never sees it; move it to `x`/`y` motion values to get
 both the compositor and reduced-motion back. If you genuinely must animate a
 layout property, gate the movement on `useReducedMotion()` yourself and keep
@@ -177,7 +177,7 @@ are tweens on purpose (a spring settles early and would invert that order,
 and blur is a `filter` string a spring can't drive):
 
 ```tsx
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { spring } from "@/lib/springs";
 
 const SHOWN = { opacity: 1, scale: 1, filter: "blur(0px)" };

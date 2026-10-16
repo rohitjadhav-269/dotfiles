@@ -154,9 +154,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/coreyhaines31/marketingskills.git",
       "skillPath": "skills/copywriting/SKILL.md",
-      "skillFolderHash": "f66c177039739a6073a750e0f1c788041e9c9bb1",
+      "skillFolderHash": "5de411655b1692373f8950f56d50991bd5294a8e",
       "installedAt": "2026-04-13T02:35:56.686Z",
-      "updatedAt": "2026-10-02T18:52:26.427Z"
+      "updatedAt": "2026-10-15T18:58:27.247Z"
     },
     "git-commit": {
       "source": "github/awesome-copilot",
@@ -199,18 +199,18 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/minimalist-skill/SKILL.md",
-      "skillFolderHash": "5509c012862cda27e2ed7efae89ed940ecc53add",
+      "skillFolderHash": "c99b716035207587e267831561b6510462460ede",
       "installedAt": "2026-04-13T02:36:28.327Z",
-      "updatedAt": "2026-09-11T12:14:24.686Z"
+      "updatedAt": "2026-10-12T14:35:36.862Z"
     },
     "redesign-existing-projects": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/redesign-skill/SKILL.md",
-      "skillFolderHash": "d9cffe56d26d4af7687299e391a7be1cfaf46c1b",
+      "skillFolderHash": "852ac1700e5e7434c3327f2e577a68187b841800",
       "installedAt": "2026-04-13T02:36:31.326Z",
-      "updatedAt": "2026-09-11T12:14:24.693Z"
+      "updatedAt": "2026-10-12T14:35:36.864Z"
     },
     "stitch-design-taste": {
       "source": "Leonxlnx/taste-skill",
@@ -351,9 +351,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/wshobson/agents.git",
       "skillPath": "plugins/developer-essentials/skills/monorepo-management/SKILL.md",
-      "skillFolderHash": "479cb611c4ef614bbe83d11f30f81bb123f0ffd4",
+      "skillFolderHash": "6e5cbe3e1cfb4844a9e122e8edea336aca27dc96",
       "installedAt": "2026-04-13T07:58:49.906Z",
-      "updatedAt": "2026-09-11T12:16:31.643Z"
+      "updatedAt": "2026-10-15T19:00:50.937Z"
     },
     "agentation": {
       "source": "benjitaylor/agentation",
@@ -387,9 +387,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "fbcbff0d9089aaf550488371029cb1398ebd43f3",
+      "skillFolderHash": "2c733e8ccf7cdcc35b698ea4a0b5ab95ed72963d",
       "installedAt": "2026-05-03T11:49:23.273Z",
-      "updatedAt": "2026-10-09T04:53:03.668Z"
+      "updatedAt": "2026-10-16T03:41:07.572Z"
     },
     "eleventy-nunjucks": {
       "source": "t4sh/skills4sh",
@@ -469,18 +469,18 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/brandkit/SKILL.md",
-      "skillFolderHash": "d278ff748cafab01e4ae5dd7758fc0b53258621c",
+      "skillFolderHash": "be1f16e544d9e7d8180c60d8632cb2d9335165e5",
       "installedAt": "2026-06-06T02:59:05.840Z",
-      "updatedAt": "2026-09-11T12:14:24.675Z"
+      "updatedAt": "2026-10-12T14:35:36.851Z"
     },
     "gpt-taste": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/gpt-tasteskill/SKILL.md",
-      "skillFolderHash": "c87d529ad945cd35985b19475bf53f41682d4f69",
+      "skillFolderHash": "838fd5f2d48fd6f4f3171804c549e76b98d2320c",
       "installedAt": "2026-06-06T02:59:05.844Z",
-      "updatedAt": "2026-09-11T12:14:24.682Z"
+      "updatedAt": "2026-10-12T14:35:36.860Z"
     },
     "web-typography": {
       "source": "wondelai/skills",
@@ -1042,9 +1042,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/jakubkrehel/skills.git",
       "skillPath": "skills/variant/SKILL.md",
-      "skillFolderHash": "990de997a33a18d3075a03b10e9007f9cb68700e",
+      "skillFolderHash": "9714e4e95df9cd76f6235abbe801a277dcbac16a",
       "installedAt": "2026-09-13T01:38:22.193Z",
-      "updatedAt": "2026-10-06T05:02:38.284Z"
+      "updatedAt": "2026-10-11T08:39:54.311Z"
     },
     "typesafe-ai": {
       "source": "typesafe-ai/skills",
@@ -1069,27 +1069,45 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/echris6/motion-video-kit.git",
       "skillPath": "business-motion-film/SKILL.md",
-      "skillFolderHash": "6fda132327a7797b9df0f834f64cf940a8f7def2",
+      "skillFolderHash": "9eafe9f7881922859865100610f8d9b894cff262",
       "installedAt": "2026-10-01T03:17:51.139Z",
-      "updatedAt": "2026-10-01T03:17:51.139Z"
+      "updatedAt": "2026-10-14T21:19:26.675Z"
     },
     "hairline-create": {
       "source": "lucasmarkes/hairline",
       "sourceType": "github",
       "sourceUrl": "https://github.com/lucasmarkes/hairline.git",
       "skillPath": "skills/hairline-create/SKILL.md",
-      "skillFolderHash": "22a4515f5462e74e96ee4f072bde1127f5d42a16",
+      "skillFolderHash": "9122ab45de4118de7c20fa762753234a3430c83f",
       "installedAt": "2026-10-02T18:45:26.586Z",
-      "updatedAt": "2026-10-08T18:34:20.547Z"
+      "updatedAt": "2026-10-14T21:20:02.214Z"
     },
     "fluid-functionalism": {
       "source": "mickadesign/fluid-functionalism",
       "sourceType": "github",
       "sourceUrl": "https://github.com/mickadesign/fluid-functionalism.git",
       "skillPath": "skills/fluid-functionalism/SKILL.md",
-      "skillFolderHash": "176c1e2763ac6b6ba2302d9f6dce4b035f911baf",
+      "skillFolderHash": "155bf6e12263603fa73f8d0c001378a9d4c0efe5",
       "installedAt": "2026-10-08T11:59:57.133Z",
-      "updatedAt": "2026-10-08T11:59:57.133Z"
+      "updatedAt": "2026-10-13T06:15:22.145Z"
+    },
+    "extract-design-system": {
+      "source": "arvindrk/extract-design-system",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/arvindrk/extract-design-system.git",
+      "skillPath": "skills/extract-design-system/SKILL.md",
+      "skillFolderHash": "e64b6fec82d59d296aad44ef9dacf42ad1d5eafd",
+      "installedAt": "2026-10-15T12:03:35.170Z",
+      "updatedAt": "2026-10-15T12:03:35.170Z"
+    },
+    "hairline-adopt": {
+      "source": "lucasmarkes/hairline",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/lucasmarkes/hairline.git",
+      "skillPath": "skills/hairline-adopt/SKILL.md",
+      "skillFolderHash": "57fcc50e29344fd586c5702e0961f72a23573096",
+      "installedAt": "2026-10-15T12:03:26.555Z",
+      "updatedAt": "2026-10-15T12:03:26.555Z"
     }
   },
   "dismissed": {

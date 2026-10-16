@@ -62,6 +62,7 @@ done
 info "capturing app preferences into a staged snapshot"
 captured=0
 skipped=0
+iina_captured=0
 while IFS=$'\t' read -r domain label plist _; do
   case "${domain:-}" in ''|'#'*) continue ;; esac
   # These device and Services domains are manifest-only until their snapshots
@@ -78,12 +79,25 @@ while IFS=$'\t' read -r domain label plist _; do
     mv "$STAGE/.defaults-export.plist" "$STAGE/$plist"
     ok "$label"
     captured=$((captured + 1))
+    [[ "$domain" != com.colliderli.iina ]] || iina_captured=1
   else
     warn "$label not captured (app/domain unavailable; prior snapshot retained)"
     skipped=$((skipped + 1))
   fi
 done < "$MANIFEST"
 info "defaults snapshots: $captured captured, $skipped retained"
+
+# Resolve the same screenshot policy as macos/defaults.sh without requiring a
+# personal snapshot in a fresh public checkout.
+if (( iina_captured )); then
+  iina_capture_dir="$(plutil -extract screenShotFolder raw -o - "$STAGE/apps/iina/iina.plist" 2>/dev/null || true)"
+  saved_capture_dir="$(python3 "$SOURCE_DOTFILES/scripts/macos-preferences.py" capture-dir)"
+  saved_capture_dir="${DOTFILES_CAPTURE_DIR:-$saved_capture_dir}"
+  [[ -n "$saved_capture_dir" ]] || saved_capture_dir="$(python3 "$SOURCE_DOTFILES/scripts/macos-preferences.py" fallback-dir)"
+  [[ "$saved_capture_dir" == /* && -n "${saved_capture_dir//\//}" && "$iina_capture_dir" == "$saved_capture_dir" ]] ||
+    die 'IINA Screengrabs folder differs from the macOS screenshot policy; reconcile it before backup'
+  ok 'IINA Screengrabs folder matches the macOS screenshot policy'
+fi
 
 # Shared time-zone lists are personal and are omitted from public snapshots.
 

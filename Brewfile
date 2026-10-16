@@ -469,6 +469,7 @@ vscode "yzhang.markdown-all-in-one"
 vscode "zignd.html-css-class-completion"
 
 # ─── brew-mas: App Store apps ──────────────────────────────────────────
+mas "Ahrefs SEO Toolbar", id: 6499265972
 mas "Arattai", id: 1522469944
 mas "Battery Indicator", id: 1206020918
 mas "Canary Mail", id: 1236045954

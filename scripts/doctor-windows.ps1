@@ -33,6 +33,7 @@ Check-Dotfiles 'Hermes skill preference (when initialized)' { & (Join-Path $PSSc
 Check-Dotfiles 'Editor preferences' { & (Join-Path $PSScriptRoot 'sync-windows-apps.ps1') -Mode Check }
 Check-Dotfiles 'Sublime readiness' { & (Join-Path $PSScriptRoot 'restore-apps-windows.ps1') -Only sublime -Check }
 Check-Dotfiles 'Extended app preferences' { & (Join-Path $PSScriptRoot 'sync-windows-extra-apps.ps1') -Mode Check }
+Check-Dotfiles 'VLC file associations' { & (Join-Path $PSScriptRoot 'check-windows-vlc-associations.ps1') -Check }
 foreach($editor in @('code','cursor')){Check-Dotfiles "$editor extensions" { & (Join-Path $PSScriptRoot 'install-windows-extensions.ps1') -Editor $editor -Check }}
 Write-Output 'Encrypted secrets backup is an explicit separate action; recovery-key readiness and live restore are not doctor requirements. Manual vendor apps, runtime packages, font registration, account sign-in and GUI activation require their separate checks.'
 if($failed.Count){Write-Warning "Doctor found $($failed.Count) incomplete check(s): $($failed -join ', ')";if($Strict){throw 'Windows doctor is not clean.'}}

@@ -10,9 +10,23 @@
 | Zed Agent (native) | Manifest-managed bootstrap bridge | `make link` installs `config/zed/AGENTS.md` at `~/.config/zed/AGENTS.md`; the bridge invokes `init-rulebook` at session start and after compaction and applies optional RTK guidance to terminal commands | `bash scripts/link.sh --check`; confirm a new native Zed Agent thread loads the canonical rulebook |
 | Zed External Agents (ACP) | Agent-owned native configuration | Zed hosts the thread, but each external agent owns its instruction loader; Codex continues to use the Codex bridge and native config rather than Zed's personal `AGENTS.md` | Confirm the selected external agent loads its own native instructions |
 | Cursor skills | Manifest-managed compatibility link | `make link` installs `~/.cursor/skills` from the canonical skills tree | `bash scripts/link.sh --check` |
-| Cursor rules | Manual / vendor settings | Paste an expanded rulebook into User Rules, or add a project `.cursor/rules/global.mdc` that points at the canonical rulebook | After any rule change, inspect Cursor User Rules or the project rule and confirm the load-all/apply-conditionally contract is current |
-| VS Code Copilot | Manual / vendor settings | Configure `github.copilot.chat.codeGeneration.instructions` with every top-level `~/.agents/rules/*.md` file; do not copy an inventory into `init-rulebook` | Compare the configured instruction paths with `find ~/.agents/rules -maxdepth 1 -name '*.md' | sort` |
-| Antigravity | Manual / vendor settings | Use the client's supported rules path or deliberately create a flattened export from `AGENTS.md` plus all sorted top-level rules | Refresh after rule changes and confirm conditional rules are present but remain conditionally applicable |
+| Cursor rules | Manifest-managed file plus account startup pointer | `make link` installs `config/cursor/rulebook.mdc` at `~/.cursor/rules/rulebook.mdc`. In Customize → Rules, set the startup User Rule to `config/cursor/user-rule.txt`; account rules are vendor-synced, not restored by the linker. | `make agent-clients-check`; inspect the account pointer and a fresh session outside this repo |
+| VS Code Copilot | Manifest-managed user bridge | `make link` installs `config/copilot/copilot-instructions.md` at `~/.copilot/copilot-instructions.md`, the personal always-on entrypoint for the Copilot harness. Other harnesses retain their own instruction discovery. | `make agent-clients-check`; Agent Customizations → Instructions and a fresh Copilot session |
+| Antigravity | Manifest-managed user bridge | `make link` installs `config/antigravity/GEMINI.md` at `~/.gemini/GEMINI.md`. Read the loader skill directly if skill invocation is unavailable. | `make agent-clients-check`; fresh session when Antigravity is installed |
 | Nimbalyst | Host-managed | No stable repository-owned projection path is declared; the host may consume `~/.agents` | Confirm the active task exposes the current rulebook before relying on Nimbalyst-specific rules |
 
-Generic consumers, Claude compatibility links, the Codex bridge, the native Zed Agent bridge, and Cursor skills are automated because their filesystem paths are stable and owned by `symlinks.tsv`. External agents hosted over ACP retain their native configuration boundary. Manual rule surfaces must not be reported as restored by `make link` or `make doctor`.
+The macOS manifest owns bridge placement, not runtime acceptance. Cursor's account
+User Rule is a separate vendor setting; use the tracked startup text and preserve
+unrelated account rules. Do not link the entire canonical rules directory into an
+always-on rules folder. Windows consumer paths are unchanged.
+
+`make agent-clients-check` verifies managed symlinks and matching contents for
+Codex, Claude Code, Zed, Cursor, Copilot and Antigravity. Claude Code retains the
+public canonical-index link. Skills and MCP connectivity do not prove instruction
+loading. Antigravity's `~/.gemini/GEMINI.md` can also affect other Gemini clients.
+
+Verify each installed client with a fresh session outside this repository: inspect
+the startup source, index and always-on reads, one matching conditional rule,
+deferred action gates, and rehydration after compaction. Account settings, remote
+profiles, harness differences and fresh-machine behavior require separate checks.
+This public projection has fixture coverage, not a live-client acceptance claim.

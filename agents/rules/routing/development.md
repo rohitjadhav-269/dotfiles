@@ -21,6 +21,7 @@ Boundaries:
 
 - A sufficiently specified action request proceeds through the core workflow after reading relevant context. Do not manufacture a discovery, architecture, planning, TDD, multi-agent, or review approval gate.
 - Use `typesafe-ai` when TypeSafe is requested or already integrated, and for features where routing, ranking, extraction, scoring, or verification needs semantic judgment. Read its current docs for the chosen integration. Do not route ordinary TypeScript typing, deterministic rules, or every AI feature to it.
+- Local Codex/macOS: load TypeSafe credentials only for API commands, through `~/.dotfiles/bin/typesafe-env -- COMMAND [ARG...]`.
 - Disposable uncertainty prototypes are owned by [UX routing](design-ux.md); do not select an owner from this file.
 - `to-spec`, `to-tickets`, and `wayfinder` require explicit user invocation. `to-spec` synthesizes settled context and does not conduct the interview itself.
 - `improve plan` authors the plan but does not own execution. `to-tickets` owns tracker decomposition and dependency edges, not file-level instructions.

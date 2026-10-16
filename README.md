@@ -66,7 +66,7 @@ After bootstrap:
 
 1. Sign into the App Store, then run `make brew-mas`.
 2. Mount the vault, run `make secrets-restore` → `make secrets-restore-apply` → `make secrets-pass-import` (never rsync a snapshot onto `/`).
-3. Run `make post-vault` after secrets land. It installs the default backup manifest if absent, strictly links every declared consumer, verifies/registers the GitHub key, and restores vault-backed app preferences when present.
+3. Recover the tool Keychain items listed by `make keychain-list`, run `make keychain-check`, and authenticate with `gh auth login -h github.com`. Then run `make post-vault`: it prepares legacy shell settings, strictly links required consumers and restores independent apps. Missing authentication or Keychain items remain pending and return a nonzero status.
 4. Finish the GUI leftovers list from `post-vault`, then run `make verify-bootstrap`.
 
 ### Existing Mac (already has Homebrew)
@@ -291,6 +291,110 @@ make secrets-pass-import  # import a recovered password on a replacement Mac
 ```
 
 The CLI-created Keychain item is local and is not assumed to synchronize through iCloud Keychain. Store and verify a separate recovery copy in an independently synchronized password manager. Before attach, vault scripts detect the selected image at any mountpoint, reuse only the verified expected mount, and never claim an operator-owned alternate attachment. Backups stage through a working copy, retain the published vault on failure, and retain verified snapshots while reserving space for two more and preserving baselines. Portable and legacy backup commands remain available; see [SECRETS.md](SECRETS.md).
+
+### On-demand credentials and recovery (Mac)
+
+Keep all active environment files in `~/.secrets/config/env/` (directory mode `700`,
+files mode `600`). `~/.secrets/env.sh` is a compatibility symlink to `shell.env`;
+`make link` / `make post-vault` recreates it when the target exists. For a new setup,
+copy `zsh/secrets.example` to `config/env/shell.env` inside the secrets tree first.
+`post-vault` also prepares it automatically: an older regular `env.sh` is preserved
+in the private link recovery archive without activating its code or old global
+tokens. Review that archive locally and restore only non-secret shell settings.
+When a legacy regular file and an existing canonical file coexist, recovery stops
+for local reconciliation even if their contents match; neither file is overwritten.
+Only the generated safe shell stub permits an automatic retry. Review both files,
+preserve the legacy file in the private recovery archive, and retain only non-secret
+settings in the canonical file before rerunning `make post-vault`. The legacy file stays untouched until linking succeeds. Missing required sources stop linking.
+Displaced secret-backed consumer files go to private
+`~/.secrets/recovery/link-backups/` rather than the ordinary dotfiles backup tree.
+The old `~/.secrets/env/` directory is retired. Recovery archives under
+`~/.secrets/recovery/` are vault-backed and never loaded automatically.
+
+After mounting the vault: `make secrets-restore` validates the selected payload and `make secrets-restore-apply` transactionally replaces only `~/.secrets`; then run `make secrets-pass-import` and **`make post-vault`** as the single consumer-link/SSH/app follow-on.
+
+**Keychain-first credentials (Mac):** environment files contain non-secret settings
+and references such as `export TYPESAFE_API_KEY='keychain://dotfiles/typesafe/TYPESAFE_API_KEY'`.
+Use Keychain Access to create or update a **generic password** with that service
+name (the part after `keychain://`) and your macOS login username as the account.
+Put the credential in its password field. Keychain controls access prompts; the
+loaders never answer dialogs or unlock the keychain automatically. These local
+Keychain items are not included in `make secrets-backup`; do not assume they sync
+to another Mac. Restore/recreate them separately before testing restored loaders.
+Run `make keychain-list` for the profile/variable/service inventory.
+`config/keychain-profiles.tsv` is a fork-owned requirement list. Uncomment or add
+only the tools you use; once listed, a missing profile cannot silently pass an
+empty inventory. The public template intentionally requires no personal services. Intentional file-only
+backups are excluded from that list. Use your macOS
+login username as the account for each generic password. `make keychain-check`
+checks metadata only; it never requests passwords or proves API validity. Both
+`post-vault` and doctor report missing items; independent app restores continue
+while missing credentials remain recorded as pending recovery work.
+Older portable installations can still use literal file values; migrated profiles
+contain references only, with no plaintext fallback on Keychain denial.
+
+Shared shell startup loads no migrated credentials and performs no Keychain
+lookups. `shell.env` is reserved for non-secret shell settings; interactive zsh
+unsets `GH_TOKEN` and `GITHUB_TOKEN` so stale inherited tokens cannot override
+`gh`'s stored credentials. For other tools, create a named profile and use the generic runner.
+Use `~/.dotfiles/bin/tool-env exa -- COMMAND [ARG...]` or `tool-env exa --check`.
+Each profile is read from `~/.secrets/config/env/PROFILE.env` and only that profile's
+credentials are resolved for the child command. Profile syntax is literal env
+assignments; shell commands and substitutions are not executed.
+
+Explicitly designated backup credential files may retain plaintext values under
+`~/.secrets/config/env/` with mode `600`, alongside the Keychain copies. Keep those
+files out of Git and include them in the encrypted vault backup; do not automatically
+convert an intentional backup copy into references.
+
+**Context7 (Mac):** `~/.secrets/config/env/context7.env` holds the
+`CONTEXT7_API_KEY` reference to `dotfiles/context7/CONTEXT7_API_KEY`. After restoring
+the vault, Keychain items, and app preferences, run `make context7`. It merges the
+local launcher into Cursor's global `~/.cursor/mcp.json`, Zed's
+`~/.config/zed/settings.json`, and VS Code's default user-profile `mcp.json`.
+Other settings, servers, comments, and existing VS Code credential-input records
+are preserved. Named VS Code profiles and project-level overrides are separate.
+Re-run after restoring Zed preferences, which intentionally exclude MCP configuration.
+`make context7-check` verifies Keychain access, runtime, and wiring; it does not
+make an API call or prove editor activation. Restart the Context7 server after
+rotating its Keychain value. The pinned server receives the key at startup, not
+per tool call. Codex's connected Context7 app is managed separately.
+
+**Figma REST API (Mac):** `~/.secrets/config/env/figma.env` holds the `FIGMA_TOKEN`
+reference to `dotfiles/figma/FIGMA_TOKEN`. `~/.dotfiles/bin/figma-env --init` creates
+a private reference file without replacing an existing path. Prefix API commands
+with `~/.dotfiles/bin/figma-env --` to retrieve the token for that command and its
+children. `make figma-check` checks Keychain readiness; `make figma-api-check`
+makes one read-only `/v1/me` request, showing only status, never token or account
+data. That probe needs `current_user:read`. On renewal, update the Keychain item's
+password and rerun both checks. No shell/editor restart is needed for this runner.
+
+**Figma MCP and Paper use different authentication:** the official Figma remote
+MCP uses client-managed account sign-in at `https://mcp.figma.com/mcp`. The REST
+token above does not replace that sign-in. If using the Figma Cursor plugin, it owns
+its MCP configuration; keep OAuth credentials in the client, outside dotfiles.
+After restoring/installing the plugin, use its Authenticate action as needed.
+See [Figma's setup guide](https://developers.figma.com/docs/figma-mcp-server/remote-server-installation/).
+
+Paper's local MCP uses its desktop CLI rather than a separate API key. Install
+Paper Desktop and configure the absolute `~/.paper/bin/paper` path with argument
+`mcp` in your client's stdio MCP configuration, or use the supported client plugin.
+Keep credentials and client account state outside this repository. Read-only
+canvas checks require Paper Desktop running with a file open. See
+[Paper's client setup guide](https://paper.design/docs/mcp).
+
+**TypeSafe / Jev (Mac):** run `~/.dotfiles/bin/typesafe-env --init` once to create
+`~/.secrets/config/env/typesafe.env` with a reference to
+`dotfiles/typesafe/TYPESAFE_API_KEY`. Store the key in that Keychain item as above.
+Initialization preserves existing paths. Run `~/.dotfiles/bin/typesafe-env --check`
+to verify access without displaying the key. Prefix SDK/API commands with
+`~/.dotfiles/bin/typesafe-env --` to retrieve only the TypeSafe key for that command
+and its children. Missing/empty credentials or denied access stop execution.
+Ordinary chats, skill loading, and shell startup do not retrieve it. The wrapped
+command receives the key, so keep environment dumps and credential logging off.
+
+Run `make agent-clients-check` for instruction-bridge placement; see
+[`agents/CLIENTS.md`](agents/CLIENTS.md) for account setup and runtime verification.
 
 ## Git hooks
 

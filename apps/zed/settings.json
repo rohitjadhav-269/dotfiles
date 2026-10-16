@@ -56,7 +56,8 @@
     "nunjucks": true,
     "prisma": true,
     "scss": true,
-    "toml": true
+    "toml": true,
+    "zedokai": true
   },
 
   "autosave": {

@@ -997,9 +997,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/DietrichGebert/ponytail.git",
       "skillPath": "skills/ponytail/SKILL.md",
-      "skillFolderHash": "db8acd3ce9e04ef4a5d42bbd90924b6d0a488318",
+      "skillFolderHash": "e8d3fa76e7ff9223a784dbd4bcfc9ff46b3fa55d",
       "installedAt": "2026-08-23T20:39:24.111Z",
-      "updatedAt": "2026-10-08T18:33:08.844Z"
+      "updatedAt": "2026-10-16T14:39:41.171Z"
     },
     "ponytail-review": {
       "source": "DietrichGebert/ponytail",
@@ -1024,9 +1024,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/DietrichGebert/ponytail.git",
       "skillPath": "skills/ponytail-help/SKILL.md",
-      "skillFolderHash": "87f25f262420cf82267b3170d75d4b295ab2d986",
+      "skillFolderHash": "df653cafe3ad32956172f68ae088f474b16bf7e2",
       "installedAt": "2026-08-23T20:39:38.352Z",
-      "updatedAt": "2026-10-08T18:33:08.850Z"
+      "updatedAt": "2026-10-16T14:39:41.176Z"
     },
     "interface-review": {
       "source": "jakubkrehel/skills",
@@ -1060,9 +1060,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/NVIDIA/SkillSpector.git",
       "skillPath": "skills/skill-inspector/SKILL.md",
-      "skillFolderHash": "15e4c0c0f944db0912979dbc2c95f2cc86cf365c",
+      "skillFolderHash": "a131ecd48393a8c74fe51f6221495c89b98de5ef",
       "installedAt": "2026-10-01T02:51:17.047Z",
-      "updatedAt": "2026-10-01T02:51:17.047Z"
+      "updatedAt": "2026-10-16T05:48:27.352Z"
     },
     "business-motion-film": {
       "source": "echris6/motion-video-kit",

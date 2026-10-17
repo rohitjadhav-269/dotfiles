@@ -26,15 +26,15 @@ The headings below declare applicability and index every rule. Rule membership i
 - [Skill routing](./rules/11-skill-routing.md)
 - [Anti-patterns](./rules/99-anti-patterns.md)
 
-## Action-gated: load immediately before commit-producing, attribution, or integration work
+## Action-gated: load immediately before commit-producing, PR/MR title, attribution, or integration work
 
-Action signals: beginning the commit/integration workflow; preparing or finalizing a commit message; running a commit-producing command; cherry-picking, reverting, merging, or rebasing; publishing a commit; or verifying Git author/committer identity or signing. A request that merely schedules one of these after earlier implementation work does not open the gate yet.
+Action signals: commit/integration workflow; drafting/finalizing commit messages or PR/MR titles; creating a PR/MR or editing its title; commit-producing commands; cherry-picking, reverting, merging, rebasing, or publishing commits; verifying Git author/committer identity or signing. Later plans leave gates closed.
 
 - [Commit attribution](./rules/02-attribution.md)
 
-## Action-gated: load immediately before worktree creation, branch creation, finishing, merge, or cleanup
+## Action-gated: load immediately before worktree creation, branch creation, finishing, PR/MR creation or title edits, merge, or cleanup
 
-Action signals: creating a git worktree; creating a branch for isolation; finishing development work; merging a pull request; post-merge or stale-branch cleanup; or producing a handoff after branch/PR/merge/cleanup work. Daily checkout safety stays in the always-on worktree hygiene rule.
+Action signals: creating a git worktree; creating a branch for isolation; finishing development work; creating a PR/MR or editing its title; merging a pull request; post-merge or stale-branch cleanup; or producing a handoff after branch/PR/merge/cleanup work. Daily checkout safety stays in always-on worktree hygiene.
 
 - [Worktree lifecycle](./rules/07-worktree-lifecycle.md)
 

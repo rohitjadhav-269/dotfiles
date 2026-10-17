@@ -342,6 +342,27 @@ Each profile is read from `~/.secrets/config/env/PROFILE.env` and only that prof
 credentials are resolved for the child command. Profile syntax is literal env
 assignments; shell commands and substitutions are not executed.
 
+For consumers with a literal env-file loader, use
+`tool-env --adapter NAME -- COMMAND [ARG...]` or `tool-env --adapter NAME --check`.
+`config/tool-env-adapters.tsv` maps each adapter name to its env-file override,
+profile suffix, loader path, and required variables. Loader paths are relative to
+the dotfiles root or absolute. `TOOL_ENV_ADAPTERS` selects another mapping file.
+The existing `tool-env PROFILE ...` commands do not read the adapter mappings.
+For a profile named `--adapter`, the existing `--check` and `-- COMMAND` forms
+take precedence over adapter selection.
+
+Adapter mode follows the configured env-file override, then
+`${XDG_CONFIG_HOME:-$HOME/.config}/env/$(whoami).SUFFIX.env`, then the first
+matching `*.SUFFIX.env`. It resolves Keychain references into a temporary profile
+with permissions `600` inside a directory with permissions `700`, sets the
+override, and sources the configured loader before launching your command.
+The profile remains available if the loader is sourced again and is removed on
+exit or handled interruption. Keep tracing disabled in credential-consuming commands.
+`--check` resolves the profile and runs the loader without launching your command.
+The loader must parse the temporary assignments as literal data, never source
+the profile directly as shell code. Duplicate keys and multiline credentials
+are rejected; existing file-backed values and optional empty settings are supported.
+
 Explicitly designated backup credential files may retain plaintext values under
 `~/.secrets/config/env/` with mode `600`, alongside the Keychain copies. Keep those
 files out of Git and include them in the encrypted vault backup; do not automatically

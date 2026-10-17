@@ -17,11 +17,12 @@ Choose by artifact. Reusable authorities, libraries, tokens, palettes, and type 
 | --- | --- |
 | Audit, document, or extend an entire component system | `design-system` |
 | Measure hard-coded values, token adoption, duplicates, deprecations, or gaps | `design-token-audit` |
+| Extract starter tokens from a public URL | `extract-design-system` |
 | Generate portable static CSS, JSON, or theme tokens | `design-tokens` |
 | Implement a Tailwind CSS v4 component library or migrate Tailwind v3 → v4 | `tailwind-design-system` |
 | Generate or assess only palettes, contrast, gamut, or color semantics | `better-colors` |
 
-Audit the reusable system with `design-system` and a rendered screen or flow with `better-interface`. Use `design-token-audit` for quantitative inventory, `design-tokens` for portable output, and `tailwind-design-system` for Tailwind v4 implementation. Load the interface design route only when the request also requires a screen or flow artifact.
+Audit the reusable system with `design-system` and a rendered screen or flow with `better-interface`. Use `design-token-audit` for quantitative inventory, `extract-design-system` for public website evidence, `design-tokens` for portable output, and `tailwind-design-system` for Tailwind v4 implementation. Load the interface design route only when the request also requires a screen or flow artifact.
 
 Required artifact: a system audit, token package, working library or migration, or palette specification with verification evidence.
 

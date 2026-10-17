@@ -1,6 +1,7 @@
 Key	Mode	Source	Id	Note
 tap:deskflow/tap	macos-only			Homebrew tap; Windows installs Deskflow directly through WinGet.
 brew:shellcheck	native	winget	koalaman.shellcheck	Native Windows counterpart; identity verified against installed WinGet inventory.
+brew:shfmt	native	winget	mvdan.shfmt	Shell formatter; package identity verified in the official WinGet manifest; native installation not tested.
 brew:actionlint	native	winget	rhysd.actionlint	Native Windows counterpart; identity verified against installed WinGet inventory.
 brew:age	native	winget	FiloSottile.age	Cross-platform tar.age backup and recovery tool.
 brew:agent-browser	runtime	volta	agent-browser	Explicit runtime-manager package; not a Homebrew dependency on Windows.

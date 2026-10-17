@@ -4,6 +4,8 @@ tap "deskflow/tap"
 # ─── brew-core: bootstrap formulae & uv tools ─────────────────────────
 # Static analysis and lint tool, for (ba)sh scripts
 brew "shellcheck"
+# Autoformat shell scripts
+brew "shfmt"
 # Static checker for GitHub Actions workflow files
 brew "actionlint"
 # Simple, modern, secure file encryption

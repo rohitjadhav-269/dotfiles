@@ -387,9 +387,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "2c733e8ccf7cdcc35b698ea4a0b5ab95ed72963d",
+      "skillFolderHash": "58a18b17361ae9b3dba44ffa4f3b33a90c632857",
       "installedAt": "2026-05-03T11:49:23.273Z",
-      "updatedAt": "2026-10-16T03:41:07.572Z"
+      "updatedAt": "2026-10-18T13:15:32.197Z"
     },
     "eleventy-nunjucks": {
       "source": "t4sh/skills4sh",
@@ -1024,9 +1024,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/DietrichGebert/ponytail.git",
       "skillPath": "skills/ponytail-help/SKILL.md",
-      "skillFolderHash": "df653cafe3ad32956172f68ae088f474b16bf7e2",
+      "skillFolderHash": "f293d9e0ecff5da72cb4accf8a9e4717892cf0ad",
       "installedAt": "2026-08-23T20:39:38.352Z",
-      "updatedAt": "2026-10-16T14:39:41.176Z"
+      "updatedAt": "2026-10-17T16:28:15.775Z"
     },
     "interface-review": {
       "source": "jakubkrehel/skills",

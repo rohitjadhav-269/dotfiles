@@ -114,6 +114,10 @@ if [[ "$BOOTSTRAP_SMOKE" == "1" ]]; then
     exit 0
 fi
 
+# Restore portable agent hooks after RTK is installed.
+make -C "$DOTFILES" restore-codex-rtk
+make -C "$DOTFILES" restore-claude-rtk
+
 # 7. Automator Services — before restore-apps (same order as `make all`:
 #    services → restore-apps → dock → hooks → macos).
 echo ""

@@ -37,6 +37,21 @@ context7-check: ## Check Context7 credential/runtime and all three editor config
 
 export DOTFILES := $(CURDIR)
 
+.PHONY: restore-codex-rtk codex-rtk-check restore-claude-rtk claude-rtk-check
+restore-codex-rtk: ## Merge the RTK PreToolUse hook into Codex user hooks
+	@python3 scripts/rtk-hook.py restore --client codex
+	@python3 scripts/rtk-hook.py check --client codex
+
+codex-rtk-check: ## Check Codex has exactly one current RTK hook
+	@python3 scripts/rtk-hook.py check --client codex
+
+restore-claude-rtk: ## Merge the RTK PreToolUse hook into Claude Code user settings
+	@python3 scripts/rtk-hook.py restore
+	@python3 scripts/rtk-hook.py check
+
+claude-rtk-check: ## Check Claude Code has exactly one current RTK hook
+	@python3 scripts/rtk-hook.py check
+
 .PHONY: cursor-extensions vscode-extensions restore-zed zed-check restore-cursor-cli cursor-cli-check backup-text-replacements
 restore-cursor-cli: ## Merge saved Cursor CLI attribution preferences
 	@bash scripts/restore-apps.sh --only cursor-cli
@@ -62,6 +77,8 @@ all: ## Re-apply the full existing-Mac setup, including node shims, in a fixed o
 	@$(MAKE) --no-print-directory skills-audit
 	@$(MAKE) --no-print-directory brew-without-mas
 	@$(MAKE) --no-print-directory shims
+	@$(MAKE) --no-print-directory restore-codex-rtk
+	@$(MAKE) --no-print-directory restore-claude-rtk
 	@$(MAKE) --no-print-directory services
 	@$(MAKE) --no-print-directory restore-apps
 	@$(MAKE) --no-print-directory dock
@@ -321,6 +338,8 @@ verify-bootstrap: ## Fail unless the post-vault Mac bootstrap is complete
 	@$(MAKE) --no-print-directory rules-audit
 	@$(MAKE) --no-print-directory skills
 	@$(MAKE) --no-print-directory audit-apps
+	@$(MAKE) --no-print-directory codex-rtk-check
+	@$(MAKE) --no-print-directory claude-rtk-check
 	@bash scripts/link.sh --check
 	@$(MAKE) --no-print-directory services-check
 	@$(MAKE) --no-print-directory hooks-check

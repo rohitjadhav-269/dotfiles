@@ -195,6 +195,25 @@ j --print my-app       # print path only
 
 Shell helper `jcd` (in `zsh/lib/50-functions.zsh`) fuzzy-cds into `~/Projects`.
 
+## Automatic RTK for Mac agents
+
+Brewfile installs RTK. `make restore-codex-rtk restore-claude-rtk` resolves its
+executable from `PATH` and merges an automatic command-rewrite hook into each
+client's local configuration, preserving other hooks and settings. Both targets
+run in `install.sh` and `make all`; `make codex-rtk-check claude-rtk-check` verifies
+the definitions and runs in `make verify-bootstrap`. Re-run restore after moving RTK.
+
+Reload Codex and review/trust **RTK command compression** in Hooks (CLI `/hooks`).
+Trust remains local to each machine. Claude Code loads its hook after restarting.
+The previous dotfiles-owned Codex hooks symlink migrates to a local file.
+No personal configuration, command history, credentials, or RTK statistics are
+captured by these targets. The portable implementation is [scripts/rtk-hook.py](scripts/rtk-hook.py).
+
+Run ordinary shell commands normally; supported ones are rewritten through RTK.
+Use `rtk proxy <command>` for exact output, full file reads, or machine-readable
+results. Existing approval and sandbox checks still apply. This setup targets Mac;
+Windows integration remains separate.
+
 ## Hammerspoon
 
 [`hammerspoon/init.lua`](hammerspoon/init.lua) is symlinked to `~/.hammerspoon` by `make link`. After `make brew`:

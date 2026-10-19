@@ -7,7 +7,7 @@ keys or changes a trust database, SSH configuration or signing identity.
 
 | File | Owner / identity | Purpose |
 | --- | --- | --- |
-| [allowed_signers](../ssh/allowed_signers) | Repository owner's noreply principal; see [fork guide](FORKING.md) | Verify the owner's SSH-signed Git commits |
+| [allowed_signers](../ssh/allowed_signers) | Fork owner's and upstream author's noreply principals; see [fork guide](FORKING.md) | Verify the fork owner's and upstream author's SSH-signed Git commits |
 | [github-host-keys.pub](../ssh/github-host-keys.pub) | GitHub SSH service at `github.com` | Compare host-key fingerprints before trusting a connection |
 | [github-web-flow.asc](../git/keys/github-web-flow.asc) | `GitHub <noreply@github.com>` | Existing verifier for GitHub web commits |
 | [github-web-flow-legacy.asc](../git/keys/github-web-flow-legacy.asc) | `GitHub (web-flow commit signing) <noreply@github.com>` | Historical GitHub web-commit verifier; expired 2024-01-16 |

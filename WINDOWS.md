@@ -60,7 +60,7 @@ Bypass also works). Set it explicitly before setup, then open a fresh console:
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 Get-ExecutionPolicy -List
-git clone https://github.com/t4sh/dotfiles.git "$HOME\.dotfiles"
+git clone https://github.com/rohitjadhav-269/dotfiles.git "$HOME\.dotfiles"
 cd "$HOME\.dotfiles"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Apply
 ```

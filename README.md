@@ -49,7 +49,7 @@ Using an AI agent? Point it at [AGENTS.md](AGENTS.md); its [setup runbook](docs/
 ### Fresh Mac
 
 ```bash
-git clone https://github.com/t4sh/dotfiles.git ~/.dotfiles
+git clone https://github.com/rohitjadhav-269/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 bash install.sh
 ```
@@ -74,7 +74,7 @@ After bootstrap:
 Before cloning or running `make all`, follow the [existing-setup migration checkpoint](docs/AGENT-SETUP.md#adopt-an-existing-setup). Resolve any existing `~/.dotfiles` checkout and agree which settings to retain, merge or replace. `make all` applies the full policy; use selected targets for a partial adoption.
 
 ```bash
-git clone https://github.com/t4sh/dotfiles.git ~/.dotfiles
+git clone https://github.com/rohitjadhav-269/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 make all
 ```

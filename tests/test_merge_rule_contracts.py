@@ -63,12 +63,12 @@ class MergeRuleContracts(unittest.TestCase):
                 "must apply the custom emoji mappings",
             ),
             (
-                "agents/rules/07-worktree-lifecycle.md",
+                "agents/rules/lifecycle/pr-title.md",
                 "compare it exactly with the validated title",
                 "compare the saved provider title",
             ),
             (
-                "agents/rules/07-worktree-lifecycle.md",
+                "agents/rules/lifecycle/pr-title.md",
                 "Correct any mismatch and repeat verification",
                 "mismatches must be corrected and reverified",
             ),
@@ -78,27 +78,27 @@ class MergeRuleContracts(unittest.TestCase):
                 "merges must load message and identity contracts",
             ),
             (
-                "agents/rules/07-worktree-lifecycle.md",
+                "agents/rules/lifecycle/integration.md",
                 "exactly one trailing ` (#NNN)` with the original PR/MR numeric ID",
                 "integration subjects must end with the original request ID",
             ),
             (
-                "agents/rules/07-worktree-lifecycle.md",
+                "agents/rules/lifecycle/integration.md",
                 "read its actual subject",
                 "must read the actual integration commit subject",
             ),
             (
-                "agents/rules/07-worktree-lifecycle.md",
+                "agents/rules/lifecycle/integration.md",
                 "compare the complete subject exactly with the validated subject",
                 "must compare the complete integration subject",
             ),
             (
-                "agents/rules/07-worktree-lifecycle.md",
+                "agents/rules/lifecycle/integration.md",
                 "report the suffix check as not applicable",
                 "must report suffix verification as not applicable",
             ),
             (
-                "agents/rules/07-worktree-lifecycle.md",
+                "agents/rules/lifecycle/integration.md",
                 "report incomplete merge-subject verification and stop before cleanup",
                 "verification failures must block cleanup",
             ),
@@ -124,7 +124,7 @@ class MergeRuleContracts(unittest.TestCase):
     def test_rule_audit_requires_pipeline_discovery_and_bounded_merge_checks(self) -> None:
         # The operator contract is the regression: no inferred suite or retry
         # loop may replace the required decision when applicable CI is absent.
-        lifecycle = "agents/rules/07-worktree-lifecycle.md"
+        lifecycle = "agents/rules/lifecycle/integration.md"
         cases = (
             (
                 lifecycle,

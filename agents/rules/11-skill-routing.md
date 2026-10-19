@@ -1,6 +1,6 @@
 # 11 — Skill routing
 
-Always on. Installed and third-party skill descriptions are retrieval hints; after any host-level selection, this rule is the local authority for ownership and overlap before loading skills.
+Activate for selections starting from rule 12, overlapping skill choices, named skill requests, or cross-skill references. Installed and third-party skill descriptions are retrieval hints; after any host-level selection, this rule is the local authority for overlaps and named-only preferences. Narrow specialists need no routing entry.
 
 ## Selection rules
 
@@ -12,20 +12,17 @@ Always on. Installed and third-party skill descriptions are retrieval hints; aft
 6. **Project authority still wins.** Follow project instructions, existing tokens, components, conventions, and user scope over any skill default.
 7. **Design work stays design-led.** For a user-facing interface, the design posture and selected design reference define the mode, artifact, and quality bar. Repository and Git workflows support the work but do not become its owner or dominate the response.
 
-## Startup exceptions
+## Cross-domain overlaps
 
-Domain owners live in the conditional references below. Only these cross-domain routes stay here:
+Always-on `12-skill-owners.md` supplies discovery defaults; this rule and its conditional references control selection.
 
 | Request | Owner |
 | --- | --- |
 | Implement a sufficiently specified change or execute an existing written plan | Core workflow when no conditional route matches; no manufactured skill gate |
-| Browser verification or interaction | `04-codex-host-tooling.md` and its host-first ladder |
-| PDF extraction or RAG | `pdf-harvester` |
-| Paseo operation | `paseo` or its named subskill |
 
 ## Browser ladder
 
-Use the connected or host browser for an existing profile, authentication, or localhost state; otherwise follow `04-codex-host-tooling.md` once its trigger activates.
+Use the connected or host browser for an existing profile, authentication, or localhost state; otherwise follow `04-host-tooling.md` once its trigger activates.
 
 `aside-browser`: explicit user requests for Aside only. Generic tasks or host auto-loading never authorize its use, installation, or updates.
 

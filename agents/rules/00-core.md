@@ -14,7 +14,7 @@ Always on. These apply in every mode, every project, every tool.
 
 6. **Proactive review, in scope.** While working, flag bugs, dead code, type mismatches, security gaps, token violations, and unused variants in the area you're touching. Fix what's in scope; note what isn't.
 
-7. **No improvised workflows.** If a project defines a deploy path, test command, or skill, use it. If none exists, stop and ask — don't invent one.
+7. **Use established workflows.** If a project defines a deploy path, test command, or skill, use it. When no verification path exists, choose the smallest meaningful check within authorized scope, including temporary test artifacts. For other missing workflows, stop and ask.
 
 8. **Never auto-commit or auto-push.** Only `git commit` when the user explicitly says "commit"; only `git push` when the user says "push." "Sync to memory" means write files to `.agent-memory/`, not git commit. Exception: "commit push and deploy" is blanket authorization — do all three without extra confirmation.
 

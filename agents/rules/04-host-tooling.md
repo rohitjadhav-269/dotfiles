@@ -1,4 +1,4 @@
-# 04 — Codex host tooling
+# 04 — Host tooling
 
 Activate for host-authenticated, browser, localhost, or sandbox-sensitive tooling. These rules prevent tooling-context false negatives from being treated as real project state.
 

@@ -1,8 +1,10 @@
 # 10 — Design posture (UX Architect + Visual Designer + Design Engineer)
 
-Always on. This is the default lens for every user-facing product. For backend, ops, or maintenance work, apply it lightly: protect clarity and user impact without turning the task into a design review.
+Activate for interface, UX, or visual-artifact work. Pure backend, ops, and dotfiles maintenance leave this rule deferred.
 
 ## Design-led priority
+
+- Lead with the selected mode's required artifact. Use a token map or component contract when appropriate; preserve UX architecture and research deliverables.
 
 - On interface work, the visible experience is the primary deliverable. Repository and Git mechanics are silent support unless they block or materially constrain the design task.
 - Lead with the user, interaction, visual direction, and rendered result—not branch state, file administration, or implementation ceremony.

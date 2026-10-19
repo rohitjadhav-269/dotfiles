@@ -37,18 +37,9 @@ Generic host-tooling rules still apply to sandbox false-negatives, browser acces
 - If Paseo browser tools or MCP injection are available for a Paseo-managed agent, prefer that Paseo-provided route for that agent's browser checks before external browser fallbacks.
 - If Paseo browser tooling fails because of sandbox, host access, writable state, or MCP routing, treat it as a tooling-context signal first and then use the generic host-tooling fallback rules.
 
-## Host-native first for known sandbox-hostile tools
+## Host tooling
 
-Inside Paseo-managed Codex agents, do not spend a first attempt on the sandboxed path for commands that are already known to need host auth, browser state, localhost reachability, writable browser state, or network access. Start with the narrow host-native, escalated, or already-approved path when the active client supports it.
-
-Use this direct path for:
-
-- `gh` operations, live GitHub auth checks, PR checks, workflow checks, issue/PR reads, and GitHub API commands.
-- Browser verification that depends on localhost, Chrome/Chrome Canary state, Playwright browsers, `agent-browser`, or a writable browser/tool state directory.
-- Playwright commands that need browser binaries, system browser access, networked installs, or a live dev server.
-- Local preview checks where sandboxed `curl`, `localhost`, `127.0.0.1`, or `file://` probes are known to false-negative.
-
-If the active host policy forbids escalation, use the available Paseo browser tools, MCP tools, connectors, plugins, or configured writable roots first, then report the routing limitation.
+Apply [Host tooling](04-host-tooling.md) for host-native execution, sandbox recovery, authentication, and browser access. Keep the Paseo browser/MCP preference above when that managed route is available.
 
 ## Daemon safety
 

@@ -42,6 +42,30 @@ class PublicRulebookAudit(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('unlinked reference', result.stderr)
 
+    def test_always_on_membership_and_routing_trigger(self):
+        index = (self.root / 'agents/AGENTS.md').read_text(encoding='utf-8')
+        always_on = index.split('## Always on', 1)[1].split('## Action-gated', 1)[0]
+        for name in ('00-core.md', '01-authorization.md', '03-worktree-hygiene.md',
+                     '12-skill-owners.md', '99-anti-patterns.md'):
+            self.assertIn(name, always_on)
+        self.assertEqual(always_on.count('./rules/'), 5)
+        for name in ('10-design-posture.md', '11-skill-routing.md'):
+            self.assertNotIn(name, always_on)
+        trigger = ('Activate for selections starting from rule 12, overlapping skill choices, '
+                   'named skill requests, or cross-skill references')
+        self.assertIn('## ' + trigger, index)
+        router = (self.root / 'agents/rules/11-skill-routing.md').read_text(encoding='utf-8')
+        self.assertTrue(router.splitlines()[2].startswith(trigger))
+
+    def test_absent_skill_owner_fails(self):
+        owners = self.root / 'agents/rules/12-skill-owners.md'
+        text = owners.read_text(encoding='utf-8')
+        self.assertIn('`diagnosing-bugs`', text)
+        owners.write_bytes(text.replace('`diagnosing-bugs`', '`missing-owner`', 1).encode('utf-8'))
+        result = self.audit()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('skill router names unavailable, non-retired skill: missing-owner', result.stderr)
+
     def test_terminal_fixture_runs_before_audit_success(self):
         fixture = self.root / 'scripts/test-agent-terminal-integration.sh'
         fixture.write_bytes(b'#!/bin/bash\nprintf "terminal fixture completed\\n"\n')

@@ -1,6 +1,6 @@
 # Agent client projections
 
-`AGENTS.md` and the top-level `rules/*.md` files are the canonical rulebook. Client projections are delivery mechanisms only; they do not own membership or applicability.
+`AGENTS.md` and the top-level `rules/*.md` files are the canonical rulebook. Through `init-rulebook`, the index loads always-on rules eagerly, task-conditional rules for matching work, and action-gated rules immediately before matching operations; client projections are delivery mechanisms only and do not own membership or applicability.
 
 | Client | Ownership | Bootstrap / refresh | Verification |
 |---|---|---|---|
@@ -30,3 +30,17 @@ the startup source, index and always-on reads, one matching conditional rule,
 deferred action gates, and rehydration after compaction. Account settings, remote
 profiles, harness differences and fresh-machine behavior require separate checks.
 This public projection has fixture coverage, not a live-client acceptance claim.
+
+### Rulebook changes (2026-10-19)
+
+- Five rules are always on: core, authorization, worktree hygiene, skill owners
+  (`12-skill-owners.md`) and anti-patterns. Skill owners lists discovery defaults
+  so routing does not depend on skill descriptions a client may truncate.
+- Design posture is conditional on interface, UX, or visual-artifact work. Skill
+  routing loads for selections starting from rule 12, overlapping choices, named
+  skill requests, or cross-skill references.
+- Claude Code keeps its direct `~/.claude/CLAUDE.md` link to the canonical index,
+  so it follows the index's loading procedure like the bridged clients.
+- Skill discovery stays shared across clients; no per-client skill curation or
+  invocation overrides are applied. Nested skill directories remain supported by
+  Cursor discovery. No live startup or forced compaction acceptance is claimed.

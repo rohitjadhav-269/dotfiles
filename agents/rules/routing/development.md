@@ -63,7 +63,7 @@ Carry phase results forward through the [verification and continuity contract](.
 
 ## Skill authoring
 
-Use `skill-architect` for creating, editing, auditing, comparing, or evaluating agent skills. Treat `skill-creator` and standalone Skill Development material as supporting upstream references only.
+Default: `skill-architect` for authoring and evaluating skills. Explicit requests select compatible installed skills; otherwise `skill-creator` and Skill Development are references. Preserve scope, authorization, and quality.
 
 Every new or substantively updated shared skill must provide:
 

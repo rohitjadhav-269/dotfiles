@@ -15,6 +15,7 @@ AGENTS_MD="$DOTFILES/agents/AGENTS.md"
 RULES_DIR="$DOTFILES/agents/rules"
 INIT_SKILL="$DOTFILES/agents/skills/init-rulebook/SKILL.md"
 ROUTING_RULE="$RULES_DIR/11-skill-routing.md"
+SKILL_OWNERS_RULE="$RULES_DIR/12-skill-owners.md"
 ROUTING_DIR="$RULES_DIR/routing"
 DESIGN_POSTURE_RULE="$RULES_DIR/10-design-posture.md"
 DESIGN_UX_ROUTING_RULE="$ROUTING_DIR/design-ux.md"
@@ -30,6 +31,11 @@ ENVIRONMENT_RULE="$RULES_DIR/22-environment.md"
 ENVIRONMENT_DIR="$RULES_DIR/environment"
 ATTRIBUTION_RULE="$RULES_DIR/02-attribution.md"
 ATTRIBUTION_DIR="$RULES_DIR/attribution"
+LIFECYCLE_RULE="$RULES_DIR/07-worktree-lifecycle.md"
+LIFECYCLE_DIR="$RULES_DIR/lifecycle"
+LIFECYCLE_TITLE_RULE="$LIFECYCLE_DIR/pr-title.md"
+LIFECYCLE_INTEGRATION_RULE="$LIFECYCLE_DIR/integration.md"
+LIFECYCLE_HANDOFF_RULE="$LIFECYCLE_DIR/handoff.md"
 MEMORY_RULE="$RULES_DIR/06-hermes-learning.md"
 MEMORY_DIR="$RULES_DIR/memory"
 ATTRIBUTION_STAGING_RULE="$ATTRIBUTION_DIR/staging.md"
@@ -177,6 +183,7 @@ while IFS= read -r rule; do
 done <<< "$on_disk"
 
 [ -f "$ROUTING_RULE" ] || fail_contract "missing canonical skill router: $ROUTING_RULE"
+[ -f "$SKILL_OWNERS_RULE" ] || fail_contract "missing skill discovery defaults: $SKILL_OWNERS_RULE"
 [ -d "$ROUTING_DIR" ] || fail_contract "missing routing reference directory: $ROUTING_DIR"
 
 if [ -d "$ROUTING_DIR" ] && [ -f "$ROUTING_RULE" ]; then
@@ -208,7 +215,7 @@ if [ -d "$ROUTING_DIR" ] && [ -f "$ROUTING_RULE" ]; then
     # Backticks are literal Markdown syntax.
     # shellcheck disable=SC2016
     routing_skill_tokens="$(grep -RhoE '`[A-Za-z0-9][A-Za-z0-9._-]*`' \
-        "$ROUTING_RULE" "$ROUTING_DIR" | tr -d '`' | sort -u)"
+        "$ROUTING_RULE" "$SKILL_OWNERS_RULE" "$ROUTING_DIR" | tr -d '`' | sort -u)"
     # Backticks are literal Markdown syntax.
     # shellcheck disable=SC2016
     retired_skill_tokens="$(sed -n '/following skills are retired/,/^## User-invoked preferences/p' "$ROUTING_RULE" \
@@ -255,11 +262,12 @@ fi
 check_nested_inventory "$DESIGN_INTERFACE_ROUTING_RULE" "$INTERFACE_ROUTING_DIR" "interface" "interface routing"
 check_nested_inventory "$ENVIRONMENT_RULE" "$ENVIRONMENT_DIR" "environment" "environment routing"
 check_nested_inventory "$ATTRIBUTION_RULE" "$ATTRIBUTION_DIR" "attribution" "attribution routing"
+check_nested_inventory "$LIFECYCLE_RULE" "$LIFECYCLE_DIR" "lifecycle" "lifecycle routing"
 check_nested_inventory "$MEMORY_RULE" "$MEMORY_DIR" "memory" "memory procedures"
 grep -Fq '(./rules/memory/lifecycle.md)' "$AGENTS_MD" \
     || fail_contract "rulebook index must route memory operations to the shared procedure"
 
-[ -f "$DESIGN_POSTURE_RULE" ] || fail_contract "missing always-on design posture: $DESIGN_POSTURE_RULE"
+[ -f "$DESIGN_POSTURE_RULE" ] || fail_contract "missing conditional design posture: $DESIGN_POSTURE_RULE"
 [ -f "$DESIGN_UX_ROUTING_RULE" ] || fail_contract "missing UX design routing contract: $DESIGN_UX_ROUTING_RULE"
 [ -f "$DESIGN_INTERFACE_ROUTING_RULE" ] || fail_contract "missing interface design routing contract: $DESIGN_INTERFACE_ROUTING_RULE"
 [ -f "$DESIGN_SYSTEM_ROUTING_RULE" ] || fail_contract "missing system/content design routing contract: $DESIGN_SYSTEM_ROUTING_RULE"
@@ -435,23 +443,23 @@ if [ -f "$ATTRIBUTION_RULE" ] && [ -d "$ATTRIBUTION_DIR" ]; then
         || fail_contract "PR/MR titles must be validated before creation or edits"
     grep -Fq 'including the custom mappings above' "$ATTRIBUTION_MESSAGE_RULE" \
         || fail_contract "title validation must apply the custom emoji mappings"
-    grep -Fq 'compare it exactly with the validated title' "$RULES_DIR/07-worktree-lifecycle.md" \
+    grep -Fq 'compare it exactly with the validated title' "$LIFECYCLE_TITLE_RULE" \
         || fail_contract "PR/MR title verification must compare the saved provider title"
-    grep -Fq 'Correct any mismatch and repeat verification' "$RULES_DIR/07-worktree-lifecycle.md" \
+    grep -Fq 'Correct any mismatch and repeat verification' "$LIFECYCLE_TITLE_RULE" \
         || fail_contract "PR/MR title mismatches must be corrected and reverified"
     grep -Fq 'PR/MR merge work loads message/emoji and identity/signing' "$ATTRIBUTION_RULE" \
         || fail_contract "PR/MR merges must load message and identity contracts"
     # Backticks are literal Markdown syntax.
     # shellcheck disable=SC2016
-    grep -Fq 'exactly one trailing ` (#NNN)` with the original PR/MR numeric ID' "$RULES_DIR/07-worktree-lifecycle.md" \
+    grep -Fq 'exactly one trailing ` (#NNN)` with the original PR/MR numeric ID' "$LIFECYCLE_INTEGRATION_RULE" \
         || fail_contract "PR/MR integration subjects must end with the original request ID"
-    grep -Fq 'read its actual subject' "$RULES_DIR/07-worktree-lifecycle.md" \
+    grep -Fq 'read its actual subject' "$LIFECYCLE_INTEGRATION_RULE" \
         || fail_contract "merge verification must read the actual integration commit subject"
-    grep -Fq 'compare the complete subject exactly with the validated subject' "$RULES_DIR/07-worktree-lifecycle.md" \
+    grep -Fq 'compare the complete subject exactly with the validated subject' "$LIFECYCLE_INTEGRATION_RULE" \
         || fail_contract "merge verification must compare the complete integration subject"
-    grep -Fq 'report the suffix check as not applicable' "$RULES_DIR/07-worktree-lifecycle.md" \
+    grep -Fq 'report the suffix check as not applicable' "$LIFECYCLE_INTEGRATION_RULE" \
         || fail_contract "merges without an integration commit must report suffix verification as not applicable"
-    grep -Fq 'report incomplete merge-subject verification and stop before cleanup' "$RULES_DIR/07-worktree-lifecycle.md" \
+    grep -Fq 'report incomplete merge-subject verification and stop before cleanup' "$LIFECYCLE_INTEGRATION_RULE" \
         || fail_contract "merge-subject verification failures must block cleanup"
     grep -Fq 'Never add attribution trailers or tool branding' "$ATTRIBUTION_MESSAGE_RULE" \
         || fail_contract "commit messages must reject attribution trailers"
@@ -467,67 +475,73 @@ if [ -f "$ATTRIBUTION_RULE" ] && [ -d "$ATTRIBUTION_DIR" ]; then
         || fail_contract "signing failure must stop integration"
 fi
 
-grep -Fq '10 minutes total active elapsed time per merge task' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq '10 minutes total active elapsed time per merge task' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge work must have a ten-minute cumulative time budget"
-grep -Fq 'one full-suite attempt and no automatic full-suite retries' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'one full-suite attempt and no automatic full-suite retries' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge work must limit full-suite attempts and automatic retries"
-grep -Fq 'Share one remaining time allowance and full-suite count across turns, candidates, and authorized subagents' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Share one remaining time allowance and full-suite count across turns, candidates, and authorized subagents' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge budgets must be shared rather than reset by continuation or delegation"
-grep -Fq 'Create a shared budget record before the first budgeted action' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Create a shared budget record before the first budgeted action' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge work must create its budget record before spending"
-grep -Fq 'task identity (repository, target branch, and request scope), time used and remaining with an observation timestamp, full-suite and focused-rerun counts (used and reserved), approved extensions, and reusable evidence' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'task identity (repository, target branch, and request scope), time used and remaining with an observation timestamp, full-suite and focused-rerun counts (used and reserved), approved extensions, and reusable evidence' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge budget records must carry task identity, time and attempt accounting"
-grep -Fq 'The coordinator updates the record and reserves attempts before launch or delegation' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'The coordinator updates the record and reserves attempts before launch or delegation' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge attempts must be reserved before execution or delegation"
-grep -Fq 'Include the current record in every continuation, resumption or compaction handoff, and subagent prompt' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Include the current record in every continuation, resumption or compaction handoff, and subagent prompt' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge continuations and subagents must receive the current budget record"
-grep -Fq 'If remaining time or attempt counts cannot be recovered, stop and ask before further budgeted work' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'If remaining time or attempt counts cannot be recovered, stop and ask before further budgeted work' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "missing merge accounting must require recovery or an explicit ask"
-grep -Fq 'A missing record never grants a fresh allowance' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'A missing record never grants a fresh allowance' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "missing merge budget records must not reset allowances"
-grep -Fq 'Bound each local run or provider wait by the remaining time' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Bound each local run or provider wait by the remaining time' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge execution must enforce the remaining time allowance"
-grep -Fq 'if expected cost exceeds it or cannot reasonably be bounded, ask before starting' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'if expected cost exceeds it or cannot reasonably be bounded, ask before starting' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "unbounded or over-budget merge work must require an explicit ask"
-grep -Fq 'Any second full-suite execution requires explicit approval' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Any second full-suite execution requires explicit approval' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "second full-suite executions must require approval even after a passing run"
-grep -Fq 'At exhaustion, stop safely, preserve logs and state, and leave integration or cleanup pending' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'At exhaustion, stop safely, preserve logs and state, and leave integration or cleanup pending' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "budget exhaustion must stop work without bypassing merge requirements"
-grep -Fq 'Allow at most one focused rerun per merge task, within the remaining budget' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Allow at most one focused rerun per merge task, within the remaining budget' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "focused merge-check recovery must remain bounded"
-grep -Fq "Inspect the target repository's pipeline configuration at the target ref and candidate merge result" "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq "Inspect the target repository's pipeline configuration at the target ref and candidate merge result" "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge checks must discover CI/CD for the actual target and merge result"
-grep -Fq 'Resolve event, branch, path, and job conditions for this merge' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Resolve event, branch, path, and job conditions for this merge' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge checks must resolve pipeline applicability"
 # Backticks are literal Markdown syntax.
 # shellcheck disable=SC2016
-grep -Fq 'A standalone script such as `verify:ci`, a documented `verify` alias, or a broad test target does not establish that CI/CD exists' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'A standalone script such as `verify:ci`, a documented `verify` alias, or a broad test target does not establish that CI/CD exists' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge checks must not infer CI/CD from a verification script"
-grep -Fq 'If no applicable pipeline is confirmed, report what was inspected and explicitly ask:' "$RULES_DIR/07-worktree-lifecycle.md" \
-    && grep -Fq "wait for the user's answer before running merge-time checks or integrating" "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'If no applicable pipeline is confirmed, report what was inspected and explicitly ask:' "$LIFECYCLE_INTEGRATION_RULE" \
+    && grep -Fq "wait for the user's answer before running merge-time checks or integrating" "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "absent or unknown CI/CD must require an explicit ask and answer"
-grep -Fq 'Local CI/CD emulation is permitted only for an applicable pipeline confirmed above' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Local CI/CD emulation is permitted only for an applicable pipeline confirmed above' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "local CI/CD emulation must require a confirmed applicable pipeline"
-grep -Fq 'Every selected check must have valid passing local or hosted evidence before integration' "$RULES_DIR/07-worktree-lifecycle.md" \
-    && grep -Fq 'the applicable configured validation jobs, or the checks explicitly chosen by the user when no applicable CI/CD is confirmed' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Every selected check must have valid passing local or hosted evidence before integration' "$LIFECYCLE_INTEGRATION_RULE" \
+    && grep -Fq 'the applicable configured validation jobs, or the checks explicitly chosen by the user when no applicable CI/CD is confirmed' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "configured and user-selected checks must pass before integration"
-grep -Fq 'Run selected checks that lack valid reusable evidence' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Run selected checks that lack valid reusable evidence' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "selected checks without reusable evidence must execute before integration"
-grep -Fq 'Failed, pending, skipped, or unavailable selected checks block integration' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Failed, pending, skipped, or unavailable selected checks block integration' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "unresolved selected checks must block integration"
-grep -Fq 'A local merge alone does not require another full run' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'A local merge alone does not require another full run' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "merge checks must reuse valid evidence instead of unconditional reruns"
-grep -Fq 'After a failed full-suite run, ask before another full-suite attempt' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'After a failed full-suite run, ask before another full-suite attempt' "$LIFECYCLE_INTEGRATION_RULE" \
     || fail_contract "failed full suites must require an ask before another full attempt"
 grep -Fq 'Ordinary change verification does not authorize a full integration suite' "$RULES_DIR/23-verification.md" \
     || fail_contract "ordinary verification must defer merge check selection to lifecycle policy"
-if grep -Fq 'run the repository-defined integration or CI-equivalent gate' "$RULES_DIR/07-worktree-lifecycle.md" \
-    || grep -Fq 'After any local merge, rerun the same integration/CI-equivalent gate' "$RULES_DIR/07-worktree-lifecycle.md"; then
+if grep -Fq 'run the repository-defined integration or CI-equivalent gate' "$LIFECYCLE_INTEGRATION_RULE" \
+    || grep -Fq 'After any local merge, rerun the same integration/CI-equivalent gate' "$LIFECYCLE_INTEGRATION_RULE"; then
     fail_contract "merge checks must not restore unconditional full-suite gates"
 fi
 
-grep -Fq 'Before handing work back after branch, worktree, integration, PR, merge, or cleanup work:' "$RULES_DIR/07-worktree-lifecycle.md" \
+grep -Fq 'Before handing work back after branch, worktree, integration, PR, merge, or cleanup work:' "$LIFECYCLE_HANDOFF_RULE" \
     || fail_contract "lifecycle handoff must match the index action gate"
+
+grep -Fq 'A title-only edit loads PR/MR title' "$LIFECYCLE_RULE" \
+    || fail_contract "lifecycle dispatcher must isolate title-only edits"
+if grep -Eq '10 minutes total|git branch -d|git reset --hard' "$LIFECYCLE_TITLE_RULE"; then
+    fail_contract "PR title contract must defer merge budgets and cleanup"
+fi
 
 word_count() {
     wc -w < "$1" | tr -d '[:space:]'
@@ -548,7 +562,8 @@ check_path_budget() {
     fi
 }
 
-ALWAYS_ON_WORD_MAX=3429
+# Allow roughly 10% growth above the 2472-word kernel.
+ALWAYS_ON_WORD_MAX=2750
 ROUTER_WORD_MAX=650
 DEVELOPMENT_WORD_MAX=1100
 VERIFICATION_WORD_MAX=550
@@ -584,6 +599,8 @@ done < <(printf '%s\n' "$indexed_entries" | awk -F '\t' '$1 == "always" { print 
 if [ "$always_words" -gt "$ALWAYS_ON_WORD_MAX" ]; then
     fail_contract "always-on kernel is ${always_words} words; budget is ${ALWAYS_ON_WORD_MAX}"
 fi
+
+check_path_budget "PR title lifecycle" 450 "$LIFECYCLE_RULE" "$LIFECYCLE_TITLE_RULE"
 
 if [ -f "$ROUTING_RULE" ]; then
     router_words="$(word_count "$ROUTING_RULE")"

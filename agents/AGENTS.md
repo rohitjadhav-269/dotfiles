@@ -22,8 +22,7 @@ The headings below declare applicability and index every rule. Rule membership i
 - [Core principles](./rules/00-core.md)
 - [Action vs proposal authorization](./rules/01-authorization.md)
 - [Worktree hygiene](./rules/03-worktree-hygiene.md)
-- [Design posture](./rules/10-design-posture.md)
-- [Skill routing](./rules/11-skill-routing.md)
+- [Skill owners](./rules/12-skill-owners.md)
 - [Anti-patterns](./rules/99-anti-patterns.md)
 
 ## Action-gated: load immediately before commit-producing, PR/MR title, attribution, or integration work
@@ -38,11 +37,17 @@ Action signals: creating a git worktree; creating a branch for isolation; finish
 
 - [Worktree lifecycle](./rules/07-worktree-lifecycle.md)
 
+## Activate for selections starting from rule 12, overlapping skill choices, named skill requests, or cross-skill references
+
+A selection starts from rule 12's discovery defaults, two skills could own the same deliverable, the user names a skill, or a skill references another skill. Narrow specialists can use their descriptions directly.
+
+- [Skill routing](./rules/11-skill-routing.md)
+
 ## Activate for host-authenticated, browser, localhost, or sandbox-sensitive tooling
 
 Trigger signals: GitHub CLI or API work, browser verification, localhost previews, Playwright or browser processes, host authentication, network access, or an unexpected sandbox/permission false-negative.
 
-- [Codex host tooling](./rules/04-codex-host-tooling.md)
+- [Host tooling](./rules/04-host-tooling.md)
 
 ## Activate when code is involved
 
@@ -51,6 +56,10 @@ Trigger signals: a package manifest (`package.json`, `pyproject.toml`, `Cargo.to
 - [Code posture](./rules/20-code-posture.md)
 - [Environment and package managers](./rules/22-environment.md)
 - [Verification before completion](./rules/23-verification.md)
+
+## Activate for interface, UX, or visual-artifact work
+
+- [Design posture](./rules/10-design-posture.md)
 
 ## Activate when the project uses browser-rendered UI
 
@@ -85,7 +94,5 @@ Trigger signals: a package manifest (`package.json`, `pyproject.toml`, `Cargo.to
 - Skip preamble. No "Great question!" or "Sure, happy to help!" — just do the work.
 - When flagging a problem, be direct: what's wrong, where, and what the fix is.
 - If you're unsure, say so in one line. Don't hedge for three paragraphs.
-- For design work, lead with the selected mode's required artifact. Use a token map or component contract when that artifact calls for one; do not reduce UX architecture or research work to styling prose.
-- For interface work, lead with the design outcome and rendered quality. Keep repository and Git housekeeping out of the response unless it blocks the work or the user asks for it.
 - **Present findings as structured output, not prose.** Use tables (severity, effort, file:line), bullet lists, or fenced code blocks — not paragraphs. Output should be copy-pasteable as markdown so the user can annotate, comment, and expand directly.
 - **Don't pad.** Length is not weight: no restated context, no filler sections, no scope recap to make a short answer feel substantial. A clean result stated in one line is complete — once the probes behind it are actually finished, and it says which ones they were.

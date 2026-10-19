@@ -172,9 +172,10 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/taste-skill/SKILL.md",
-      "skillFolderHash": "d11cb9568d2f27401ce1f48217721e69ee32637f",
+      "skillFolderHash": "8305962bcc68fb293a2202705ed615513c9535cd",
+      "pluginName": "taste-skill",
       "installedAt": "2026-04-13T02:36:16.105Z",
-      "updatedAt": "2026-10-14T03:06:46.658Z"
+      "updatedAt": "2026-10-19T07:15:41.644Z"
     },
     "full-output-enforcement": {
       "source": "Leonxlnx/taste-skill",
@@ -190,36 +191,39 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/brutalist-skill/SKILL.md",
-      "skillFolderHash": "f812ede7e5c34cf680f629911e9f9ac05e416cf4",
+      "skillFolderHash": "16c42ff61e8e2bbe85e85345bb04ae682fa0ce67",
+      "pluginName": "taste-skill-classics",
       "installedAt": "2026-04-13T02:36:25.172Z",
-      "updatedAt": "2026-09-11T12:14:24.679Z"
+      "updatedAt": "2026-10-19T05:14:23.082Z"
     },
     "minimalist-ui": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/minimalist-skill/SKILL.md",
-      "skillFolderHash": "c99b716035207587e267831561b6510462460ede",
+      "skillFolderHash": "2e92dab6e17ddd1f4aa8895f9a5aab815fac3fbe",
+      "pluginName": "taste-skill-classics",
       "installedAt": "2026-04-13T02:36:28.327Z",
-      "updatedAt": "2026-10-12T14:35:36.862Z"
+      "updatedAt": "2026-10-19T05:14:23.084Z"
     },
     "redesign-existing-projects": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/redesign-skill/SKILL.md",
-      "skillFolderHash": "852ac1700e5e7434c3327f2e577a68187b841800",
+      "skillFolderHash": "8a627d8a360864afb3cd9bd213b3acdabfc2f3a1",
       "installedAt": "2026-04-13T02:36:31.326Z",
-      "updatedAt": "2026-10-12T14:35:36.864Z"
+      "updatedAt": "2026-10-19T05:14:23.085Z"
     },
     "stitch-design-taste": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/stitch-skill/SKILL.md",
-      "skillFolderHash": "de2038cf286b31f33b397c1308455dbc17ef26f3",
+      "skillFolderHash": "9e67b6a2c6e73dcb466546531497b2a23cad94d4",
+      "pluginName": "taste-skill-classics",
       "installedAt": "2026-04-13T02:36:34.371Z",
-      "updatedAt": "2026-09-11T12:14:24.696Z"
+      "updatedAt": "2026-10-19T05:14:23.086Z"
     },
     "pdf-harvester": {
       "source": "mindmorass/reflex",
@@ -387,9 +391,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "58a18b17361ae9b3dba44ffa4f3b33a90c632857",
+      "skillFolderHash": "2c50fe96a4c552977a0aa489294050df6fd069c5",
       "installedAt": "2026-05-03T11:49:23.273Z",
-      "updatedAt": "2026-10-18T13:15:32.197Z"
+      "updatedAt": "2026-10-18T17:36:10.706Z"
     },
     "eleventy-nunjucks": {
       "source": "t4sh/skills4sh",
@@ -478,9 +482,10 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/Leonxlnx/taste-skill.git",
       "skillPath": "skills/gpt-tasteskill/SKILL.md",
-      "skillFolderHash": "838fd5f2d48fd6f4f3171804c549e76b98d2320c",
+      "skillFolderHash": "bec7dc0387e5d8cf58d0e814d2eaade801d13e71",
+      "pluginName": "taste-skill-classics",
       "installedAt": "2026-06-06T02:59:05.844Z",
-      "updatedAt": "2026-10-12T14:35:36.860Z"
+      "updatedAt": "2026-10-19T05:14:23.083Z"
     },
     "web-typography": {
       "source": "wondelai/skills",

@@ -1,1 +1,3 @@
-{}
+{
+  "design-taste-frontend": "Local safety patch removes unsafe cross-run browser-profile deletion; retain until upstream cleanup is verified safe."
+}

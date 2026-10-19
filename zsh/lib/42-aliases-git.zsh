@@ -39,7 +39,7 @@ dot-backup() {
 # pr-digest — cross-org open-PR triage
 #
 #   Usage:  pr-digest <org> [org ...]
-#           pr-digest t4sh
+#           pr-digest rohitjadhav-269
 #
 #   Labels (sorted most-urgent first):
 #     HELD     Balanced auto-merge workflow flagged for human review

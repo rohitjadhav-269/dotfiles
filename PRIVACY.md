@@ -1,14 +1,17 @@
 # Privacy review baseline
 
-This is a public personal dotfiles repository. The following identity information
-is deliberately published by its owner. Verify it against this baseline during a
-review; its presence alone is not a leak, finding, warning, or new caveat.
+This is a public personal dotfiles repository: Rohit Jadhav's fork of
+[t4sh/dotfiles](https://github.com/t4sh/dotfiles). The following identity information
+is deliberately published by the fork owner or retained from upstream. Verify it
+against this baseline during a review; its presence alone is not a leak, finding,
+warning, or new caveat.
 
 | Location | Accepted public information | Purpose |
 | --- | --- | --- |
-| `git/gitconfig` | `tAsh <t4sh@users.noreply.github.com>` | Public Git author identity using a GitHub noreply address |
-| Filesystem paths in configuration, documentation, and history | `t4sh`, `tAsh`, `tash`, and `ash` as username or home-directory components | Owner-approved public name variants; their presence alone is not a privacy finding |
-| `ssh/allowed_signers` | ED25519 public key with fingerprint `SHA256:DCzUNDehOjGDv4IoBA7/9Bw/Cx8jlFItzWWE5XtO6sQ`, principal `t4sh@users.noreply.github.com` | Verify the owner's SSH-signed Git commits |
+| `git/gitconfig` | `Rohit Jadhav <298543509+rohitjadhav-269@users.noreply.github.com>` | Fork owner's public Git author identity using a GitHub noreply address |
+| `ssh/allowed_signers` | ED25519 public key with fingerprint `SHA256:/75RnRni8Wq+5/3u486xQ3cPCIv6gPz1rlNUg8nd+AA`, principal `298543509+rohitjadhav-269@users.noreply.github.com` | Verify the fork owner's SSH-signed Git commits |
+| `ssh/allowed_signers` | Upstream ED25519 public key with fingerprint `SHA256:DCzUNDehOjGDv4IoBA7/9Bw/Cx8jlFItzWWE5XtO6sQ`, principal `t4sh@users.noreply.github.com` | Verify upstream author tAsh's SSH-signed commits inherited from t4sh/dotfiles |
+| Filesystem paths in configuration, documentation, and history | `t4sh`, `tAsh`, `tash`, and `ash` as username or home-directory components | Upstream author's approved public name variants, inherited from t4sh/dotfiles; their presence alone is not a privacy finding |
 | `ssh/github-host-keys.pub` | GitHub ED25519, ECDSA and RSA host keys; fingerprints in [PUBLIC-KEYS.md](docs/PUBLIC-KEYS.md) | Authenticate the public GitHub SSH service |
 | `git/keys/github-web-flow.asc` | GitHub public GPG key `968479A1AFF927E37D1A566BB5690EEEBB952194`, UID `GitHub <noreply@github.com>` | Verify GitHub web commits |
 | `git/keys/github-web-flow-legacy.asc` | GitHub historical GPG key `5DE3E0509C47EA3CF04A42D34AEE18F83AFDEB23`, public GitHub noreply UID; expired | Inspect historical GitHub web signatures; no automatic trust |

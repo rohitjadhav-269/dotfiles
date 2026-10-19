@@ -49,7 +49,7 @@ Start with the [fork setup guide](docs/FORKING.md) to set your identity, signing
 ### Fresh Mac
 
 ```bash
-git clone https://github.com/t4sh/dotfiles.git ~/.dotfiles
+git clone https://github.com/rohitjadhav-269/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 bash install.sh
 ```
@@ -72,7 +72,7 @@ After bootstrap:
 ### Existing Mac (already has Homebrew)
 
 ```bash
-git clone https://github.com/t4sh/dotfiles.git ~/.dotfiles
+git clone https://github.com/rohitjadhav-269/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles
 make all
 ```

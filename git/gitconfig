@@ -2,8 +2,8 @@
 	keepBackup = true
 	prompt = false
 [user]
-	name = tAsh
-	email = t4sh@users.noreply.github.com
+	name = Rohit Jadhav
+	email = 298543509+rohitjadhav-269@users.noreply.github.com
 	signingkey = ~/.ssh/github_ed25519.pub
 [core]
 	filemode = false

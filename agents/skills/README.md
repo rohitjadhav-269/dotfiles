@@ -1,5 +1,5 @@
 ---
-generated: 2026-10-16T11:13:26+05:30
+generated: 2026-10-20T05:49:12+05:30
 skills_count: 128
 gated_count: 0
 lock_file: ../.skill-lock.json
@@ -37,7 +37,7 @@ When this file is asked to be updated. Update the following
 | 14 | better-typography | jakubkrehel/skills | `~/.agents/skills/better-typography/` | — |
 | 15 | better-ui | jakubkrehel/skills | `~/.agents/skills/better-ui/` | — |
 | 16 | better-writing | jakubkrehel/skills | `~/.agents/skills/better-writing/` | — |
-| 17 | brandkit | Leonxlnx/taste-skill | `~/.agents/skills/brandkit/` | — |
+| 17 | brandkit | Leonxlnx/imagegen-skills | `~/.agents/skills/brandkit/` | — |
 | 18 | business-motion-film | echris6/motion-video-kit | `~/.agents/skills/business-motion-film/` | — |
 | 19 | canvas-design | anthropics/skills | `~/.agents/skills/canvas-design/` | — |
 | 20 | claude-handoff | mattpocock/skills | `~/.agents/skills/claude-handoff/` | — |
@@ -168,8 +168,8 @@ for live disk differences and missing managed skills; generation requires a Git 
 - **anthropics/knowledge-work-plugins** (10): architecture, debug, deploy-checklist, design-handoff, design-system, documentation, research-synthesis, system-design, tech-debt, user-research
 - **jakubkrehel/skills** (9): better-accessibility, better-colors, better-interface, better-layout, better-typography, better-ui, better-writing, interface-review, variant
 - **local** (9): aside-browser, code-review-nextjs, paseo, paseo-advisor, paseo-committee, paseo-handoff, paseo-help, paseo-loop, paseo-plugin
-- **Leonxlnx/taste-skill** (8): brandkit, design-taste-frontend, full-output-enforcement, gpt-taste, industrial-brutalist-ui, minimalist-ui, redesign-existing-projects, stitch-design-taste
 - **t4sh/skills4sh** (8): agent-memory, code-to-figma, discord-harvest, eleventy-nunjucks, figma-to-code, init-rulebook, localhost-screenshots, skill-architect
+- **Leonxlnx/taste-skill** (7): design-taste-frontend, full-output-enforcement, gpt-taste, industrial-brutalist-ui, minimalist-ui, redesign-existing-projects, stitch-design-taste
 - **emilkowalski/skills** (7): animation-vocabulary, apple-design, emil-design-eng, find-animation-opportunities, improve-animations, pick-ui-library, review-animations
 - **DietrichGebert/ponytail** (4): ponytail, ponytail-audit, ponytail-help, ponytail-review
 - **anthropics/skills** (3): canvas-design, frontend-design, theme-factory
@@ -181,6 +181,7 @@ for live disk differences and missing managed skills; generation requires a Git 
 - **wondelai/skills** (2): top-design, web-typography
 - **wshobson/agents** (2): monorepo-management, tailwind-design-system
 - **ComposioHQ/awesome-claude-skills** (1): file-organizer
+- **Leonxlnx/imagegen-skills** (1): brandkit
 - **NVIDIA/SkillSpector** (1): skill-inspector
 - **arvindrk/extract-design-system** (1): extract-design-system
 - **cerico/macfair** (1): creative-design

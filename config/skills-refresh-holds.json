@@ -1,4 +1,5 @@
 {
   "design-taste-frontend": "Local safety patch removes unsafe cross-run browser-profile deletion; retain until upstream cleanup is verified safe.",
-  "localhost-screenshots": "Local installation fix resolves project-owned Playwright from the working directory; retain until the upstream helpers include this fix."
+  "localhost-screenshots": "Local installation fix resolves project-owned Playwright from the working directory; retain until the upstream helpers include this fix.",
+  "vercel-composition-patterns": "Retain the complete pinned skill: the skills installer excludes its required metadata.json on refresh; update this skill manually with its supplemental resource record."
 }

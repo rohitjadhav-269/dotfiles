@@ -50,6 +50,12 @@ Keep these supplemental resources when refreshing or projecting the correspondin
 skills. Update their source records when their upstream content changes. A skill
 installer that copies only the skill directory will not restore these resources.
 
+Vercel Composition Patterns is held out of automated refresh in
+`config/skills-refresh-holds.json`: the skills installer deliberately excludes
+`metadata.json` when rebuilding its directory, while this repository keeps the
+complete pinned resource set. Update that skill manually with its supplemental
+resource checksums; retain the hold until refresh preserves the required file.
+
 ## Ownership
 
 The shared tree is repository-managed. Personal orchestration preferences remain

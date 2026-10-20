@@ -112,6 +112,44 @@ exit "${FIXTURE_EXIT:-0}"
         self.assertEqual(result.returncode, 17, result.stderr)
         self.assert_curated_unchanged()
 
+    def test_vercel_metadata_survives_managed_refresh(self):
+        lock = self.root / "agents/.skill-lock.json"
+        data = json.loads(lock.read_text())
+        name = "vercel-composition-patterns"
+        data["skills"][name] = {
+            "sourceType": "github", "source": "fixture/shared",
+            "skillFolderHash": "a" * 40, "skillPath": f"{name}/SKILL.md",
+        }
+        lock.write_text(json.dumps(data), encoding="utf-8")
+        folder = self.root / "agents/skills" / name
+        folder.mkdir()
+        (folder / "SKILL.md").write_text("pinned skill\n", encoding="utf-8")
+        metadata = folder / "metadata.json"
+        metadata.write_bytes(b'{"version":"pinned"}\n')
+        before = {p.name: p.read_bytes() for p in folder.iterdir()}
+        # Consume the real repository policy: without it, the fake CLI models
+        # skills 1.7.4 rebuilding the folder while excluding metadata.json.
+        policy = json.loads((ROOT / "config/skills-refresh-holds.json").read_text())
+        holds = json.loads(self.holds.read_text())
+        if name in policy:
+            holds[name] = policy[name]
+        self.holds.write_text(json.dumps(holds), encoding="utf-8")
+        installer = self.root / "installer"
+        installer.write_text(installer.read_text().replace(
+            'exit "${FIXTURE_EXIT:-0}"',
+            'for name in "$@"; do\n'
+            '  if [ "$name" = vercel-composition-patterns ]; then\n'
+            '    rm -f "$FIXTURE_ROOT/agents/skills/$name/metadata.json"\n'
+            '  fi\ndone\nexit "${FIXTURE_EXIT:-0}"'), encoding="utf-8")
+        self.assertEqual(self.generate().returncode, 0)
+        for status in ("0", "0", "17"):
+            self.env["FIXTURE_EXIT"] = status
+            result = self.refresh()
+            self.assertEqual(result.returncode, int(status), result.stderr)
+            self.assertEqual({p.name: p.read_bytes() for p in folder.iterdir()}, before)
+            self.assertEqual((self.root / "agents/skills/ordinary/SKILL.md").read_text(),
+                             "new upstream content\n")
+
     @unittest.skipUnless(os.name == "nt", "real CMD wrapper requires Windows")
     def test_generated_refresh_passes_one_agent_through_real_windows_wrapper(self):
         for name in ("npx-skills-windows.cmd", "summarize-skills-update.py"):

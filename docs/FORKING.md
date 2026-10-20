@@ -37,9 +37,10 @@ settings before replacing them. After linking, `git config --global` may write
 through the managed link into your fork, so review resulting diffs before commits.
 
 The upstream author's identity and public verification key are intentional;
-[PRIVACY.md](../PRIVACY.md) records them. If you publish your own identity or key
-in your fork, update that baseline to describe your choices. Do not publish a
-personal email address merely because Git accepts it.
+see [Public verification keys](PUBLIC-KEYS.md). Public projections also record
+published identity choices in `PRIVACY.md`. If you publish your own identity or
+key in your fork, update that public baseline to describe your choices. Do not
+publish a personal email address merely because Git accepts it.
 
 ## 3. Choose your signing key
 
@@ -111,8 +112,8 @@ compare the server's fingerprint with a trusted source; GitHub publishes its
 
 ## 5. Install and verify your choices
 
-Continue with the [Mac quick start](../README.md#quick-start) or
-[Windows setup](../WINDOWS.md#setup). Before your first commit, inspect the
+Continue with the [Mac setup](../README.md) or
+[Windows setup](../WINDOWS.md). Before your first commit, inspect the
 actual author, committer, and signing settings from this checkout:
 
 ```sh

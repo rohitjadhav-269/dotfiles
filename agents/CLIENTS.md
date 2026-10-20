@@ -44,3 +44,10 @@ This public projection has fixture coverage, not a live-client acceptance claim.
 - Skill discovery stays shared across clients; no per-client skill curation or
   invocation overrides are applied. Nested skill directories remain supported by
   Cursor discovery. No live startup or forced compaction acceptance is claimed.
+
+## Mac RTK hooks
+
+Mac bootstrap and `make all` merge the automatic RTK hooks through
+`make restore-codex-rtk` and `make restore-claude-rtk`. Check them with
+`make codex-rtk-check` and `make claude-rtk-check`. Reload the client and review
+and trust its exact hook locally. Windows retains instruction-based RTK guidance.

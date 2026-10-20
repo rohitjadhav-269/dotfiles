@@ -8,10 +8,31 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from urllib.parse import unquote, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 
 class PublicBootstrap(unittest.TestCase):
+    def test_dock_fallback_matches_its_public_snapshot(self):
+        fallback = []
+        for line in (ROOT / 'macos/dock-dev.sh').read_text().splitlines():
+            declaration = line.strip()
+            if declaration.startswith('add_app "') and declaration.endswith('"'):
+                fallback.append(('file-tile', Path(declaration[len('add_app "'):-1]).stem))
+            elif declaration == 'add_spacer':
+                fallback.append(('spacer-tile', None))
+            elif declaration == 'add_small_spacer':
+                fallback.append(('small-spacer-tile', None))
+        snapshot = plistlib.loads((ROOT / 'macos/dock-backup.plist').read_bytes())
+        captured = []
+        for tile in snapshot['persistent-apps']:
+            app = None
+            if tile['tile-type'] == 'file-tile':
+                url = tile['tile-data']['file-data']['_CFURLString']
+                app = Path(unquote(urlparse(url).path)).stem
+            captured.append((tile['tile-type'], app))
+        self.assertEqual(fallback, captured)
+
     @unittest.skipUnless(shutil.which('make'), 'Requires Make for command previews')
     def test_windows_media_targets_dispatch_without_mac_rejection(self):
         for target, flag in (('default-apps', '-OpenSettings'), ('default-apps-check', '-Check')):

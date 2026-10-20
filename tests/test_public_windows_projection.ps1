@@ -281,6 +281,7 @@ function Invoke-DotfilesNative($Executable, $Arguments) { $global:PublicMediaArg
     $vlcFixture = Join-Path $root 'tests/test_windows_vlc_associations.ps1'
     if (-not (Test-Path -LiteralPath $vlcFixture -PathType Leaf)) { throw 'VLC association-resolution fixture is missing.' }
     Invoke-PublicProjectionChild -ScriptPath $vlcFixture
+    Invoke-PublicProjectionChild -ScriptPath (Join-Path $root 'tests/test_paseo_retirement.ps1')
     Write-Output 'PASS: Deskflow policy and installer wiring, package coverage, VLC dispatch/input rejection/resolution, doctor PATH guidance, TLDR failure, and child exit propagation.'
 } finally {
     $resolvedFixture = [IO.Path]::GetFullPath($fixture)

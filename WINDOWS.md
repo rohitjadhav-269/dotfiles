@@ -1,4 +1,7 @@
 # Windows workflow
+
+For fresh setup or adoption of existing configuration, follow [the agent setup runbook](docs/AGENT-SETUP.md) before [Setup](#setup). Existing setups require backup-status confirmation and an approved migration plan; real directories at managed link destinations must be reconciled before linking. The maintenance notes below apply after setup.
+
 ## Maintenance scope and diagnostics
 
 Use `update-all -SkipSkills` for apps only, or `update-all -SkipApps` for skills.
@@ -44,9 +47,12 @@ separate manifests under `config/windows-*.tsv` and `apps/windows/`.
 ## Setup
 
 Use a Git checkout, Windows Terminal, winget (Microsoft App Installer), and
-standard PowerShell 7.4 or newer. Store-packaged PowerShell is excluded because
-its filesystem redirection can reach different preference files. Windows
-PowerShell 5.1 is supported only as the bootstrap bridge.
+standard PowerShell 7.4 or newer. On a machine without Git, install it first
+(`winget install --id Git.Git -e`) so the clone below works. Developer Mode is
+not required; links fall back to hardlinks and junctions. Store-packaged
+PowerShell is excluded because its filesystem redirection can reach different
+preference files. Windows PowerShell 5.1 is supported only as the bootstrap
+bridge.
 
 The scripts require a persistent RemoteSigned policy (existing Unrestricted or
 Bypass also works). Set it explicitly before setup, then open a fresh console:
@@ -67,6 +73,14 @@ before linking: existing destinations may be backed up and replaced.
 Link checks and repair reject existing files hidden behind MSIX cache redirection.
 If reported, open standard PowerShell directly from Windows Run or Explorer and
 retry so the workflow reaches the actual configuration files.
+
+## Retired Paseo setup
+
+If this machine previously used Paseo, follow the explicit preview/apply steps in
+[the retirement guide](docs/PASEO-RETIREMENT.md). Removing package/link manifest
+rows and rerunning `dot path` does not remove old links or an existing User PATH
+entry. The cleanup verifies link ownership and preserves saved data and custom
+install locations; review those separately. Native cleanup acceptance is pending.
 
 ## Daily commands
 

@@ -36,17 +36,24 @@ add_app "/System/Applications/Mail.app"
 
 add_spacer
 
-# Writing
-add_app "/Applications/Obsidian.app"
-add_app "/Applications/Craft.app"
-
-add_spacer
-
 # Chat
 add_app "/Applications/WhatsApp.app"
 add_app "/Applications/Discord.app"
 
 add_small_spacer
+
+# Writing
+add_app "/Applications/Sublime Text.app"
+add_app "/Applications/Obsidian.app"
+
+add_small_spacer
+
+# AI and Git
+add_app "/Applications/ChatGPT.app"
+add_app "/Applications/Craft Agents.app"
+add_app "/Applications/Tower.app"
+
+add_spacer
 
 # Browsers
 add_app "/Applications/Microsoft Edge.app"
@@ -55,23 +62,15 @@ add_app "/Applications/Aside.app"
 add_app "/Applications/DuckDuckGo.app"
 add_app "/Applications/Safari.app"
 
-add_small_spacer
-
-# Dev tools
-add_app "/Applications/Sublime Text.app"
-add_app "/Applications/Kaleidoscope.app"
-add_app "/Applications/Tower.app"
-add_app "/System/Applications/Utilities/Terminal.app"
-
 add_spacer
 
-# AI & Code
-add_app "/Applications/ChatGPT.app"
-add_app "$HOME/.hermes/hermes-agent/apps/desktop/release/mac-arm64/Hermes.app"
+# Dev tools
+add_app "/System/Applications/Utilities/Terminal.app"
 add_app "/Applications/Visual Studio Code.app"
 add_app "/Applications/Cursor.app"
-add_app "/Applications/Zed.app"
+add_app "/Applications/Kaleidoscope.app"
 
+add_small_spacer
 add_small_spacer
 
 # Right side — Downloads folder

@@ -46,6 +46,5 @@ vercel-labs/agent-skills	reviewed	pre-existing tracked source before 2026-07-03 
 vercel-labs/skills	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 wondelai/skills	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
 wshobson/agents	reviewed	pre-existing tracked source before 2026-07-03 audit hardening
-getpaseo/paseo	Apache-2.0	GitHub root LICENSE inspected 2026-10-20; official six orchestration skills
 cloudflare/skills	Apache-2.0	https://github.com/cloudflare/skills/blob/86505e44f87d801aa1864a3c4109e9a8ae5c409f/LICENSE; inspected 2026-10-20
 shadcn-ui/ui	MIT	https://github.com/shadcn-ui/ui/blob/ba1503c64472b82256d9de95e2e62c5901a38e8b/LICENSE.md; inspected 2026-10-20

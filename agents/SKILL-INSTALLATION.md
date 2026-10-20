@@ -52,10 +52,8 @@ installer that copies only the skill directory will not restore these resources.
 
 ## Ownership
 
-The shared tree is repository-managed. Paseo's six supported skills now have
-GitHub lock records; the retired `paseo-loop` skill and client link rows are removed.
-Scheduling and heartbeat functionality remains available through Paseo. Personal
-orchestration preferences are retained outside this tree.
+The shared tree is repository-managed. Personal orchestration preferences remain
+outside this tree.
 
 Aside's entry point is vendor-CLI-managed; its live guide comes from that CLI.
 `code-review-nextjs` is locally authored. Codex system and plugin-cache skills are

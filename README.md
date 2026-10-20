@@ -21,7 +21,7 @@ Most [awesome-dotfiles](https://github.com/webpro/awesome-dotfiles) examples sto
 | Verification | Uncommon | `make doctor`, `brewfile-audit`, `verify-idempotency.sh`, gitleaks |
 | AI agents | Emerging (e.g. nicksp) | Whole [`agents/`](agents/) tree, skills lockfile, license gate |
 
-**Scope:** macOS only. No chezmoi/yadm templating — per-machine overrides go in gitignored `zsh/lib/99-local.zsh`.
+**Scope:** macOS, plus native Windows setup in [WINDOWS.md](WINDOWS.md). No chezmoi/yadm templating — per-machine overrides go in gitignored `zsh/lib/99-local.zsh`.
 
 ## Requirements
 
@@ -44,7 +44,7 @@ Most [awesome-dotfiles](https://github.com/webpro/awesome-dotfiles) examples sto
 
 ## Quick start
 
-Start with the [fork setup guide](docs/FORKING.md) to set your identity, signing key, and local SSH configuration before bootstrap. A [generic SSH example](ssh/config.example) is included for adaptation.
+Using an AI agent? Point it at [AGENTS.md](AGENTS.md); its [setup runbook](docs/AGENT-SETUP.md) covers fresh setup and adoption of existing configuration. For existing setups, confirm backup status or explicit consent to migrate an unorganized setup without a backup, and approve the migration plan before changes. Start with the [fork setup guide](docs/FORKING.md) to set your identity, signing key, and local SSH configuration before bootstrap. A [generic SSH example](ssh/config.example) is included for adaptation.
 
 ### Fresh Mac
 
@@ -54,7 +54,7 @@ cd ~/.dotfiles
 bash install.sh
 ```
 
-`install.sh` resolves the repo root from its own location (or `DOTFILES` if set), so a non-default clone path works: `DOTFILES=~/src/dotfiles bash ~/src/dotfiles/install.sh`.
+Use `~/.dotfiles` after resolving any existing occupant through the [migration checkpoint](docs/AGENT-SETUP.md#adopt-an-existing-setup). A custom location requires separate adaptation and verification: `DOTFILES` alone does not update shell and runtime paths that still reference `~/.dotfiles`.
 
 `install.sh` installs Xcode CLI tools (if needed), Homebrew, **brew-core** then resumable **brew-apps**, pinned Node via `make node`, npm globals via `make brew-npm`, shims, convergent Automator services, app prefs, optional Dock, git hooks, optional macOS defaults (including Touch ID sudo) last, and optionally Terminal profiles at the very end.
 
@@ -70,6 +70,8 @@ After bootstrap:
 4. Finish the GUI leftovers list from `post-vault`, then run `make verify-bootstrap`.
 
 ### Existing Mac (already has Homebrew)
+
+Before cloning or running `make all`, follow the [existing-setup migration checkpoint](docs/AGENT-SETUP.md#adopt-an-existing-setup). Resolve any existing `~/.dotfiles` checkout and agree which settings to retain, merge or replace. `make all` applies the full policy; use selected targets for a partial adoption.
 
 ```bash
 git clone https://github.com/t4sh/dotfiles.git ~/.dotfiles

@@ -70,10 +70,6 @@ Trigger signals: a package manifest (`package.json`, `pyproject.toml`, `Cargo.to
 
 - [Tech stack discovery](./rules/25-tech-stack-discovery.md)
 
-## Activate when using Paseo agents, worktrees, loops, schedules, or daemon tooling
-
-- [Paseo orchestration](./rules/05-paseo-orchestration.md)
-
 ## Activate for Hermes memory, learning or skill maintenance
 
 - [Hermes learning](./rules/06-hermes-learning.md)

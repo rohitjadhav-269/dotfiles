@@ -41,7 +41,7 @@ brew:mas	macos-only			Apple/Homebrew-specific app or shell integration; not appl
 brew:mole	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.
 brew:moreutils	manual			Optional POSIX toolkit; not a Windows bootstrap dependency.
 brew:nvm	native	winget	Volta.Volta	Native Windows counterpart; identity verified against installed WinGet inventory.
-brew:opencode	native	winget	SST.opencode	OpenCode CLI for Paseo; separate from the desktop app.
+brew:opencode	native	winget	SST.opencode	OpenCode CLI; separate from the desktop app.
 brew:pi-coding-agent	runtime	volta	@earendil-works/pi-coding-agent	Explicit runtime-manager package; not a Homebrew dependency on Windows.
 brew:poppler	native	winget	oschwartz10612.Poppler	Native Windows counterpart; identity verified against installed WinGet inventory.
 brew:portless	manual			Windows local HTTPS setup is deferred; Mac uses the Homebrew formula.
@@ -131,7 +131,6 @@ cask:onyx	macos-only			Apple/Homebrew-specific app or shell integration; not app
 cask:open-video-downloader	native	winget	jely2002.youtube-dl-gui	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:opencode-desktop	native	winget	SST.OpenCodeDesktop	Native Windows counterpart; identity verified against installed WinGet inventory.
 cask:paper-design	manual			https://paper.design/downloads/ (vendor installer)
-cask:paseo	manual			https://paseo.sh/download
 cask:pearcleaner	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.
 cask:perplexity	native	msstore	9P9XG917PWCJ	Preserve Store edition; do not install the older desktop package.
 cask:raindropio	native	winget	RustemMussabekov.Raindrop	Native Windows counterpart; identity verified against installed WinGet inventory.

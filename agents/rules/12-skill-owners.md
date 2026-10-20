@@ -16,4 +16,3 @@ Always on. Discovery defaults only. Before selecting a listed skill, load [skill
 - Research: `research` for delegated work with a requested saved report; ordinary lookups follow `31-current-info.md`.
 - PDF: `pdf-harvester` for extraction or RAG.
 - Skill authoring: `skill-architect`; `skill-creator` named.
-- Paseo: `paseo` or its named subskill.

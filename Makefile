@@ -358,7 +358,7 @@ verify-bootstrap: ## Fail unless the post-vault Mac bootstrap is complete
 
 docs-audit: ## Check docs/scripts for typos when typos is installed
 	@if command -v typos >/dev/null 2>&1; then \
-		typos README.md AGENTS.md WINDOWS.md SECRETS-WINDOWS.md Makefile windows.mk install.sh install.ps1 scripts macos zsh powershell config hammerspoon bin git starship; \
+		typos README.md AGENTS.md WINDOWS.md SECRETS-WINDOWS.md Makefile windows.mk install.sh install.ps1 scripts macos zsh powershell config hammerspoon bin git starship docs; \
 	else \
 		echo "  - typos not installed; run 'make brew' first"; \
 	fi

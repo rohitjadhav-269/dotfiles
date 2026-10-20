@@ -343,9 +343,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/pbakaus/impeccable.git",
       "skillPath": ".agents/skills/impeccable/SKILL.md",
-      "skillFolderHash": "91c5e484720fc3740c59580094a4f52a6b545ef5",
+      "skillFolderHash": "f09f5ad7f7d913f9d4eeecd464c59868b27406ba",
       "installedAt": "2026-05-03T11:49:23.273Z",
-      "updatedAt": "2026-10-20T00:53:52.056Z"
+      "updatedAt": "2026-10-20T06:32:48.134Z"
     },
     "eleventy-nunjucks": {
       "source": "t4sh/skills4sh",
@@ -1055,60 +1055,6 @@
       "skillFolderHash": "57fcc50e29344fd586c5702e0961f72a23573096",
       "installedAt": "2026-10-15T12:03:26.555Z",
       "updatedAt": "2026-10-15T12:03:26.555Z"
-    },
-    "paseo": {
-      "source": "getpaseo/paseo",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/getpaseo/paseo.git",
-      "skillPath": "skills/paseo/SKILL.md",
-      "skillFolderHash": "e541a48885866ab3345f494660b80395c9935013",
-      "installedAt": "2026-10-20T00:54:45.125Z",
-      "updatedAt": "2026-10-20T00:54:45.125Z"
-    },
-    "paseo-advisor": {
-      "source": "getpaseo/paseo",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/getpaseo/paseo.git",
-      "skillPath": "skills/paseo-advisor/SKILL.md",
-      "skillFolderHash": "fe95db83e0de5cef4817fa7bd70064902bf9c470",
-      "installedAt": "2026-10-20T00:54:45.125Z",
-      "updatedAt": "2026-10-20T00:54:45.125Z"
-    },
-    "paseo-committee": {
-      "source": "getpaseo/paseo",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/getpaseo/paseo.git",
-      "skillPath": "skills/paseo-committee/SKILL.md",
-      "skillFolderHash": "eda139e47b498bbe29227f1c30b54abe6c5305ae",
-      "installedAt": "2026-10-20T00:54:45.125Z",
-      "updatedAt": "2026-10-20T00:54:45.125Z"
-    },
-    "paseo-handoff": {
-      "source": "getpaseo/paseo",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/getpaseo/paseo.git",
-      "skillPath": "skills/paseo-handoff/SKILL.md",
-      "skillFolderHash": "34d24a9a5f2c9f4132b27a2bb9f0027d708e912e",
-      "installedAt": "2026-10-20T00:54:45.125Z",
-      "updatedAt": "2026-10-20T00:54:45.125Z"
-    },
-    "paseo-help": {
-      "source": "getpaseo/paseo",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/getpaseo/paseo.git",
-      "skillPath": "skills/paseo-help/SKILL.md",
-      "skillFolderHash": "8bd76d796e3339ae58e412e50d1a9dccfde1ef53",
-      "installedAt": "2026-10-20T00:54:45.125Z",
-      "updatedAt": "2026-10-20T00:54:45.125Z"
-    },
-    "paseo-plugin": {
-      "source": "getpaseo/paseo",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/getpaseo/paseo.git",
-      "skillPath": "skills/paseo-plugin/SKILL.md",
-      "skillFolderHash": "bd1e3c810a703ffdf1f66490abc64fd82f5aec7d",
-      "installedAt": "2026-10-20T00:54:45.125Z",
-      "updatedAt": "2026-10-20T00:54:45.125Z"
     },
     "web-perf": {
       "source": "cloudflare/skills",

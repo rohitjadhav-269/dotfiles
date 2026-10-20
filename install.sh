@@ -81,11 +81,17 @@ fi
 # 5. Default shell
 if [[ "$BOOTSTRAP_SMOKE" == "1" ]]; then
     echo "  - disposable core smoke: default-shell mutation deferred"
-elif [ "$SHELL" != "/bin/zsh" ]; then
-    echo "→ Setting zsh as default shell..."
-    chsh -s /bin/zsh
 else
-    echo "✓ zsh is already default shell"
+    if ! account_shell="$(dscacheutil -q user -a name "$(id -un)" | awk '$1 == "shell:" { print $2; exit }')" || [[ -z "$account_shell" ]]; then
+        echo "Could not read the account's default shell" >&2
+        exit 1
+    fi
+    if [[ "$account_shell" != "/bin/zsh" ]]; then
+        echo "→ Setting zsh as default shell..."
+        chsh -s /bin/zsh
+    else
+        echo "✓ zsh is already default shell"
+    fi
 fi
 
 # 6. NVM + Node + npm globals. Brew's npm rows are deliberately deferred until

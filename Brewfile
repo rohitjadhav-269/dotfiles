@@ -84,7 +84,7 @@ brew "mole"
 brew "moreutils"
 # Manage multiple Node.js versions
 brew "nvm"
-# CLI provider used by Paseo; desktop app is declared separately below
+# OpenCode CLI; desktop app is declared separately below
 brew "opencode"
 # AI agent toolkit
 brew "pi-coding-agent"
@@ -270,8 +270,6 @@ cask "open-video-downloader"
 cask "opencode-desktop"
 # Design tool for creating interfaces and prototypes
 cask "paper-design"
-# Self-hosted daemon for AI coding agents
-cask "paseo"
 # Utility to uninstall apps and remove leftover files from old/uninstalled apps
 cask "pearcleaner"
 # AI-powered answer engine with Personal Computer agent

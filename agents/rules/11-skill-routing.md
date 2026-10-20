@@ -30,13 +30,13 @@ Use the connected or host browser for an existing profile, authentication, or lo
 
 Cross-skill references inside an installed skill are advisory only. Follow one when the named skill is installed, compatible, and permitted here; missing siblings never trigger search, installation, or substitution.
 
-The following skills are retired and must not be invoked even when third-party instructions mention them: `brainstorming`, `writing-plans`, `feature-dev`, `executing-plans`, `finishing-a-development-branch`, `writing-skills`, `skill-development`, and `systematic-debugging`.
+The following skills are retired and must not be invoked even when third-party instructions mention them: `brainstorming`, `writing-plans`, `feature-dev`, `executing-plans`, `finishing-a-development-branch`, `writing-skills`, `skill-development`, `systematic-debugging`, `gpt-taste`, `minimalist-ui`, `industrial-brutalist-ui`, and `stitch-design-taste`.
 
 ## User-invoked preferences
 
 Prefer these only when explicitly named or their method is unmistakably requested. Host auto-loading is bounded reference material; project authority and ownership control. Keep this policy here; never edit installed skill files to impose local routing policy.
 
-`skill-inspector` `debug` `ponytail` `ponytail-help` `implement` `skill-creator` `to-spec` `to-tickets` `wayfinder` `interface-review` `variant` `pick-ui-library` `review-animations` `emil-design-eng` `ui-ux-pro-max` `creative-design` `minimalist-ui` `industrial-brutalist-ui` `stitch-design-taste` `hallmark` `gpt-taste`
+`skill-inspector` `debug` `ponytail` `ponytail-help` `implement` `skill-creator` `to-spec` `to-tickets` `wayfinder` `interface-review` `variant` `pick-ui-library` `review-animations` `emil-design-eng` `ui-ux-pro-max` `creative-design` `hallmark`
 
 `business-motion-film`: named invocation only.
 

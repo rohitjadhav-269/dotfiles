@@ -36,7 +36,7 @@ The following skills are retired and must not be invoked even when third-party i
 
 Prefer these only when explicitly named or their method is unmistakably requested. Host auto-loading is bounded reference material; project authority and ownership control. Keep this policy here; never edit installed skill files to impose local routing policy.
 
-`skill-inspector` `debug` `ponytail` `ponytail-help` `implement` `skill-creator` `to-spec` `to-tickets` `wayfinder` `interface-review` `variant` `pick-ui-library` `review-animations` `emil-design-eng` `ui-ux-pro-max` `creative-design` `minimalist-ui` `industrial-brutalist-ui` `redesign-existing-projects` `stitch-design-taste` `hallmark` `gpt-taste`
+`skill-inspector` `debug` `ponytail` `ponytail-help` `implement` `skill-creator` `to-spec` `to-tickets` `wayfinder` `interface-review` `variant` `pick-ui-library` `review-animations` `emil-design-eng` `ui-ux-pro-max` `creative-design` `minimalist-ui` `industrial-brutalist-ui` `stitch-design-taste` `hallmark` `gpt-taste`
 
 `business-motion-film`: named invocation only.
 

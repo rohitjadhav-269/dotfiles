@@ -63,7 +63,6 @@ brew:wget	native	winget	GNU.Wget2	Native Windows counterpart; identity verified 
 brew:yq	native	winget	MikeFarah.yq	Native Windows counterpart; identity verified against installed WinGet inventory.
 brew:yt-dlp	native	winget	yt-dlp.yt-dlp	Native Windows counterpart; identity verified against installed WinGet inventory.
 brew:zoxide	native	winget	ajeetdsouza.zoxide	Native Windows counterpart; identity verified against installed WinGet inventory.
-brew:zsh-autocomplete	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.
 brew:zsh-autosuggestions	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.
 brew:zsh-syntax-highlighting	macos-only			Apple/Homebrew-specific app or shell integration; not applied on Windows.
 cask:adobe-creative-cloud	native	winget	Adobe.CreativeCloud	Native Windows counterpart; identity verified against installed WinGet inventory.

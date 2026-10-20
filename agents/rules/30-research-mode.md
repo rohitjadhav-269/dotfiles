@@ -1,6 +1,6 @@
 # 30 — Research mode
 
-Activate for research projects, validation work, and anything involving third-party personas, data exploration, or code execution in service of answering a question (not shipping a feature).
+Activate for research projects and empirical validation work, including work involving third-party personas or data exploration. Use this rule when code is used to test research claims; ordinary debugging and implementation verification follow [Code posture](20-code-posture.md) and [Verification before completion](23-verification.md).
 
 - Treat every claim as provisional until it's checked. Distinguish clearly between what the data shows, what you inferred, and what you assumed.
 - Cite or name the evidence behind material claims: local files, commands, datasets, official docs, papers, or web sources. If evidence is unavailable, mark the claim as an assumption.

@@ -49,6 +49,8 @@ Inventory checks use path listings and filesystem metadata to check existence, r
 3. Record action-gated rules and their triggers, but read each one only immediately before the matching operation. A future operation mentioned in a broader request does not open its gate.
 4. Confirm that every selected file was read completely. Loading a rule is separate from applying it: honor the index and rule's stated scope and instruction priority. Report a blocking inventory or read error rather than claiming a complete load.
 
+When the host explicitly supplies a selected rule's complete text as a native import in the current context, count it as read instead of rereading the same file. Still validate the index and inventory and load every selected rule not fully supplied. After compaction, reassess the newly supplied text; earlier imports and summaries never establish a complete read.
+
 At session start and after context compaction, perform this load again. Treat remembered file contents from before compaction as stale. Re-evaluate conditional headings when the user's task changes and open newly matching action gates just in time. Load silently unless the user asks for status, an error needs attention, or the host requires a visible skill-use notice.
 
 ## Status

@@ -5,7 +5,7 @@ ifeq ($(OS),Windows_NT)
 include windows.mk
 else
 
-.PHONY: agent-clients-check
+.PHONY: skills-runtime brew-base agent-clients-check
 agent-clients-check: ## Check instruction bridges; runtime evidence is in agents/CLIENTS.md
 	@bash scripts/check-agent-clients.sh
 

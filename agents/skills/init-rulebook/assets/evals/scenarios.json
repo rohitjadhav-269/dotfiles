@@ -111,6 +111,25 @@
       ]
     },
     {
+      "id": "load-native-import-current-context",
+      "kind": "workflow",
+      "prompt": "init-rulebook: load. The host explicitly natively imports the complete current content of rules/core.md and provides it in this context: `# Core\nKeep edits within the requested task.\nEnd-of-file marker: CORE-NATIVE-COMPLETE.` Current task is API documentation; publishing is planned later. Report inventory and selected/deferred rules, and which files you actually read.",
+      "files": {
+        "ruleset/AGENTS.md": "# Personal rules\n\nEnumerate every top-level rules/*.md beside this index and compare those files with the links below. Read complete selected files.\n\n## Always on\n- [Core](rules/core.md)\n\n## Activate for documentation work\n- [Docs](rules/docs.md)\n\n## Activate for production operations\n- [Ops](rules/ops.md)\n\n## Action-gated: immediately before publishing\n- [Publish](rules/publish.md)\n",
+        "ruleset/rules/core.md": "# Core\nKeep edits within the requested task.\nEnd-of-file marker: CORE-FILE-COMPLETE.\n",
+        "ruleset/rules/docs.md": "# Documentation\nUse runnable examples when requested.\nEnd-of-file marker: DOCS-COMPLETE.\n",
+        "ruleset/rules/ops.md": "# Production operations\nVerify the deployment target before production work.\n",
+        "ruleset/rules/publish.md": "# Publishing\nBefore publishing, verify the approved release artifact.\n",
+        "host.json": "{\"runtime\":\"Claude Code\",\"native_imports_current_context\":[\"rules/core.md\"],\"complete_text_supplied\":true}\n"
+      },
+      "assertions": [
+        "Resolves ruleset/AGENTS.md and inventories all four indexed rule paths.",
+        "Treats the complete core text explicitly supplied by the host in current context as loaded without rereading ruleset/rules/core.md; this does not apply after compaction.",
+        "Reads docs.md completely because its conditional trigger matches; leaves ops.md and publish.md contents unread.",
+        "Reports native-context use as simulated fixture behavior, not a live host-import verification."
+      ]
+    },
+    {
       "id": "load-custom-pointer",
       "kind": "workflow",
       "prompt": "init-rulebook: load, then report the selected index and files read. host/startup.md is the active bridge. The request working directory is project/. Current task is API documentation; publishing will happen later.",

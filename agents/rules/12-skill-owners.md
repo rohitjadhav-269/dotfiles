@@ -2,6 +2,8 @@
 
 Always on. Discovery defaults only. Before selecting a listed skill, load [skill routing](11-skill-routing.md) and its smallest matching reference, if any. Detailed routes and explicit compatible requests take precedence. For name collisions, prefer a compatible shared-tree skill; host requirements still apply.
 
+Here, **named** means the user explicitly invokes the skill.
+
 - Browser: `04-host-tooling.md` selects the browser and automation method.
 - Diagnosis: `diagnosing-bugs`; `debug` named.
 - Substantial diff review: `code-review`, plus `better-interface` for UI.

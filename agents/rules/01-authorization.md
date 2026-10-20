@@ -38,10 +38,10 @@ If the user's reply to a clarifying question is still ambiguous, default to prop
 
 Git commands that write only git metadata may need proactive permission setup regardless of tool — they don't touch the working tree but still require elevated access.
 
-Known metadata writers: `git fetch`, `git worktree remove`, `git worktree prune`, `git cherry-pick`.
+Known metadata writers: `git fetch`, `git worktree prune`.
 
 - **Codex** — run with the narrow persisted approval prefix when available.
-- **Claude Code** — if repeated prompts block routine work, add narrow `allowedTools` entries via the relevant config/update workflow.
+- **Claude Code** — if repeated prompts block routine work, propose a narrow `permissions.allow` entry in the appropriate settings file for the user to review and approve. Never change or grant your own permissions.
 - **Other tools** — use the narrowest available per-command approval mechanism.
 
 Keep destructive commands under explicit user authorization: `git branch -D`, `git reset --hard`, `git clean -fd`, force push.

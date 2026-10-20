@@ -9,6 +9,22 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 export DOTFILES="$SCRIPT_DIR"
 BOOTSTRAP_SMOKE="${DOTFILES_BOOTSTRAP_SMOKE:-0}"
 
+prompt_yes_no() {
+    local prompt_text=$1
+    REPLY=""
+    if [[ ! -t 0 ]]; then
+        echo "  - no interactive terminal; skipped: $prompt_text" >&2
+        return 1
+    fi
+    if ! read -r -p "$prompt_text" -n 1 REPLY; then
+        echo "" >&2
+        echo "  - no response received; skipped: $prompt_text" >&2
+        REPLY=""
+        return 1
+    fi
+    echo ""
+}
+
 if [[ "$BOOTSTRAP_SMOKE" == "1" && "${CI:-}" != "true" ]]; then
     echo "DOTFILES_BOOTSTRAP_SMOKE=1 is reserved for disposable CI runners." >&2
     exit 1
@@ -24,7 +40,10 @@ if ! xcode-select -p &>/dev/null; then
     echo "→ Installing Xcode Command Line Tools..."
     xcode-select --install
     echo "  Press any key after Xcode CLI tools finish installing."
-    read -r -n 1 -s
+    if ! read -r -n 1 -s; then
+        echo "No interactive response received. Finish Xcode CLI tools installation, then rerun ./install.sh." >&2
+        exit 1
+    fi
     echo ""
     if ! xcode-select -p &>/dev/null; then
         echo "Xcode Command Line Tools installation incomplete." >&2
@@ -137,10 +156,10 @@ bash "$DOTFILES/scripts/restore-apps.sh"
 # 9. Dock layout — before hooks/macos so Ctrl-C during interactive defaults
 #    cannot skip Dock (same relative order as `make all`: dock → hooks → macos).
 echo ""
-read -p "→ Restore Dock layout? (y/n) " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+if prompt_yes_no "→ Restore Dock layout? (y/n) "; then
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
     bash "$DOTFILES/macos/dock.sh"
+  fi
 fi
 
 # SSH setup is intentionally post-vault. Generating into ~/.secrets before an
@@ -151,10 +170,12 @@ make -C "$DOTFILES" hooks
 
 # 11. macOS defaults last (interactive; matches `make all`).
 echo ""
-read -p "→ Run macOS system preferences setup? (y/n) " -n 1 -r
-echo ""
-if [[ $REPLY =~ ^[Yy]$ ]]; then
+if prompt_yes_no "→ Run macOS system preferences setup? (y/n) "; then
+  if [[ $REPLY =~ ^[Yy]$ ]]; then
     make -C "$DOTFILES" macos
+  else
+    echo "  - macOS policy deferred; run: make macos"
+  fi
 else
     echo "  - macOS policy deferred; run: make macos"
 fi
@@ -182,14 +203,14 @@ echo ""
 # Terminal.app profile import quits Terminal.app, so keep it after all bootstrap
 # output/prompts. Ongoing maintenance uses `make terminal` from a non-Terminal shell.
 if [ -f "$DOTFILES/apps/terminal/terminal.plist" ]; then
-    read -p "→ Import Terminal.app profiles now? This quits Terminal.app. (y/n) " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
+    if prompt_yes_no "→ Import Terminal.app profiles now? This quits Terminal.app. (y/n) "; then
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
         osascript -e 'tell application "Terminal" to quit' 2>/dev/null || true
         defaults import com.apple.Terminal "$DOTFILES/apps/terminal/terminal.plist" && \
             echo "  ✓ Terminal.app (reopen Terminal to see profiles)"
-    else
+      else
         echo "  - skipped Terminal.app profiles; run 'make terminal' later from iTerm / Ghostty / VS Code"
+      fi
     fi
 fi
 

@@ -55,6 +55,9 @@ Trigger signals: a package manifest (`package.json`, `pyproject.toml`, `Cargo.to
 
 - [Code posture](./rules/20-code-posture.md)
 - [Environment and package managers](./rules/22-environment.md)
+
+## Activate when code, configuration, automation, data transforms, or generated artifacts are changed
+
 - [Verification before completion](./rules/23-verification.md)
 
 ## Activate for interface, UX, or visual-artifact work
@@ -74,7 +77,7 @@ Trigger signals: a package manifest (`package.json`, `pyproject.toml`, `Cargo.to
 
 - [Hermes learning](./rules/06-hermes-learning.md)
 
-## Activate for research validation projects
+## Activate for research or empirical validation projects
 
 - [Research mode](./rules/30-research-mode.md)
 

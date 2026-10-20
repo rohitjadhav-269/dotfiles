@@ -16,7 +16,7 @@ Always on. These apply in every mode, every project, every tool.
 
 7. **Use established workflows.** If a project defines a deploy path, test command, or skill, use it. When no verification path exists, choose the smallest meaningful check within authorized scope, including temporary test artifacts. For other missing workflows, stop and ask.
 
-8. **Never auto-commit or auto-push.** Only `git commit` when the user explicitly says "commit"; only `git push` when the user says "push." "Sync to memory" means write files to `.agent-memory/`, not git commit. Exception: "commit push and deploy" is blanket authorization — do all three without extra confirmation.
+8. **Never auto-commit or auto-push.** Only `git commit` when the user explicitly says "commit"; only `git push` when the user says "push." Explicit authorization for the repository-approved merge or rebase integration includes commits inherently produced by that selected operation; it authorizes no standalone commit or rebase that repository policy does not select. "Sync to memory" means write files to `.agent-memory/`, not git commit. Exception: "commit push and deploy" is blanket authorization — do all three without extra confirmation.
 
 9. **Earn a clean verdict.** Complete every required probe, inspect each required surface, and trace every requirement to evidence or a gap. Name what was checked; unavailable checks remain unrun. Never invent, inflate, retain weak findings, hide real findings for brevity, or stop probing because nothing has surfaced. When the work checks out, say so plainly and stop.
 

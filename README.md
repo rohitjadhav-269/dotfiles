@@ -311,6 +311,11 @@ make secrets-pass     # copy the local Keychain password without printing it
 make secrets-pass-import  # import a recovered password on a replacement Mac
 ```
 
+`make secrets-pass-import` uses the native Keychain password prompt so the
+recovered password stays out of process arguments. `make secrets-pass` schedules
+a best-effort clipboard clear after 30 seconds when its pasteboard generation is
+unchanged. Clipboard history and cross-device copies are outside that timer.
+
 The CLI-created Keychain item is local and is not assumed to synchronize through iCloud Keychain. Store and verify a separate recovery copy in an independently synchronized password manager. Before attach, vault scripts detect the selected image at any mountpoint, reuse only the verified expected mount, and never claim an operator-owned alternate attachment. Backups stage through a working copy, retain the published vault on failure, and retain verified snapshots while reserving space for two more and preserving baselines. Portable and legacy backup commands remain available; see [SECRETS.md](SECRETS.md).
 
 ### On-demand credentials and recovery (Mac)
@@ -487,6 +492,7 @@ Notable contracts:
 - **`make restore-apps`** — running-app gate derives apps from `apps.tsv` plus irregular settings surfaces, fails closed when process state is unknown, quits managed apps, restores, and reopens what it quit. The hosting editor is never quit; ambiguous Code-family identity skips Cursor/VS Code prefs while continuing. Override with `DOTFILES_RESTORE_FORCE=1`. Same lifecycle for `restore-shottr` / `restore-canary`.
 - **`make apps-drift`** — compares live state only with faithful snapshots this public projection ships; intentionally excluded snapshots have no manifest rows, and curated VS Code/Cursor onboarding templates are outside the live-drift contract.
 - **`make link`** — missing `~/.secrets` sources warn and skip (strict mode: `DOTFILES_STRICT_LINK=1`).
+- **`make unlink`** — removes only managed symlinks; it does not automatically restore originals. Review timestamped backups under `~/.dotfiles-backup/`, or `~/.secrets/recovery/link-backups/` for secret-backed consumers, and select what to restore manually.
 
 For a stronger check that a second `make all` converges:
 
@@ -508,6 +514,8 @@ Per-machine overrides without forking core files:
 | `~/.dotfiles-local/` | macOS identity cache, backup destination, etc. |
 
 Create `~/.dotfiles/zsh/lib/99-local.zsh` for anything that must not be committed.
+
+Shell fragments load in filename order: completion initialization precedes zoxide, and `99-syntax-highlighting.zsh` loads highlighting after plugins and `99-local.zsh`, so local editor widgets exist first.
 
 ## Repo layout
 

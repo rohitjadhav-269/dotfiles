@@ -57,3 +57,6 @@ git/hooks/
 
 # Hermes bundled category metadata belongs in its profile, not shared skills.
 /agents/skills/research/DESCRIPTION.md
+
+# Local isolated checkouts, never configuration payload.
+.worktrees/

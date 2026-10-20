@@ -111,10 +111,52 @@ fi
 # security state, not portable preference policy. Remove these observed fields
 # for every configured agent before backups reach Git.
 if [[ -f "$APPS/zed/settings.json" ]]; then
+  # Remove root agent/context_servers members by JSONC structure: comments and
+  # strings are masked first, so braces inside them never count, and invalid
+  # input fails closed without rewriting the snapshot.
+  python3 - "$APPS/zed/settings.json" <<'PY'
+import json
+import re
+import sys
+
+path = sys.argv[1]
+text = open(path, encoding="utf-8").read()
+tokens = r'"(?:\\.|[^"\\])*"|//[^\n]*|/\*[\s\S]*?\*/'
+masked = re.sub(tokens, lambda m: m[0] if m[0].startswith('"') else
+                re.sub(r"[^\n]", " ", m[0]), text)
+masked = re.sub(r'"(?:\\.|[^"\\])*"|,(?=\s*[}\]])',
+                lambda m: m[0] if m[0].startswith('"') else " ", masked)
+try:
+    if not isinstance(json.loads(masked), dict):
+        raise ValueError("root is not an object")
+    decoder = json.JSONDecoder()
+    pos = masked.index("{") + 1
+    removals = []
+    while True:
+        while masked[pos].isspace() or masked[pos] == ",":
+            pos += 1
+        if masked[pos] == "}":
+            break
+        key_start = pos
+        key, pos = decoder.raw_decode(masked, pos)
+        pos = masked.index(":", pos) + 1
+        while masked[pos].isspace():
+            pos += 1
+        _, end = decoder.raw_decode(masked, pos)
+        if key in ("agent", "context_servers"):
+            line_start = text.rfind("\n", 0, key_start) + 1
+            start = line_start if not text[line_start:key_start].strip() else key_start
+            tail = re.compile(r"[ \t]*,?[ \t]*(?://[^\n]*)?\n?").match(text, end).end()
+            removals.append((start, tail))
+        pos = end
+except (ValueError, IndexError) as error:
+    print(f"invalid Zed JSONC: {path}: {error}", file=sys.stderr)
+    sys.exit(1)
+for start, end in reversed(removals):
+    text = text[:start] + text[end:]
+open(path, "w", encoding="utf-8").write(text)
+PY
   perl -0i -pe '
-    # Match the object by balanced braces (skipping strings), not by its closing
-    # line indentation, so misindented editor writes cannot leave a stray brace.
-    s/^[ \t]*"(?:agent|context_servers)"\s*:\s*(\{(?:"(?:[^"\\]|\\.)*"|[^{}"]++|(?1))*\})[ \t]*,?[ \t]*\n//mg;
     for my $key (qw(default_config_options favorite_config_option_values)) {
       s/,\s*"\Q$key\E"\s*:\s*\{[^{}]*\}//g;
       s/"\Q$key\E"\s*:\s*\{[^{}]*\}\s*,?//g;

@@ -191,6 +191,55 @@ class PublicPreferences(unittest.TestCase):
             subprocess.run(sanitize, env=env, check=True, capture_output=True)
             self.assertEqual(path.read_text(), text)
 
+    @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
+    def test_zed_runtime_blocks_ignore_braces_inside_jsonc_comments(self):
+        for comment in ('// Example {', '// Example }', '/* Example { */'):
+            with self.subTest(comment=comment), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / '.node-version').write_text((ROOT / '.node-version').read_text())
+                path = root / 'apps/zed/settings.json'
+                path.parent.mkdir(parents=True)
+                path.write_text('// Portable Zed preferences.\n'
+                                '{\n'
+                                '  "agent": {\n'
+                                f'    {comment}\n'
+                                '    "favorite_models": ["{"]\n'
+                                '  },\n'
+                                '  "context_servers": {\n'
+                                f'    {comment}\n'
+                                '    "fixture": {"enabled": true}\n'
+                                '  }, // trailing note }\n'
+                                '  "theme": "fixture"\n'
+                                '}\n')
+                sanitize = ['bash', str(ROOT / 'scripts/sanitize-app-prefs.sh')]
+                env = dict(os.environ, DOTFILES=str(root))
+                subprocess.run(sanitize, env=env, check=True, capture_output=True)
+                text = path.read_text()
+                self.assertTrue(text.startswith('// Portable Zed preferences.\n'))
+                self.assertNotIn('Example', text)
+                data = json.loads('\n'.join(line.split('//')[0] for line in text.splitlines()[1:]))
+                self.assertNotIn('agent', data)
+                self.assertNotIn('context_servers', data)
+                self.assertEqual(data['theme'], 'fixture')
+                subprocess.run(sanitize, env=env, check=True, capture_output=True)
+                self.assertEqual(path.read_text(), text)
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
+    def test_zed_sanitizer_fails_closed_on_invalid_jsonc(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / '.node-version').write_text((ROOT / '.node-version').read_text())
+            path = root / 'apps/zed/settings.json'
+            path.parent.mkdir(parents=True)
+            broken = '{\n  "context_servers": {\n    "x": {}\n  },\n},\n  "theme": 1\n}\n'
+            path.write_text(broken)
+            result = subprocess.run(['bash', str(ROOT / 'scripts/sanitize-app-prefs.sh')],
+                                    env=dict(os.environ, DOTFILES=str(root)),
+                                    capture_output=True, text=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn('invalid Zed JSONC', result.stdout + result.stderr)
+            self.assertEqual(path.read_text(), broken)
+
     def test_editor_policy_preserves_safe_jsonc_and_rejects_duplicate_settings(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'settings.json'

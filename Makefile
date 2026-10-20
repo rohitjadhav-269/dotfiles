@@ -16,7 +16,7 @@ keychain-list: ## List configured Keychain references without reading passwords
 keychain-check: ## Check Keychain item presence only; no password or API access
 	@python3 scripts/check-keychain-profiles.py
 
-.PHONY: context7 context7-check
+.PHONY: context7 context7-check claude-mcp claude-mcp-check
 .PHONY: figma-check figma-api-check
 figma-check: ## Check the dedicated Figma REST API token without displaying it
 	@bin/figma-env --check
@@ -24,13 +24,21 @@ figma-check: ## Check the dedicated Figma REST API token without displaying it
 figma-api-check: ## Make one read-only Figma request; hide token and account data
 	@bin/figma-env -- python3 scripts/check-figma-api.py
 
-context7: ## Wire Cursor, Zed and VS Code to the dedicated Context7 secret (Mac)
+context7: ## Wire Cursor, Zed, VS Code and Claude Code to the dedicated Context7 secret (Mac)
 	@bin/context7-mcp --check
 	@python3 scripts/context7-clients.py setup
 
-context7-check: ## Check Context7 credential/runtime and all three editor configurations
+context7-check: ## Check Context7 credential/runtime and all four client configurations
 	@bin/context7-mcp --check
 	@python3 scripts/context7-clients.py check
+
+claude-mcp: ## Wire Claude Code to Paper, brilliant and GitHub (gh keyring token) (Mac)
+	@bin/github-mcp-headers --check
+	@python3 scripts/claude-mcp-servers.py setup
+
+claude-mcp-check: ## Check gh token availability and Claude Code Paper/brilliant/GitHub wiring
+	@bin/github-mcp-headers --check
+	@python3 scripts/claude-mcp-servers.py check
 
 
 .PHONY: all help link unlink brew brew-without-mas brew-core brew-apps node brew-npm brew-mas brew-check brewfile-audit shims macos macos-user macos-dry-run macos-check touch-id-sudo touch-id-sudo-check dock terminal services services-check restore-apps restore-canary restore-shottr post-vault backup backup-canary backup-shottr audit-apps apps-drift hooks hooks-check ssh-setup skills-audit skills skills-update skills-manifest secrets-backup secrets-backup-legacy secrets-compat-fixtures secrets-mount secrets-mount-legacy secrets-health secrets-manifest secrets-restore secrets-restore-apply secrets-pass secrets-pass-import upgrade rules-audit default-apps default-apps-check capture-default-apps doctor verify-bootstrap docs-audit

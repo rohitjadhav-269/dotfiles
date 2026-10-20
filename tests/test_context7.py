@@ -95,6 +95,42 @@ class Context7Tests(unittest.TestCase):
             self.assertEqual(data['mcpServers']['context7']['command'], '/wrapper')
             self.assertEqual(data.get('x'), json.loads(clients.clean_jsonc(text)).get('x'))
 
+    def run_clients(self, action):
+        return subprocess.run(['python3', str(ROOT / 'scripts/context7-clients.py'), action,
+                               '--home', str(self.home)], capture_output=True, text=True)
+
+    def test_claude_code_user_scope_setup_preserves_state_and_check_passes(self):
+        claude = self.home / '.claude.json'
+        state = {'numStartups': 3, 'projects': {'/repo': {'mcpServers': {}}},
+                 'mcpServers': {'other': {'type': 'stdio', 'command': '/other', 'env': {'K': 'fixture-secret'}}}}
+        claude.write_text(json.dumps(state, indent=2) + '\n')
+        claude.chmod(0o600)
+        check = self.run_clients('check')
+        self.assertEqual(check.returncode, 1)
+        self.assertIn('Claude Code: needs setup', check.stdout)
+        setup = self.run_clients('setup')
+        self.assertEqual(setup.returncode, 0, setup.stderr)
+        self.assertNotIn('fixture-secret', setup.stdout + setup.stderr)
+        data = json.loads(claude.read_text())
+        entry = data['mcpServers'].pop('context7')
+        self.assertEqual(entry, {'type': 'stdio', 'command': str(ROOT / 'bin/context7-mcp'), 'args': []})
+        self.assertEqual(data, state)
+        self.assertEqual(claude.stat().st_mode & 0o777, 0o600)
+        check = self.run_clients('check')
+        self.assertEqual(check.returncode, 0, check.stdout)
+        for label in ('Cursor', 'Zed', 'VS Code', 'Claude Code'):
+            self.assertIn(f'{label}: configured', check.stdout)
+
+    def test_claude_code_project_scoped_entries_do_not_count_as_user_scope(self):
+        claude = self.home / '.claude.json'
+        claude.write_text('{"projects": {"/repo": {"mcpServers": {"context7": {"command": "/old"}}}}}\n')
+        _, path, group, name, desired = clients.plans(self.home, Path('/launcher'))[-1]
+        self.assertEqual((path, group, name), (claude, 'mcpServers', 'context7'))
+        _, after = clients.prepare(path, group, name, desired)
+        data = json.loads(after)
+        self.assertEqual(data['mcpServers']['context7']['command'], '/launcher')
+        self.assertEqual(data['projects']['/repo']['mcpServers']['context7']['command'], '/old')
+
     def test_duplicate_servers_fail_without_rewrite_and_symlinks_survive(self):
         path = self.home / 'config.json'
         original = '{"servers":{"context7":{},"Context7":{}}}'

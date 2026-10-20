@@ -391,14 +391,25 @@ convert an intentional backup copy into references.
 `CONTEXT7_API_KEY` reference to `dotfiles/context7/CONTEXT7_API_KEY`. After restoring
 the vault, Keychain items, and app preferences, run `make context7`. It merges the
 local launcher into Cursor's global `~/.cursor/mcp.json`, Zed's
-`~/.config/zed/settings.json`, and VS Code's default user-profile `mcp.json`.
+`~/.config/zed/settings.json`, VS Code's default user-profile `mcp.json`, and
+Claude Code's user-scope `mcpServers` in `~/.claude.json`.
 Other settings, servers, comments, and existing VS Code credential-input records
-are preserved. Named VS Code profiles and project-level overrides are separate.
+are preserved. Named VS Code profiles, `CLAUDE_CONFIG_DIR` overrides, and
+project-level overrides are separate. Claude Code rewrites `~/.claude.json` while
+running; if setup reports a concurrent change, rerun it.
 Re-run after restoring Zed preferences, which intentionally exclude MCP configuration.
 `make context7-check` verifies Keychain access, runtime, and wiring; it does not
 make an API call or prove editor activation. Restart the Context7 server after
 rotating its Keychain value. The pinned server receives the key at startup, not
 per tool call. Codex's connected Context7 app is managed separately.
+
+**Claude Code MCP (Mac):** `make claude-mcp` adds user-scope Paper
+(`~/.paper/bin/paper mcp`), brilliant (`http://127.0.0.1:3333/mcp`, live only while
+the app runs) and GitHub (`api.githubcopilot.com/mcp/`) entries to `~/.claude.json`,
+matching Codex and Zed. GitHub's header comes from `bin/github-mcp-headers`, which
+reads `gh auth token` at connect time; no token is stored in settings. Run
+`gh auth login` first. `make claude-mcp-check` verifies the token is present and the
+wiring is current; it makes no API call. Restart Claude Code sessions to load them.
 
 **Figma REST API (Mac):** `~/.secrets/config/env/figma.env` holds the `FIGMA_TOKEN`
 reference to `dotfiles/figma/FIGMA_TOKEN`. `~/.dotfiles/bin/figma-env --init` creates

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wire the Mac editors to the shared Context7 launcher, without reading secrets."""
+"""Wire the Mac editors and Claude Code to the shared Context7 launcher, without reading secrets."""
 
 import argparse
 import json
@@ -77,6 +77,9 @@ def plans(home, launcher):
          'mcp-server-context7', command),
         ("VS Code", home / 'Library/Application Support/Code/User/mcp.json',
          'servers', 'io.github.upstash/context7', {"type": "stdio", **command}),
+        # User scope: top-level mcpServers in ~/.claude.json, shared by all projects.
+        ("Claude Code", home / '.claude.json', 'mcpServers', 'context7',
+         {"type": "stdio", **command}),
     ]
 
 
@@ -120,7 +123,7 @@ def main():
     launcher = Path(__file__).resolve().parents[1] / 'bin/context7-mcp'
     pending = []
     try:
-        # Validate all three before changing any file. Never print config values.
+        # Validate every client before changing any file. Never print config values.
         for label, path, group, name, desired in plans(args.home, launcher):
             before, after = prepare(path, group, name, desired)
             pending.append((label, path, before, after))

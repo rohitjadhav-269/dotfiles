@@ -60,3 +60,6 @@
 	allowedSignersFile = ~/.ssh/allowed_signers
 [include]
 	path = ~/.gitconfig-platform
+# Work identity for repos under ~/Projects/gl; the file is machine-local and untracked.
+[includeIf "gitdir/i:~/Projects/gl/"]
+	path = ~/.gitconfig-gitlab

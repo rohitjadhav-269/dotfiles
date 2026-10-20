@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import plistlib
+import re
 import shutil
 import subprocess
 import sys
@@ -223,6 +224,52 @@ class PublicPreferences(unittest.TestCase):
                 self.assertEqual(data['theme'], 'fixture')
                 subprocess.run(sanitize, env=env, check=True, capture_output=True)
                 self.assertEqual(path.read_text(), text)
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
+    def test_zed_runtime_member_separator_trivia(self):
+        cases = {
+            "block comment before comma": (
+                '{\n  "context_servers": {"x": {}} /* note */,\n'
+                '  "theme": "t"\n}\n'
+            ),
+            "comma on next line": (
+                '{\n  "context_servers": {"x": {}}\n  ,\n  "theme": "t"\n}\n'
+            ),
+            "trailing comma on next line": (
+                '{\n  "theme": "t",\n  "context_servers": {"x": {}}\n  ,\n}\n'
+            ),
+            "line comment before comma": (
+                '{\n  "agent": {"a": 1} // c\n  , "theme": "t"\n}\n'
+            ),
+            "multiline comment after final member": (
+                '{\n  "theme": "t",\n  "context_servers": {} /* note\n'
+                '     continued */\n}\n'
+            ),
+            "multiline comment after separator": (
+                '{\n  "agent": {}, /* note\n'
+                '     continued */\n  "theme": "t"\n}\n'
+            ),
+        }
+        for name, text in cases.items():
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / '.node-version').write_text((ROOT / '.node-version').read_text())
+                path = root / 'apps/zed/settings.json'
+                path.parent.mkdir(parents=True)
+                path.write_text(text)
+                command = ['bash', str(ROOT / 'scripts/sanitize-app-prefs.sh')]
+                env = dict(os.environ, DOTFILES=str(root))
+                result = subprocess.run(command, env=env, text=True, capture_output=True)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                output = path.read_text()
+                tokens = r'"(?:\\.|[^"\\])*"|/\*[\s\S]*?\*/|//[^\n]*'
+                body = re.sub(tokens, lambda m: m[0] if m[0].startswith('"') else '', output)
+                body = re.sub(r',(?=\s*[}\]])', '', body)
+                self.assertEqual(json.loads(body), {'theme': 't'})
+                if name.startswith('multiline comment'):
+                    self.assertIn('/* note\n     continued */', output)
+                subprocess.run(command, env=env, check=True, capture_output=True)
+                self.assertEqual(path.read_text(), output)
 
     @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
     def test_zed_sanitizer_fails_closed_on_invalid_jsonc(self):

@@ -122,10 +122,12 @@ import sys
 path = sys.argv[1]
 text = open(path, encoding="utf-8").read()
 tokens = r'"(?:\\.|[^"\\])*"|//[^\n]*|/\*[\s\S]*?\*/'
-masked = re.sub(tokens, lambda m: m[0] if m[0].startswith('"') else
-                re.sub(r"[^\n]", " ", m[0]), text)
+# Both masks keep every offset: comments become spaces, so commas stay visible
+# in `uncommented` for the separator scan; `masked` also drops trailing commas.
+uncommented = re.sub(tokens, lambda m: m[0] if m[0].startswith('"') else
+                     re.sub(r"[^\n]", " ", m[0]), text)
 masked = re.sub(r'"(?:\\.|[^"\\])*"|,(?=\s*[}\]])',
-                lambda m: m[0] if m[0].startswith('"') else " ", masked)
+                lambda m: m[0] if m[0].startswith('"') else " ", uncommented)
 try:
     if not isinstance(json.loads(masked), dict):
         raise ValueError("root is not an object")
@@ -146,14 +148,30 @@ try:
         if key in ("agent", "context_servers"):
             line_start = text.rfind("\n", 0, key_start) + 1
             start = line_start if not text[line_start:key_start].strip() else key_start
-            tail = re.compile(r"[ \t]*,?[ \t]*(?://[^\n]*)?\n?").match(text, end).end()
-            removals.append((start, tail))
+            # The member's separator may follow comments or newlines; remove it
+            # with the member. Trim real whitespace only, preserving whole comments.
+            after = re.compile(r"\s*").match(uncommented, end).end()
+            if uncommented[after] == ",":
+                end = after + 1
+            end = re.compile(r"[ \t]*\n?").match(text, end).end()
+            removals.append((start, end))
         pos = end
 except (ValueError, IndexError) as error:
     print(f"invalid Zed JSONC: {path}: {error}", file=sys.stderr)
     sys.exit(1)
 for start, end in reversed(removals):
     text = text[:start] + text[end:]
+# Never write a result that no longer parses or still holds a removed member.
+check = re.sub(tokens, lambda m: m[0] if m[0].startswith('"') else " ", text)
+check = re.sub(r'"(?:\\.|[^"\\])*"|,(?=\s*[}\]])',
+               lambda m: m[0] if m[0].startswith('"') else " ", check)
+try:
+    result = json.loads(check)
+except ValueError:
+    result = None
+if not isinstance(result, dict) or {"agent", "context_servers"} & set(result):
+    print(f"invalid Zed JSONC after sanitizing: {path}", file=sys.stderr)
+    sys.exit(1)
 open(path, "w", encoding="utf-8").write(text)
 PY
   perl -0i -pe '

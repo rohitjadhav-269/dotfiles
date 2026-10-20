@@ -4,6 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 import os
+import shutil
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -22,12 +23,24 @@ class ZedCheckTests(unittest.TestCase):
             settings = root / "apps/zed/settings.json"
             settings.parent.mkdir(parents=True)
             settings.write_text('{"cursor_animation":{"enabled":true}},"theme":{}\n')
+            bash = "bash"
+            if os.name == "nt":
+                # The Windows system bash.exe is WSL, not Git for Windows.
+                git = shutil.which("git")
+                self.assertIsNotNone(git, "Git for Windows is required")
+                bash = str(Path(git).resolve().parents[1] / "bin/bash.exe")
+                self.assertTrue(Path(bash).is_file(), "Git Bash is required")
             result = subprocess.run(
-                ["bash", str(ROOT / "scripts/audit-app-prefs.sh")],
-                env={**os.environ, "DOTFILES": str(root)}, capture_output=True, text=True,
+                [bash, (ROOT / "scripts/audit-app-prefs.sh").as_posix()],
+                env={**os.environ, "DOTFILES": root.as_posix()}, capture_output=True, text=True,
             )
             self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("invalid Zed JSONC", result.stdout + result.stderr)
+
+    def test_repository_snapshot_parses_as_a_single_settings_object(self):
+        settings = checker.read_settings(ROOT / "apps/zed/settings.json")
+        self.assertIsInstance(settings, dict)
+        self.assertIn("agent_servers", settings)
 
     def test_settings_alone_do_not_prove_extension_or_theme_readiness(self):
         with tempfile.TemporaryDirectory() as directory:

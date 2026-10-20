@@ -27,6 +27,6 @@ paths = ['''agents/skills/moltbook/tests/test_credential_manager\.py$''']
 description = "Exact Tower workflow icon bytes that resemble a Square access token"
 targetRules = ["square-access-token"]
 condition = "AND"
-regexTarget = "match"
+regexTarget = "secret"
 regexes = ['''^EAAAhCAAAQgAIGJCZS1I2zk3WKXtUtsZL8hnbjrOVD0MPnj$''']
 paths = ['''services/Open in Tower\.workflow/Contents/document\.wflow$''']

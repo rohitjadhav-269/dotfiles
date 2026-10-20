@@ -91,9 +91,9 @@ try {
     Assert-That ($preview.PathChanged) 'preview detects the legacy PATH entry'
     Assert-That ($preview.UserPath -ceq 'C:\Keep Me;C:\Tail') 'preview calculates the filtered PATH'
     foreach ($name in @('paseo','paseo-committee','paseo-handoff','paseo-plugin')) {
-        Assert-That (Get-Item -LiteralPath (Join-Path $skills $name) -Force -ErrorAction SilentlyContinue) "preview preserves $name"
+        Assert-That ($null -ne (Get-Item -LiteralPath (Join-Path $skills $name) -Force -ErrorAction SilentlyContinue)) "preview preserves $name"
     }
-    Assert-That (Get-Item -LiteralPath $fileLink -Force -ErrorAction SilentlyContinue) 'preview preserves file entry'
+    Assert-That ($null -ne (Get-Item -LiteralPath $fileLink -Force -ErrorAction SilentlyContinue)) 'preview preserves file entry'
     if ($hasDirectorySymlink) {
         Assert-That ((Get-Item -LiteralPath $symbolicTarget -Force).LinkType -eq 'SymbolicLink') 'symbolic-link fixture created'
     }

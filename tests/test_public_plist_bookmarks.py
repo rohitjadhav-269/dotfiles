@@ -30,6 +30,7 @@ class BookmarkPrivacyTests(unittest.TestCase):
                 original = plistlib.dumps(dirty, fmt=fmt)
                 path.write_bytes(original)
                 path.chmod(0o600)
+                original_mode = path.stat().st_mode & 0o777
                 check = self.invoke('check', path)
                 self.assertNotEqual(check.returncode, 0)
                 self.assertNotIn('fixture-private', check.stdout + check.stderr)
@@ -38,7 +39,7 @@ class BookmarkPrivacyTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, result.stderr)
                 self.assertEqual(plistlib.loads(path.read_bytes()), keep)
                 self.assertEqual(path.read_bytes().startswith(b'bplist'), fmt == plistlib.FMT_BINARY)
-                self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+                self.assertEqual(path.stat().st_mode & 0o777, original_mode)
                 sanitized = path.read_bytes()
                 self.assertEqual(self.invoke('sanitize', path).returncode, 0)
                 self.assertEqual(path.read_bytes(), sanitized)

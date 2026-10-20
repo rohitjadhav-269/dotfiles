@@ -496,6 +496,20 @@
       "sourcePath": "skills/shadcn/scripts/showcase-coverage.mjs",
       "path": "agents/skills/shadcn/scripts/showcase-coverage.mjs",
       "sha256": "fb593e0806414d23b51354a46881f0b2873afc226bda0926a22f83cbd60af2fa"
+    },
+    {
+      "source": "Leonxlnx/imagegen-skills",
+      "commit": "beb16b0d0f4dae9a6f5cb04ea41e97b93a54ab8e",
+      "sourcePath": "skills/imagegen-frontend-web/SKILL.md",
+      "path": "agents/skills/imagegen-frontend-web/SKILL.md",
+      "sha256": "6b5c2256522fdba1e3313eafa3d743b960a7b13ec029d3e6586e04b23327c1f8"
+    },
+    {
+      "source": "Leonxlnx/imagegen-skills",
+      "commit": "beb16b0d0f4dae9a6f5cb04ea41e97b93a54ab8e",
+      "sourcePath": "skills/imagegen-frontend-mobile/SKILL.md",
+      "path": "agents/skills/imagegen-frontend-mobile/SKILL.md",
+      "sha256": "8a33389979f3074fa0926678e266ad2eb9234624472254469fc1ad916b9caa24"
     }
   ]
 }

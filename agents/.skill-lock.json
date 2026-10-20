@@ -1136,6 +1136,24 @@
       "skillFolderHash": "900e3dff4bc1b341db90a147bee6dbed4c2add3c",
       "installedAt": "2026-10-20T05:03:47.368Z",
       "updatedAt": "2026-10-20T05:03:47.368Z"
+    },
+    "imagegen-frontend-web": {
+      "source": "Leonxlnx/imagegen-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/imagegen-skills.git",
+      "skillPath": "skills/imagegen-frontend-web/SKILL.md",
+      "skillFolderHash": "3b5117d349200e33f9c3399344681620079dcc18",
+      "installedAt": "2026-10-20T05:41:32.295Z",
+      "updatedAt": "2026-10-20T05:41:32.295Z"
+    },
+    "imagegen-frontend-mobile": {
+      "source": "Leonxlnx/imagegen-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/Leonxlnx/imagegen-skills.git",
+      "skillPath": "skills/imagegen-frontend-mobile/SKILL.md",
+      "skillFolderHash": "9901fcde67e9506a706912107825fdfb72e01f30",
+      "installedAt": "2026-10-20T05:41:32.295Z",
+      "updatedAt": "2026-10-20T05:41:32.295Z"
     }
   },
   "dismissed": {

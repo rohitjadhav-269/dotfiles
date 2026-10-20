@@ -40,6 +40,8 @@ Prefer these only when explicitly named or their method is unmistakably requeste
 
 `business-motion-film`: named invocation only.
 
+`imagegen-frontend-web` and `imagegen-frontend-mobile`: named invocation only.
+
 ## Conditional routing references
 
 Load the smallest matching reference; load multiple only for independent artifacts, in phase order:

@@ -69,6 +69,9 @@ function Get-DotfilesWindowsPackages {
     return $rows
 }
 function Get-DotfilesWindowsInventory {
+    # -ResolveUnexported also checks declared WinGet IDs missing from export; one
+    # exact `list` per missing ID is too slow for the installer's repeated calls.
+    param([switch]$ResolveUnexported, [string]$Root = (Split-Path (Split-Path $PSScriptRoot)))
     $file = Join-Path ([IO.Path]::GetTempPath()) ('dotfiles-inventory-'+[guid]::NewGuid().ToString('N')+'.json')
     try {
         & winget.exe export --output $file --include-versions --accept-source-agreements --disable-interactivity *> $null
@@ -78,15 +81,18 @@ function Get-DotfilesWindowsInventory {
         foreach ($source in $inventory.Sources) {
             foreach ($package in $source.Packages) { $result[$source.SourceDetails.Name+':'+$package.PackageIdentifier] = $package.Version }
         }
-        # Export can omit a Store app that exact-ID `list` recognizes (Perplexity).
-        # Check only declared Store IDs missing from export; never infer identity by name.
-        foreach ($package in (Get-DotfilesWindowsPackages | Where-Object { $_.Mode -eq 'native' -and $_.Source -eq 'msstore' } | Sort-Object Id -Unique)) {
-            $key='msstore:'+$package.Id
+        # Export can omit apps that exact-ID `list` recognizes: Store apps (Perplexity),
+        # vendor-installed apps with no source match (Firefox, Sublime Text) and
+        # license-gated packages (Discord). Check only declared IDs missing from
+        # export; never infer identity by name.
+        $sources = @('msstore') + $(if ($ResolveUnexported) { 'winget' } else { @() })
+        foreach ($package in (Get-DotfilesWindowsPackages -Root $Root | Where-Object { $_.Mode -eq 'native' -and $_.Source -in $sources } | Sort-Object Source,Id -Unique)) {
+            $key=$package.Source+':'+$package.Id
             if ($result.ContainsKey($key)) { continue }
-            & winget.exe list --id $package.Id --exact --source msstore --accept-source-agreements --disable-interactivity *> $null
+            & winget.exe list --id $package.Id --exact --source $package.Source --accept-source-agreements --disable-interactivity *> $null
             $code=$LASTEXITCODE
             if ($code -eq 0) { $result[$key]='Installed; version omitted from export' }
-            elseif ($code -ne -1978335212) { throw "WinGet Store inventory failed for $($package.Id) (exit $code)" }
+            elseif ($code -ne -1978335212) { throw "WinGet inventory failed for $key (exit $code)" }
         }
         return $result
     } finally { if (Test-Path -LiteralPath $file) { Remove-Item -LiteralPath $file } }

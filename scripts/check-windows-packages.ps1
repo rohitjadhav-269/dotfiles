@@ -7,7 +7,7 @@ Assert-DotfilesWindows
 . (Join-Path $PSScriptRoot 'lib\windows-packages.ps1')
 $rows = @(Get-DotfilesWindowsPackages)
 if ($CoverageOnly) { Write-Output "Windows mapping coverage complete: $($rows.Count) explicit rows; fonts and VS Code extensions derived directly from Brewfile."; return }
-$inventory = Get-DotfilesWindowsInventory
+$inventory = Get-DotfilesWindowsInventory -ResolveUnexported
 $missing = 0
 foreach ($row in $rows) {
     $status = $row.Mode

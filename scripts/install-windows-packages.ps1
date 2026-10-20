@@ -27,7 +27,7 @@ function Get-DotfilesPackageFeedbackColor {
     param([Parameter(Mandatory)][string]$Status, [switch]$Failed)
     if ($Failed) { return [ConsoleColor]::Red }
     if ($Status -eq 'Reboot required') { return [ConsoleColor]::Yellow }
-    if ($Status -in @('Already installed','Runtime update delegated to Topgrade','No applicable upgrade')) { return [ConsoleColor]::Blue }
+    if ($Status -like 'Already installed*' -or $Status -in @('Runtime update delegated to Topgrade','No applicable upgrade')) { return [ConsoleColor]::Blue }
     return [ConsoleColor]::Green
 }
 function Get-DotfilesDeskflowStableVersion {
@@ -111,6 +111,8 @@ foreach ($package in $packages) {
             & winget.exe @arguments *> $log
             $code = $LASTEXITCODE
             if ($Upgrade -and $code -eq -1978335189) { $status='No applicable upgrade' }
+            # Exact-ID install found it installed, though export omits it (vendor installer or license gate).
+            elseif (-not $Upgrade -and $code -eq -1978335135) { $status='Already installed; omitted from WinGet export' }
             elseif ($code -in @(1641,3010)) { $status='Reboot required'; $failures += $key }
             elseif ($code -ne 0) { throw "WinGet failed (exit $code); log: $log. If elevation is required, rerun this package explicitly in an elevated terminal." }
             else {

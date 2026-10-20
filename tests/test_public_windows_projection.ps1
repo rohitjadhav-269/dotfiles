@@ -37,6 +37,48 @@ try {
     $rsync = @($packages | Where-Object Key -EQ 'windows:rsync')
     Assert ($rsync.Count -eq 1 -and $rsync[0].Mode -eq 'manual') 'The explicit windows:rsync manual disposition was rejected.'
 
+    # Exact-ID inventory fallback: export omits vendor-installed and license-gated
+    # WinGet apps, so only -ResolveUnexported lists declared IDs missing from export.
+    $inventoryRoot = Join-Path $fixture 'inventory'
+    New-Item -ItemType Directory -Path (Join-Path $inventoryRoot 'config') -Force | Out-Null
+    [IO.File]::WriteAllText((Join-Path $inventoryRoot 'Brewfile'), "cask `"fixture-exported`"`ncask `"fixture-unexported`"`ncask `"fixture-absent`"`n", $encoding)
+    $inventoryRows = @(
+        "cask:fixture-exported`tnative`twinget`tFixture.Exported`tFixture disposition`n",
+        "cask:fixture-unexported`tnative`twinget`tFixture.Unexported`tFixture disposition`n",
+        "cask:fixture-absent`tnative`twinget`tFixture.Absent`tFixture disposition`n"
+    ) -join ''
+    [IO.File]::WriteAllText((Join-Path $inventoryRoot 'config/windows-packages.tsv'), $header + $inventoryRows, $encoding)
+    $global:InventoryCalls = [Collections.Generic.List[string]]::new()
+    function winget.exe {
+        $words = @($args | ForEach-Object { [string]$_ })
+        $global:InventoryCalls.Add(($words -join ' '))
+        if ($words[0] -ceq 'export') {
+            $inventory = @{ Sources=@(@{ SourceDetails=@{ Name='winget' }; Packages=@(@{ PackageIdentifier='Fixture.Exported'; Version='1.0.0' }) }) }
+            [IO.File]::WriteAllText($words[[array]::IndexOf($words, '--output') + 1], ($inventory | ConvertTo-Json -Depth 6 -Compress), $encoding)
+            $global:LASTEXITCODE = 0
+            return
+        }
+        if ($words[0] -ceq 'list') {
+            $global:LASTEXITCODE = if ($words[2] -ceq 'Fixture.Unexported') { 0 } else { -1978335212 }
+            return
+        }
+        throw "Unexpected mocked WinGet operation: $($words -join ' ')"
+    }
+    try {
+        $exportOnly = Get-DotfilesWindowsInventory -Root $inventoryRoot
+        Assert ($exportOnly.ContainsKey('winget:Fixture.Exported') -and -not $exportOnly.ContainsKey('winget:Fixture.Unexported')) 'Export-only inventory changed.'
+        Assert (@($global:InventoryCalls | Where-Object { $_ -like 'list *' }).Count -eq 0) 'Export-only inventory listed WinGet IDs.'
+        $global:InventoryCalls.Clear()
+        $resolved = Get-DotfilesWindowsInventory -Root $inventoryRoot -ResolveUnexported
+        Assert ($resolved.ContainsKey('winget:Fixture.Unexported')) 'An exact-ID listed WinGet package missing from export was reported missing.'
+        Assert (-not $resolved.ContainsKey('winget:Fixture.Absent')) 'An absent WinGet package was reported installed.'
+        $listed = @($global:InventoryCalls | Where-Object { $_ -like 'list *' })
+        Assert ($listed.Count -eq 2 -and @($listed | Where-Object { $_ -notlike 'list --id Fixture.* --exact --source winget *' }).Count -eq 0) 'Inventory fallback did not list only missing IDs by exact ID and source.'
+    } finally {
+        Remove-Item Function:\winget.exe -ErrorAction SilentlyContinue
+        Remove-Variable InventoryCalls -Scope Global -ErrorAction SilentlyContinue
+    }
+
     # Deskflow version policy and the real installer wiring use only disposable
     # manifests and a WinGet function mock; no live pins or processes are touched.
     $deskflowVersionRows = @(Get-DotfilesListedWinGetVersions @('Version','-------','1.27.0.10','1.27.0','1.26.0','1.25.0'))

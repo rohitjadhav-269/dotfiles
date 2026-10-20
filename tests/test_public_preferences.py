@@ -372,7 +372,7 @@ class PublicPreferences(unittest.TestCase):
             policy = root / 'config/skills-refresh-holds.json'
             command = [sys.executable, str(root / 'scripts/gen-skillsfile.py'), '--check']
             self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)
-            policy.write_text('{}\n')
+            shutil.copyfile(ROOT / 'config/skills-refresh-holds.json', policy)
             subprocess.run(command, check=True, capture_output=True)
             policy.write_text(json.dumps({'not-a-real-skill': 'fixture'}))
             self.assertNotEqual(subprocess.run(command, capture_output=True).returncode, 0)

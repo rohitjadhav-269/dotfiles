@@ -1,0 +1,249 @@
+{
+  "version": 1,
+  "resources": [
+    {
+      "source": "anthropics/knowledge-work-plugins",
+      "commit": "a266ab8c3c754a3ccf7a634044fc1595fc06e50e",
+      "sourcePaths": [
+        "engineering/CONNECTORS.md",
+        "design/CONNECTORS.md"
+      ],
+      "path": "agents/CONNECTORS.md",
+      "sha256": "5f8670244b3a9009cc6fa478b4d5753bba556c56e2f2e13e445e6741a0b71a05",
+      "assembly": "Two upstream connector references with a routing introduction; no integration configuration."
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "docs/recipes.md",
+      "path": "agents/docs/recipes.md",
+      "sha256": "fea07c1d0fe6b4463ba8d1c44370cdc5fdc3238e67f74d17009f598034ad5b96",
+      "assembly": "Resolve upstream recipe links relative to installed agents/docs and agents/site."
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "docs/study-examples.md",
+      "path": "agents/docs/study-examples.md",
+      "sha256": "d900fe2442334a93261642e93e9cb98e53a9c6cb92a6d4ce615b415bb54dc5be",
+      "assembly": "Resolve the upstream study-protocol link to the installed Hallmark reference."
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/css/tokens.css",
+      "path": "agents/site/css/tokens.css",
+      "sha256": "5418e4ee538f456af5112aaa59baa662f6c4209c5ff82161443683f0f848e0c7"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/03-maple-bakery/index.html",
+      "path": "agents/site/_tests/03-maple-bakery/index.html",
+      "sha256": "8217a9261f82152eb66a4b928c210e3c6c9cc024a3011d2d14fc6087a5b8048a"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/03-maple-bakery/style.css",
+      "path": "agents/site/_tests/03-maple-bakery/style.css",
+      "sha256": "c199958f4da082c98537e69982f463b100a249780a3be16831f90785903a6c1a"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/03-maple-bakery/brief.md",
+      "path": "agents/site/_tests/03-maple-bakery/brief.md",
+      "sha256": "bc7419a83a03f43a034becf8a00fa713d557ed128d1822ff117f9fd24aaf4359"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/05-tracejam-saas/index.html",
+      "path": "agents/site/_tests/05-tracejam-saas/index.html",
+      "sha256": "80780dd4c99e9f1edf46d74ba6a2a42fe663ccf267d9875d2ab2f1d077ba4ffa"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/05-tracejam-saas/style.css",
+      "path": "agents/site/_tests/05-tracejam-saas/style.css",
+      "sha256": "74a0afe80b022cb4499eb76aac1f00401b822cba02ecaee43c444a4d9b4ebcb3"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/05-tracejam-saas/brief.md",
+      "path": "agents/site/_tests/05-tracejam-saas/brief.md",
+      "sha256": "bf0f654597d56be4e9a7d0b58b5d448a598b1c35bd65ae7462f9b7a51111a2d7"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/examples/cobalt-01/index.html",
+      "path": "agents/site/examples/cobalt-01/index.html",
+      "sha256": "af706ef5367a88fc88965551aa82c7a6c0ed849eb03294b827a57a02c8c2422f"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/examples/cobalt-01/styles.css",
+      "path": "agents/site/examples/cobalt-01/styles.css",
+      "sha256": "2a4d262f234839ca9799831ca2fee999f3df4cdf23304cddbddbb7f1a2c2e582"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/examples/cobalt-01/tokens.css",
+      "path": "agents/site/examples/cobalt-01/tokens.css",
+      "sha256": "81ac69a84d5d9975e4651648bbc014e087f3f63c7ccec9b0f7d4e01012b6645a"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/examples/cobalt-01/script.js",
+      "path": "agents/site/examples/cobalt-01/script.js",
+      "sha256": "0c94ec7d54d41ff8fd680d5d6404956e74703d4e2f9fe21e2e97a273ca6e7432"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "LICENSE",
+      "path": "agents/site/LICENSE",
+      "sha256": "06088a8b94598626f27612dea42300154bf7be967c85d9d3eee4490cb056af7d"
+    },
+    {
+      "source": "anthropics/knowledge-work-plugins",
+      "commit": "a266ab8c3c754a3ccf7a634044fc1595fc06e50e",
+      "sourcePath": "LICENSE",
+      "path": "agents/CONNECTORS-LICENSE",
+      "sha256": "a6946284993aeec75c7d75906064b66210c46051e562077efb30eb6dcfe72e26"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/07-foundry-compliance/index.html",
+      "path": "agents/site/_tests/07-foundry-compliance/index.html",
+      "sha256": "70d255db6ab12246e10aeb27e297d05110b6af5b4dfe03df15eb03c5baf62ca4"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/07-foundry-compliance/style.css",
+      "path": "agents/site/_tests/07-foundry-compliance/style.css",
+      "sha256": "a2a0fd94ba11cef5c3806b8eab2a8c2c160710783bb1877ce14c9eadfa377fe4"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/07-foundry-compliance/brief.md",
+      "path": "agents/site/_tests/07-foundry-compliance/brief.md",
+      "sha256": "5b0d52c7063177d3d679517aecf963f6559f94efeb80034c28fe42adee214ff1"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/06-anya-portfolio/index.html",
+      "path": "agents/site/_tests/06-anya-portfolio/index.html",
+      "sha256": "d042e3abd187f4a4d85d6c69f9e1e2547c50ab1a01e9ce301075763149e0b663"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/06-anya-portfolio/style.css",
+      "path": "agents/site/_tests/06-anya-portfolio/style.css",
+      "sha256": "56c6ee3d4420772a4d08562072c72cbae42b2ad5e028e22a6d97b519d7cf3bd5"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/06-anya-portfolio/brief.md",
+      "path": "agents/site/_tests/06-anya-portfolio/brief.md",
+      "sha256": "f3d91f48cc8ccd3f347e013095b3f6d3a9a8a13a0fe2860e890d7dc114e71c1d"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/04-meridian-manifesto/index.html",
+      "path": "agents/site/_tests/04-meridian-manifesto/index.html",
+      "sha256": "9c7aed08ac55445ed609e7b017c5ed5d54cb8e0da67d6e4cea893f158c91caea"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/04-meridian-manifesto/style.css",
+      "path": "agents/site/_tests/04-meridian-manifesto/style.css",
+      "sha256": "e118f93d79adbf1f64f133e9c7107c67f1fa24d595abb1ce4c6bb3f9f726a7c3"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/04-meridian-manifesto/brief.md",
+      "path": "agents/site/_tests/04-meridian-manifesto/brief.md",
+      "sha256": "2e64d726b368d18608e9a2dc680e2a6b59f78af23fe8db20747b0cbec82a48d1"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/08-cohort-courses/index.html",
+      "path": "agents/site/_tests/08-cohort-courses/index.html",
+      "sha256": "55975799190745c1c2aeef7e561dc3663ff0e4714ed1aec9154bf0a3388896a8"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/08-cohort-courses/style.css",
+      "path": "agents/site/_tests/08-cohort-courses/style.css",
+      "sha256": "9d9271f8f3950c40ec1c9bcf885f55ad174d46dd1957a98a5ddae28721bb8c13"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/08-cohort-courses/brief.md",
+      "path": "agents/site/_tests/08-cohort-courses/brief.md",
+      "sha256": "c5a8aa9b2f8ae28917855c031bfcd9ddd140b624fb671da49356ab6714f47ed6"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/02-streampipe-cli/index.html",
+      "path": "agents/site/_tests/02-streampipe-cli/index.html",
+      "sha256": "c486e0aa1f5d10505c57a0e710a90a2e60f0f962169423777996646598466dfe"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/02-streampipe-cli/style.css",
+      "path": "agents/site/_tests/02-streampipe-cli/style.css",
+      "sha256": "d4e756160942b92807e158b32780327d9ff5557eadc644d89c0a3ba86ef14c46"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/02-streampipe-cli/brief.md",
+      "path": "agents/site/_tests/02-streampipe-cli/brief.md",
+      "sha256": "1feb8cb9ab17e53cdc75564bcd75c4071a431b064017177abc9b5a890adc92c4"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/01-tide-podcast/index.html",
+      "path": "agents/site/_tests/01-tide-podcast/index.html",
+      "sha256": "51c34c8ca338ce1ee961985d8159d266e0cb734474f05f49618531dee0ada016"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/01-tide-podcast/style.css",
+      "path": "agents/site/_tests/01-tide-podcast/style.css",
+      "sha256": "f342ee7f0372ffde03c291e9c4764c9cba37914c16fa2252db2da256346731f9"
+    },
+    {
+      "source": "nutlope/hallmark",
+      "commit": "13ac0ec7e148655948100b6396439e481361d690",
+      "sourcePath": "site/_tests/01-tide-podcast/brief.md",
+      "path": "agents/site/_tests/01-tide-podcast/brief.md",
+      "sha256": "da2dcd9297b28c945fa443060a000d83f86f073c2128b8fc904863670437f63e"
+    }
+  ]
+}

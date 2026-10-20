@@ -1,3 +1,4 @@
 {
-  "design-taste-frontend": "Local safety patch removes unsafe cross-run browser-profile deletion; retain until upstream cleanup is verified safe."
+  "design-taste-frontend": "Local safety patch removes unsafe cross-run browser-profile deletion; retain until upstream cleanup is verified safe.",
+  "localhost-screenshots": "Local installation fix resolves project-owned Playwright from the working directory; retain until the upstream helpers include this fix."
 }

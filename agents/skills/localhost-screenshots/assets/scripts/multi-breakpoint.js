@@ -95,7 +95,7 @@ validateLocalUrl(url);
 
 function loadChromium() {
   try {
-    return require('playwright').chromium;
+    return require(require.resolve('playwright', { paths: [process.cwd()] })).chromium;
   } catch (err) {
     if (err && err.code === 'MODULE_NOT_FOUND') {
       console.error('Missing dependency: playwright. Run npm install --save-dev playwright@1.62.0 in the project root before using this helper.');

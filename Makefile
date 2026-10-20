@@ -177,6 +177,7 @@ skills-manifest: ## Regenerate Skillsfile and skills README from the skill lockf
 skills: skills-audit ## Verify the vendored global skills restored by make link
 	@python3 scripts/gen-skillsfile.py --check
 	@python3 agents/compareskills.py --check
+	@python3 scripts/check-skill-installation.py
 	@echo "  ✓ vendored skills are repo-managed at $(CURDIR)/agents/skills"
 	@echo "  → upstream refresh is explicit: make skills-update"
 
@@ -407,3 +408,6 @@ secrets-pass: ## Copy the local vault password from Keychain
 secrets-pass-import: ## Import a recovered vault password into the local Keychain
 	@bash scripts/secrets-pass-import.sh
 endif
+
+skills-runtime: ## Verify skill resources and the version-matched local Impeccable engine
+	@python3 scripts/check-skill-installation.py --runtime

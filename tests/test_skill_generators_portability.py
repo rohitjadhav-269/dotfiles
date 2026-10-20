@@ -32,9 +32,9 @@ class GeneratorPortabilityTests(unittest.TestCase):
             }), encoding="utf-8")
             (repo / ".gitignore").write_text(
                 "agents/skills/gated/\nagents/skills/ignored-local/\n", encoding="utf-8")
-            for name in ("locked", "tracked-local"):
+            for name in ("locked", "tracked-local", "creative/nested"):
                 skill = repo / "agents/skills" / name
-                skill.mkdir()
+                skill.mkdir(parents=True)
                 (skill / "SKILL.md").write_text(f"# {name}\n", encoding="utf-8")
             subprocess.run(["git", "init", "-q", str(repo)], check=True)
             subprocess.run(["git", "add", "agents/skills"], cwd=repo, check=True)
@@ -48,7 +48,8 @@ class GeneratorPortabilityTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             readme = repo / "agents/skills/README.md"
             baseline = readme.read_bytes()
-            self.assertIn(b"3 managed skills", baseline)
+            self.assertIn(b"4 managed skills", baseline)
+            self.assertIn(b"creative/nested", baseline)
             for name in ("untracked-local", "ignored-local"):
                 skill = repo / "agents/skills" / name
                 skill.mkdir()

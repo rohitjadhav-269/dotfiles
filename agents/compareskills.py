@@ -30,8 +30,11 @@ IST = timezone(timedelta(hours=5, minutes=30))
 def get_disk_skills():
     """Sorted list of discoverable skills on disk."""
     return sorted(
-        f.name for f in SKILLS_DIR.iterdir()
-        if (f / "SKILL.md").is_file() and not f.name.startswith(".")
+        f.parent.relative_to(SKILLS_DIR).as_posix() for f in SKILLS_DIR.rglob("SKILL.md")
+        if f.is_file() and not any(
+            part.startswith(".") or part == "node_modules"
+            for part in f.relative_to(SKILLS_DIR).parts[:-1]
+        )
     )
 
 
@@ -79,8 +82,8 @@ def get_tracked_skills():
         check=True,
     )
     return sorted({
-        parts[2] for name in result.stdout.split("\0")
-        if len(parts := name.split("/")) == 4 and parts[-1] == "SKILL.md"
+        "/".join(parts[2:-1]) for name in result.stdout.split("\0")
+        if len(parts := name.split("/")) >= 4 and parts[-1] == "SKILL.md"
     })
 
 

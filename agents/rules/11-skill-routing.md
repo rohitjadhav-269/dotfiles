@@ -49,6 +49,7 @@ Load the smallest matching reference; load multiple only for independent artifac
 | Non-interface planning, typed-semantic AI or explicitly requested test-first work, source review, minimalism, debugging, architecture, or skill authoring | [Development routing](routing/development.md) |
 | UX architecture, research, synthesis, prototyping, or handoff | [UX routing](routing/design-ux.md) |
 | Rendered interface direction, implementation, review, applied screen copy or typography, or creative work | [Interface routing](routing/design-interface.md) |
+| Website performance measurement, React component composition, or shadcn components/registries | [Frontend specialists](routing/frontend-specialists.md) |
 | Design systems, tokens, reusable type/copy authorities, font research, or conversion copy | [System/content routing](routing/design-system.md) |
 | Animation and motion | [Motion routing](routing/motion.md) |
 | Brand and static visual artifacts | [Artifact routing](routing/artifacts.md) |

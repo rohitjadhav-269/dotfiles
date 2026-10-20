@@ -37,7 +37,8 @@ class TypeSafeEnvTests(unittest.TestCase):
         self.assertEqual(created.returncode, 0, created.stderr)
         self.assertEqual(self.credential.stat().st_mode & 0o777, 0o600)
         self.assertEqual(self.credential.parent.stat().st_mode & 0o777, 0o700)
-        self.assertEqual(self.invoke("--check").returncode, 1)
+        # Initialization writes a reference; keep the host Keychain out of this fixture.
+        self.assertIn("export TYPESAFE_API_KEY='keychain://dotfiles/typesafe/TYPESAFE_API_KEY'", self.credential.read_text())
         self.credential.write_text("export TYPESAFE_API_KEY='fixture-preserved'\n")
         again = self.invoke("--init")
         self.assertEqual(again.returncode, 0, again.stderr)

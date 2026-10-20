@@ -1,6 +1,6 @@
 ---
-generated: 2026-10-20T10:20:03+05:30
-skills_count: 122
+generated: 2026-10-20T10:36:45+05:30
+skills_count: 125
 gated_count: 0
 lock_file: ../.skill-lock.json
 lock_version: 4
@@ -17,7 +17,7 @@ When this file is asked to be updated. Update the following
 
 # Skills Inventory
 
-> **122 managed skills** — 119 remote + 3 local
+> **125 managed skills** — 122 remote + 3 local
 
 | # | Skill Name | Source | Disk Location | Remark |
 |---|-----------|--------|---------------|--------|
@@ -112,37 +112,40 @@ When this file is asked to be updated. Update the following
 | 89 | setup-matt-pocock-skills | mattpocock/skills | `~/.agents/skills/setup-matt-pocock-skills/` | — |
 | 90 | setup-pre-commit | mattpocock/skills | `~/.agents/skills/setup-pre-commit/` | — |
 | 91 | setup-ts-deep-modules | mattpocock/skills | `~/.agents/skills/setup-ts-deep-modules/` | — |
-| 92 | skill-architect | t4sh/skills4sh | `~/.agents/skills/skill-architect/` | — |
-| 93 | skill-creator | openai/skills | `~/.agents/skills/skill-creator/` | — |
-| 94 | skill-inspector | NVIDIA/SkillSpector | `~/.agents/skills/skill-inspector/` | — |
-| 95 | sync-figma-token | firebenders/sync-figma-token-skill | `~/.agents/skills/sync-figma-token/` | — |
-| 96 | system-design | anthropics/knowledge-work-plugins | `~/.agents/skills/system-design/` | — |
-| 97 | tailwind-design-system | wshobson/agents | `~/.agents/skills/tailwind-design-system/` | — |
-| 98 | tauri-v2 | nodnarbnitram/claude-code-extensions | `~/.agents/skills/tauri-v2/` | — |
-| 99 | tdd | mattpocock/skills | `~/.agents/skills/tdd/` | — |
-| 100 | teach | mattpocock/skills | `~/.agents/skills/teach/` | — |
-| 101 | tech-debt | anthropics/knowledge-work-plugins | `~/.agents/skills/tech-debt/` | — |
-| 102 | theme-factory | anthropics/skills | `~/.agents/skills/theme-factory/` | — |
-| 103 | to-questionnaire | mattpocock/skills | `~/.agents/skills/to-questionnaire/` | — |
-| 104 | to-spec | mattpocock/skills | `~/.agents/skills/to-spec/` | — |
-| 105 | to-tickets | mattpocock/skills | `~/.agents/skills/to-tickets/` | — |
-| 106 | top-design | wondelai/skills | `~/.agents/skills/top-design/` | — |
-| 107 | triage | mattpocock/skills | `~/.agents/skills/triage/` | — |
-| 108 | typesafe-ai | typesafe-ai/skills | `~/.agents/skills/typesafe-ai/` | — |
-| 109 | ui-animation | mblode/agent-skills | `~/.agents/skills/ui-animation/` | — |
-| 110 | ui-ux-pro-max | nextlevelbuilder/ui-ux-pro-max-skill | `~/.agents/skills/ui-ux-pro-max/` | — |
-| 111 | user-research | anthropics/knowledge-work-plugins | `~/.agents/skills/user-research/` | — |
-| 112 | variant | jakubkrehel/skills | `~/.agents/skills/variant/` | — |
-| 113 | vocabulary | index-how/vocabulary | `~/.agents/skills/vocabulary/` | — |
-| 114 | wait-what | mattpocock/skills | `~/.agents/skills/wait-what/` | — |
-| 115 | wayfinder | mattpocock/skills | `~/.agents/skills/wayfinder/` | — |
-| 116 | web-design-guidelines | vercel-labs/agent-skills | `~/.agents/skills/web-design-guidelines/` | — |
-| 117 | web-typography | wondelai/skills | `~/.agents/skills/web-typography/` | — |
-| 118 | wizard | mattpocock/skills | `~/.agents/skills/wizard/` | — |
-| 119 | writing-beats | mattpocock/skills | `~/.agents/skills/writing-beats/` | — |
-| 120 | writing-for-agents | mattpocock/skills | `~/.agents/skills/writing-for-agents/` | — |
-| 121 | writing-fragments | mattpocock/skills | `~/.agents/skills/writing-fragments/` | — |
-| 122 | writing-shape | mattpocock/skills | `~/.agents/skills/writing-shape/` | — |
+| 92 | shadcn | shadcn-ui/ui | `~/.agents/skills/shadcn/` | — |
+| 93 | skill-architect | t4sh/skills4sh | `~/.agents/skills/skill-architect/` | — |
+| 94 | skill-creator | openai/skills | `~/.agents/skills/skill-creator/` | — |
+| 95 | skill-inspector | NVIDIA/SkillSpector | `~/.agents/skills/skill-inspector/` | — |
+| 96 | sync-figma-token | firebenders/sync-figma-token-skill | `~/.agents/skills/sync-figma-token/` | — |
+| 97 | system-design | anthropics/knowledge-work-plugins | `~/.agents/skills/system-design/` | — |
+| 98 | tailwind-design-system | wshobson/agents | `~/.agents/skills/tailwind-design-system/` | — |
+| 99 | tauri-v2 | nodnarbnitram/claude-code-extensions | `~/.agents/skills/tauri-v2/` | — |
+| 100 | tdd | mattpocock/skills | `~/.agents/skills/tdd/` | — |
+| 101 | teach | mattpocock/skills | `~/.agents/skills/teach/` | — |
+| 102 | tech-debt | anthropics/knowledge-work-plugins | `~/.agents/skills/tech-debt/` | — |
+| 103 | theme-factory | anthropics/skills | `~/.agents/skills/theme-factory/` | — |
+| 104 | to-questionnaire | mattpocock/skills | `~/.agents/skills/to-questionnaire/` | — |
+| 105 | to-spec | mattpocock/skills | `~/.agents/skills/to-spec/` | — |
+| 106 | to-tickets | mattpocock/skills | `~/.agents/skills/to-tickets/` | — |
+| 107 | top-design | wondelai/skills | `~/.agents/skills/top-design/` | — |
+| 108 | triage | mattpocock/skills | `~/.agents/skills/triage/` | — |
+| 109 | typesafe-ai | typesafe-ai/skills | `~/.agents/skills/typesafe-ai/` | — |
+| 110 | ui-animation | mblode/agent-skills | `~/.agents/skills/ui-animation/` | — |
+| 111 | ui-ux-pro-max | nextlevelbuilder/ui-ux-pro-max-skill | `~/.agents/skills/ui-ux-pro-max/` | — |
+| 112 | user-research | anthropics/knowledge-work-plugins | `~/.agents/skills/user-research/` | — |
+| 113 | variant | jakubkrehel/skills | `~/.agents/skills/variant/` | — |
+| 114 | vercel-composition-patterns | vercel-labs/agent-skills | `~/.agents/skills/vercel-composition-patterns/` | — |
+| 115 | vocabulary | index-how/vocabulary | `~/.agents/skills/vocabulary/` | — |
+| 116 | wait-what | mattpocock/skills | `~/.agents/skills/wait-what/` | — |
+| 117 | wayfinder | mattpocock/skills | `~/.agents/skills/wayfinder/` | — |
+| 118 | web-design-guidelines | vercel-labs/agent-skills | `~/.agents/skills/web-design-guidelines/` | — |
+| 119 | web-perf | cloudflare/skills | `~/.agents/skills/web-perf/` | — |
+| 120 | web-typography | wondelai/skills | `~/.agents/skills/web-typography/` | — |
+| 121 | wizard | mattpocock/skills | `~/.agents/skills/wizard/` | — |
+| 122 | writing-beats | mattpocock/skills | `~/.agents/skills/writing-beats/` | — |
+| 123 | writing-for-agents | mattpocock/skills | `~/.agents/skills/writing-for-agents/` | — |
+| 124 | writing-fragments | mattpocock/skills | `~/.agents/skills/writing-fragments/` | — |
+| 125 | writing-shape | mattpocock/skills | `~/.agents/skills/writing-shape/` | — |
 
 ---
 
@@ -172,6 +175,7 @@ for live disk differences and missing managed skills; generation requires a Git 
 - **github/awesome-copilot** (2): git-commit, git-flow-branch-creator
 - **lucasmarkes/hairline** (2): hairline-adopt, hairline-create
 - **openai/skills** (2): playwright, skill-creator
+- **vercel-labs/agent-skills** (2): vercel-composition-patterns, web-design-guidelines
 - **wondelai/skills** (2): top-design, web-typography
 - **wshobson/agents** (2): monorepo-management, tailwind-design-system
 - **ComposioHQ/awesome-claude-skills** (1): file-organizer
@@ -180,6 +184,7 @@ for live disk differences and missing managed skills; generation requires a Git 
 - **NVIDIA/SkillSpector** (1): skill-inspector
 - **arvindrk/extract-design-system** (1): extract-design-system
 - **cerico/macfair** (1): creative-design
+- **cloudflare/skills** (1): web-perf
 - **echris6/motion-video-kit** (1): business-motion-film
 - **firebenders/sync-figma-token-skill** (1): sync-figma-token
 - **index-how/vocabulary** (1): vocabulary
@@ -192,10 +197,10 @@ for live disk differences and missing managed skills; generation requires a Git 
 - **nutlope/hallmark** (1): hallmark
 - **owl-listener/designer-skills** (1): design-token-audit
 - **pbakaus/impeccable** (1): impeccable
+- **shadcn-ui/ui** (1): shadcn
 - **shadcn/improve** (1): improve
 - **typesafe-ai/skills** (1): typesafe-ai
 - **vercel-labs/agent-browser** (1): agent-browser
-- **vercel-labs/agent-skills** (1): web-design-guidelines
 - **vercel-labs/skills** (1): find-skills
 
 

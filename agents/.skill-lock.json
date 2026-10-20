@@ -1109,6 +1109,33 @@
       "skillFolderHash": "bd1e3c810a703ffdf1f66490abc64fd82f5aec7d",
       "installedAt": "2026-10-20T00:54:45.125Z",
       "updatedAt": "2026-10-20T00:54:45.125Z"
+    },
+    "web-perf": {
+      "source": "cloudflare/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/cloudflare/skills.git",
+      "skillPath": "skills/web-perf/SKILL.md",
+      "skillFolderHash": "c4c15a909ae86c00d4fbf841238bbf56eb505ac8",
+      "installedAt": "2026-10-20T05:03:47.368Z",
+      "updatedAt": "2026-10-20T05:03:47.368Z"
+    },
+    "vercel-composition-patterns": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/vercel-labs/agent-skills.git",
+      "skillPath": "skills/composition-patterns/SKILL.md",
+      "skillFolderHash": "bf90d0a4b83ea054653350f9c67f6de235d3a368",
+      "installedAt": "2026-10-20T05:03:47.368Z",
+      "updatedAt": "2026-10-20T05:03:47.368Z"
+    },
+    "shadcn": {
+      "source": "shadcn-ui/ui",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/shadcn-ui/ui.git",
+      "skillPath": "skills/shadcn/SKILL.md",
+      "skillFolderHash": "900e3dff4bc1b341db90a147bee6dbed4c2add3c",
+      "installedAt": "2026-10-20T05:03:47.368Z",
+      "updatedAt": "2026-10-20T05:03:47.368Z"
     }
   },
   "dismissed": {

@@ -95,6 +95,46 @@ class Context7Tests(unittest.TestCase):
             self.assertEqual(data['mcpServers']['context7']['command'], '/wrapper')
             self.assertEqual(data.get('x'), json.loads(clients.clean_jsonc(text)).get('x'))
 
+    def test_nested_insert_and_replace_follow_member_depth(self):
+        text = ('{\n'
+                '  "cursor_animation": {\n'
+                '    "enabled": true\n'
+                '  },\n'
+                '  "context_servers": {\n'
+                '    "mcp-server-github": {\n'
+                '      "enabled": true\n'
+                '    }\n'
+                '  },\n'
+                '  "theme": "fixture"\n'
+                '}\n')
+        desired = {'command': '/wrapper', 'args': []}
+        inserted = clients.set_member(text, ['context_servers', 'mcp-server-context7'], desired)
+        self.assertEqual(inserted, (
+            '{\n'
+            '  "cursor_animation": {\n'
+            '    "enabled": true\n'
+            '  },\n'
+            '  "context_servers": {\n'
+            '    "mcp-server-github": {\n'
+            '      "enabled": true\n'
+            '    },\n'
+            '    "mcp-server-context7": {\n'
+            '      "command": "/wrapper",\n'
+            '      "args": []\n'
+            '    }\n'
+            '  },\n'
+            '  "theme": "fixture"\n'
+            '}\n'))
+        replaced = clients.set_member(inserted, ['context_servers', 'mcp-server-context7'],
+                                      {'command': '/other', 'args': ['x']})
+        self.assertIn('    "mcp-server-context7": {\n'
+                      '      "command": "/other",\n'
+                      '      "args": [\n'
+                      '        "x"\n'
+                      '      ]\n'
+                      '    }\n'
+                      '  },\n', replaced)
+
     def run_clients(self, action):
         return subprocess.run(['python3', str(ROOT / 'scripts/context7-clients.py'), action,
                                '--home', str(self.home)], capture_output=True, text=True)

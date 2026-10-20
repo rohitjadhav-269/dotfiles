@@ -112,7 +112,9 @@ fi
 # for every configured agent before backups reach Git.
 if [[ -f "$APPS/zed/settings.json" ]]; then
   perl -0i -pe '
-    s/^  "(?:agent|context_servers)"\s*:\s*\{.*?^  \},?\n//msg;
+    # Match the object by balanced braces (skipping strings), not by its closing
+    # line indentation, so misindented editor writes cannot leave a stray brace.
+    s/^[ \t]*"(?:agent|context_servers)"\s*:\s*(\{(?:"(?:[^"\\]|\\.)*"|[^{}"]++|(?1))*\})[ \t]*,?[ \t]*\n//mg;
     for my $key (qw(default_config_options favorite_config_option_values)) {
       s/,\s*"\Q$key\E"\s*:\s*\{[^{}]*\}//g;
       s/"\Q$key\E"\s*:\s*\{[^{}]*\}\s*,?//g;

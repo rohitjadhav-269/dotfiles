@@ -44,6 +44,12 @@ def members(text):
         pos = end
 
 
+def line_indent(text, pos):
+    start = text.rfind('\n', 0, pos) + 1
+    line = text[start:pos]
+    return line[:len(line) - len(line.lstrip(' \t'))]
+
+
 def set_member(text, keys, value):
     data, spans, closing = members(text)
     key = keys[0]
@@ -56,6 +62,10 @@ def set_member(text, keys, value):
         replacement = json.dumps(value, indent=2)
     if key in spans:
         start, end = spans[key]
+        if len(keys) == 1:
+            # Nested substrings keep their file indentation; new leaf values follow
+            # the indentation of the line that owns the replaced member.
+            replacement = replacement.replace('\n', '\n' + line_indent(text, start))
         return text[:start] + replacement + text[end:]
     # Insert the separator at the last value, before any trailing comment.
     if spans:
@@ -63,8 +73,19 @@ def set_member(text, keys, value):
         if ',' not in clean_jsonc(text[last_end:closing]):
             text = text[:last_end] + ',' + text[last_end:]
             closing += 1
-    entry = '\n  ' + json.dumps(key) + ': ' + replacement.replace('\n', '\n  ') + '\n'
-    result = text[:closing] + entry + text[closing:]
+    # Indent the new member one level inside this object's closing brace, so a
+    # nested insert keeps the file's existing depth.
+    close_indent = line_indent(text, closing)
+    prefix = text[:closing]
+    if text[closing - len(close_indent) - 1:closing - len(close_indent)] == '\n':
+        prefix = prefix[:len(prefix) - len(close_indent)]
+    else:
+        close_indent = ''
+        prefix += '\n'
+    member_indent = close_indent + '  '
+    entry = (member_indent + json.dumps(key) + ': '
+             + replacement.replace('\n', '\n' + member_indent) + '\n' + close_indent)
+    result = prefix + entry + text[closing:]
     json.loads(clean_jsonc(result))
     return result
 

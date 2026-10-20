@@ -154,6 +154,43 @@ class PublicPreferences(unittest.TestCase):
             for editor in values:
                 self.assertEqual((root / 'apps' / editor / 'settings.json').read_bytes(), saved[editor])
 
+    @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
+    def test_zed_runtime_blocks_are_removed_by_structure_not_indentation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / '.node-version').write_text((ROOT / '.node-version').read_text())
+            path = root / 'apps/zed/settings.json'
+            path.parent.mkdir(parents=True)
+            # A nested member at root indentation and a column-zero closing brace,
+            # as an earlier Context7 insert wrote them; strings contain braces.
+            path.write_text('{\n'
+                            '  "cursor_animation": {\n'
+                            '    "enabled": true\n'
+                            '  },\n'
+                            '  "context_servers": {\n'
+                            '    "mcp-server-github": {\n'
+                            '      "enabled": true\n'
+                            '    },\n'
+                            '  \n'
+                            '  "mcp-server-context7": {\n'
+                            '    "command": "fixture",\n'
+                            '    "args": ["{", "}"]\n'
+                            '  }\n'
+                            '},\n'
+                            '  "theme": "fixture"\n'
+                            '}\n')
+            sanitize = ['bash', str(ROOT / 'scripts/sanitize-app-prefs.sh')]
+            env = dict(os.environ, DOTFILES=str(root))
+            subprocess.run(sanitize, env=env, check=True, capture_output=True)
+            text = path.read_text()
+            data = json.loads(text)
+            self.assertNotIn('context_servers', data)
+            self.assertNotIn('mcp-server-context7', text)
+            self.assertEqual(data['theme'], 'fixture')
+            self.assertIs(data['cursor_animation']['enabled'], True)
+            subprocess.run(sanitize, env=env, check=True, capture_output=True)
+            self.assertEqual(path.read_text(), text)
+
     def test_editor_policy_preserves_safe_jsonc_and_rejects_duplicate_settings(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'settings.json'

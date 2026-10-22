@@ -111,15 +111,17 @@ fi
 # security state, not portable preference policy. Remove these observed fields
 # for every configured agent before backups reach Git.
 if [[ -f "$APPS/zed/settings.json" ]]; then
-  # Remove root agent/context_servers members by JSONC structure: comments and
-  # strings are masked first, so braces inside them never count, and invalid
-  # input fails closed without rewriting the snapshot.
-  python3 - "$APPS/zed/settings.json" <<'PY'
+  # Remove root context_servers and reduce agent to its layout keys by JSONC
+  # structure: comments and strings are masked first, so braces inside them
+  # never count, and invalid input fails closed without rewriting the snapshot.
+  python3 - "$APPS/zed/settings.json" "$SCRIPT_DIR/check-zed.py" <<'PY'
 import json
 import re
+import runpy
 import sys
 
 path = sys.argv[1]
+layout = runpy.run_path(sys.argv[2])["AGENT_LAYOUT_KEYS"]
 text = open(path, encoding="utf-8").read()
 tokens = r'"(?:\\.|[^"\\])*"|//[^\n]*|/\*[\s\S]*?\*/'
 # Both masks keep every offset: comments become spaces, so commas stay visible
@@ -144,8 +146,13 @@ try:
         pos = masked.index(":", pos) + 1
         while masked[pos].isspace():
             pos += 1
-        _, end = decoder.raw_decode(masked, pos)
-        if key in ("agent", "context_servers"):
+        value, end = decoder.raw_decode(masked, pos)
+        kept = {k: value[k] for k in layout if k in value} if (
+            key == "agent" and isinstance(value, dict)) else {}
+        if kept:
+            dumped = json.dumps(kept, indent=2, ensure_ascii=False)
+            removals.append((pos, end, dumped.replace("\n", "\n  ")))
+        elif key in ("agent", "context_servers"):
             line_start = text.rfind("\n", 0, key_start) + 1
             start = line_start if not text[line_start:key_start].strip() else key_start
             # The member's separator may follow comments or newlines; remove it
@@ -154,13 +161,13 @@ try:
             if uncommented[after] == ",":
                 end = after + 1
             end = re.compile(r"[ \t]*\n?").match(text, end).end()
-            removals.append((start, end))
+            removals.append((start, end, ""))
         pos = end
 except (ValueError, IndexError) as error:
     print(f"invalid Zed JSONC: {path}: {error}", file=sys.stderr)
     sys.exit(1)
-for start, end in reversed(removals):
-    text = text[:start] + text[end:]
+for start, end, replacement in reversed(removals):
+    text = text[:start] + replacement + text[end:]
 # Never write a result that no longer parses or still holds a removed member.
 check = re.sub(tokens, lambda m: m[0] if m[0].startswith('"') else " ", text)
 check = re.sub(r'"(?:\\.|[^"\\])*"|,(?=\s*[}\]])',
@@ -169,7 +176,8 @@ try:
     result = json.loads(check)
 except ValueError:
     result = None
-if not isinstance(result, dict) or {"agent", "context_servers"} & set(result):
+if (not isinstance(result, dict) or "context_servers" in result or
+        not set(result.get("agent", {})) <= set(layout)):
     print(f"invalid Zed JSONC after sanitizing: {path}", file=sys.stderr)
     sys.exit(1)
 open(path, "w", encoding="utf-8").write(text)

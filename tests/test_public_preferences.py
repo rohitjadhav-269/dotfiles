@@ -226,6 +226,32 @@ class PublicPreferences(unittest.TestCase):
                 self.assertEqual(path.read_text(), text)
 
     @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
+    def test_zed_agent_keeps_only_panel_layout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / '.node-version').write_text((ROOT / '.node-version').read_text())
+            path = root / 'apps/zed/settings.json'
+            path.parent.mkdir(parents=True)
+            path.write_text('{\n'
+                            '  "agent": {\n'
+                            '    // live-only model\n'
+                            '    "default_model": {"provider": "p", "model": "m"},\n'
+                            '    "dock": "right",\n'
+                            '    "threads_sidebar": {"position": "right"}\n'
+                            '  },\n'
+                            '  "theme": "t"\n'
+                            '}\n')
+            sanitize = ['bash', str(ROOT / 'scripts/sanitize-app-prefs.sh')]
+            env = dict(os.environ, DOTFILES=str(root))
+            subprocess.run(sanitize, env=env, check=True, capture_output=True)
+            text = path.read_text()
+            self.assertEqual(json.loads(text), {
+                'agent': {'dock': 'right', 'threads_sidebar': {'position': 'right'}},
+                'theme': 't'})
+            subprocess.run(sanitize, env=env, check=True, capture_output=True)
+            self.assertEqual(path.read_text(), text)
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'macOS preference tools required')
     def test_zed_runtime_member_separator_trivia(self):
         cases = {
             "block comment before comma": (

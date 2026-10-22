@@ -9,6 +9,7 @@
   },
   "language_models": {
     "opencode": {
+      "show_zen_models": true,
       "show_go_models": false
     }
   },
@@ -25,7 +26,15 @@
     "dock": "left"
   },
   "git_panel": {
+    "tree_view": true,
     "dock": "left"
+  },
+  // Panel layout only; models, providers and instructions stay live-only.
+  "agent": {
+    "dock": "right",
+    "threads_sidebar": {
+      "position": "right"
+    }
   },
   "base_keymap": "VSCode",
   "multi_cursor_modifier": "cmd_or_ctrl",

@@ -9,6 +9,10 @@ import re
 import shutil
 import sys
 
+# Panel layout is the only portable part of Zed's "agent" block; models,
+# providers and instructions stay live-only. Mirrored in scripts/lib/windows-apps.ps1.
+AGENT_LAYOUT_KEYS = ("dock", "threads_sidebar")
+
 
 def read_settings(path):
     tokens = r'"(?:\\.|[^"\\])*"|//[^\n]*|/\*[\s\S]*?\*/'

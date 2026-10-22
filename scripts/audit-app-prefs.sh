@@ -132,8 +132,25 @@ PY
   fi
 
   if [[ "$rel" == "apps/zed/settings.json" ]] &&
-    rg -q '^  "(agent|context_servers)"[[:space:]]*:|"(default_config_options|favorite_config_option_values)"[[:space:]]*:' "$scan" 2>/dev/null; then
+    rg -q '^  "context_servers"[[:space:]]*:|"(default_config_options|favorite_config_option_values)"[[:space:]]*:' "$scan" 2>/dev/null; then
     report "non-portable Zed agent runtime state: $rel"
+  fi
+
+  if [[ "$rel" == "apps/zed/settings.json" ]] &&
+    ! python3 - "$SCRIPT_DIR/check-zed.py" "$f" <<'PY'
+from pathlib import Path
+import runpy
+import sys
+
+zed = runpy.run_path(sys.argv[1])
+try:
+    agent = zed["read_settings"](Path(sys.argv[2])).get("agent", {})
+except (OSError, ValueError, AttributeError):
+    sys.exit(0)  # Malformed snapshots are reported by the JSONC check above.
+sys.exit(0 if isinstance(agent, dict) and set(agent) <= set(zed["AGENT_LAYOUT_KEYS"]) else 1)
+PY
+  then
+    report "non-portable Zed agent settings beyond panel layout: $rel"
   fi
 
   if rg -qi 'Paddle-|ZephyrSyncKey|SUUpdateGroupIdentifier|MenuBarItemManager\.|KnownDisplays|DisplayIceBarConfigurations|GlobalDisplayConfiguration|NewItemsPlacementData|savedPipelines|"(cSpell\.words|chat\.tools\..*autoApprove|.*cloudProject|.*projectId)"|bypassPermissions' "$scan" 2>/dev/null; then
